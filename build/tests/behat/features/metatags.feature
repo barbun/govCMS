@@ -74,4 +74,5 @@ Feature:Meta tags
     And I fill in "govCMS" for "Site name"
     And press "Save configuration"
     And I run drush "cc" "all"
+    And I go to "/"
     Then the response should contain "<meta name=\"dcterms.creator\" content=\"govCMS\">"
