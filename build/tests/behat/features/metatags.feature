@@ -70,3 +70,8 @@ Feature:Meta tags
     And I go to "/"
     Then the response should contain "<meta name=\"dcterms.creator\" content=\"My Sitename\">"
     And the response should contain "<meta name=\"dcterms.publisher\" content=\"My Sitename\">"
+    When I go to "/admin/config/system/site-information"
+    And I fill in "govCMS" for "Site name"
+    And press "Save configuration"
+    And I run drush "cc" "all"
+    Then the response should contain "<meta name=\"dcterms.creator\" content=\"govCMS\">"
