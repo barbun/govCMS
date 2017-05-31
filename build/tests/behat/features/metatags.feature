@@ -45,11 +45,20 @@ Feature:Meta tags
     And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
     And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
 
-  @api @javascript @wip
+  @api @javascript
   Scenario: govCMS core successfully applies defaults
     Given I am logged in as a user named "metatags_harry" with the "administrator" role that doesn't force password change
     When I go to "/admin/config/search/metatags/config/global"
-    Then I should see "Drupal 7 (http://drupal.org) + govCMS (http://govcms.gov.au)" in the "Generator" field
+    Then the "edit-metatags-und-dctermscreator-item-value" field should be set to "[site:name]"
+    And the "edit-metatags-und-dctermsdate-item-value" field should be set to "[current-date:custom:Y-m-d\TH:iP]"
+    And the "edit-metatags-und-dctermsdescription-item-value" field should be set to "[site:slogan]"
+    And the "edit-metatags-und-dctermslanguage-item-value" field should be set to "en"
+    And the "edit-metatags-und-dctermspublisher-item-value" field should be set to "[site:name]"
+    And the "edit-metatags-und-dctermssubject-item-value" field should be set to "[site:slogan]"
+    And the "edit-metatags-und-dctermstype-item-value" field should be set to "other"
+    And the "edit-metatags-und-generator-value" field should be set to "Drupal 7 (http://drupal.org) + govCMS (http://govcms.gov.au)"
+    When I go to "/admin/config/search/metatags/config/node"
+    Then the "edit-metatags-und-dctermslanguage-item-value" field should be set to "en"
 
   @api @javascript
   Scenario: Meta-tags are modified when the site name changes
