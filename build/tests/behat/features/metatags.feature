@@ -3,6 +3,8 @@ Feature:Meta tags
   So content contains relevant SEO
   As an editor
   I can create content and provide metatags
+  And default metatags are set
+  And changing the sitename affects metatags.
 
   @api @javascript
   Scenario: Meta-tags are auto set
@@ -41,3 +43,21 @@ Feature:Meta tags
     And the response should contain "<meta name=\"description\" content=\"And when they battle in a puddle, its a tweetle beetle puddle battle\">"
     And the response should contain "<title>Fox in socks</title>"
     And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
+    And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
+
+  @api @javascript @wip
+  Scenario: govCMS core successfully applies defaults
+    Given I am logged in as a user named "metatags_harry" with the "administrator" role that doesn't force password change
+    When I go to "/admin/config/search/metatags/config/global"
+    Then I should see "Drupal 7 (http://drupal.org) + govCMS (http://govcms.gov.au)" in the "Generator" field
+
+  @api @javascript
+  Scenario: Meta-tags are modified when the site name changes
+    Given I am logged in as a user named "metatags_tom" with the "administrator" role that doesn't force password change
+    When I go to "/admin/config/system/site-information"
+    And I fill in "My Sitename" for "Site name"
+    And press "Save configuration"
+    And I run drush "cc" "all"
+    And I go to "/"
+    Then the response should contain "<meta name=\"dcterms.creator\" content=\"My Sitename\">"
+    And the response should contain "<meta name=\"dcterms.publisher\" content=\"My Sitename\">"
