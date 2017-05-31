@@ -122,6 +122,22 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     }
   }
 
+
+  /**
+   * Tests that a form field contains a value.
+   *
+   * @Then the :fieldid field should be set to :expected
+   */
+  public function theFieldShouldBeSetTo($fieldid, $expected) {
+    $field = $this->getSession()->getPage()->find('css', '#' . $fieldid);
+    if (!$field) {
+      throw new \Exception(sprintf("No field with id '%s' found on the page '%s'.", $fieldid, $this->getSession()->getCurrentUrl()));
+    }
+    if ($field->getValue() != $expected) {
+      throw new \Exception(sprintf("Field with id '%s' was found but not set to value '%s'.", $fieldid, $expected));
+    }
+  }
+
   /**
    * Sets an id for the first iframe situated in the element specified by id.
    * Needed when wanting to fill in WYSIWYG editor situated in an iframe without identifier.
