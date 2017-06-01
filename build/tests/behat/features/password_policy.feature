@@ -69,3 +69,15 @@ Feature: Password Policy
     Given I am logged in as a user named "david_pwdpol" with the "administrator" role that doesn't force password change
     When I go to "admin/config/people/password_policy/govcms"
     Then the "edit-govcms-password-policy-ready" select list should be set to "1"
+
+  @api @javascript
+  Scenario: Check that password changes are forced for first-time logins and not forced for any of the roles.
+    Given I am logged in as a user named "esther_pwdpol" with the "administrator" role that doesn't force password change
+    When I go to "admin/config/people/password_policy/password_change"
+    Then the "edit-password-policy-new-login-change" checkbox should be checked
+    And the "edit-password-policy-force-change-roles-2" checkbox should not be checked
+    And the "edit-password-policy-force-change-roles-3" checkbox should not be checked
+    And the "edit-password-policy-force-change-roles-4" checkbox should not be checked
+    And the "edit-password-policy-force-change-roles-5" checkbox should not be checked
+    And the "edit-password-policy-force-change-roles-6" checkbox should not be checked
+    And the "edit-password-policy-force-change-roles-7" checkbox should not be checked
