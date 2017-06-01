@@ -42,19 +42,20 @@ drupal:
         tags: "@drupal"
       paths:
         features: %paths.base%/features
-      extensions:
-          Behat\MinkExtension:
-            goutte: ~
-            selenium2:
-              wd_host: "http://localhost:4444/wd/hub"
-            javascript_session: selenium2
-          Drupal\DrupalExtension:
-            blackbox: ~
-            api_driver: "drupal"
-            drupal:
-              drupal_root: ../../docroot
-            drush:
-              root: ../../docroot
+  extensions:
+      Behat\MinkExtension:
+        goutte: ~
+        selenium2:
+          wd_host: "http://localhost:4444/wd/hub"
+        javascript_session: selenium2
+      Drupal\DrupalExtension:
+        blackbox: ~
+        api_driver: "drupal"
+        drupal:
+          drupal_root: ../../docroot
+        drush:
+          root: ../../docroot
+
 
 imports:
   - behat.govcms.yml
