@@ -63,3 +63,9 @@ Feature: Password Policy
     And the "constraint_history" field should contain "8"
     And the "constraint_alphanumeric" field should contain "1"
     And the "constraint_complexity" field should contain ""
+
+  @api @javascript
+  Scenario: Check that the ASD password warning is hidden.
+    Given I am logged in as a user named "david_pwdpol" with the "administrator" role that doesn't force password change
+    When I go to "admin/config/people/password_policy/govcms"
+    Then the "edit-govcms-password-policy-ready" select list should be set to "1"
