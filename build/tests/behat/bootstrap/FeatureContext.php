@@ -117,6 +117,9 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     } catch (Exception $e) {
       throw new \Exception(sprintf("No select list with id '%s' found on the page '%s'.", $arg1, $this->getSession()->getCurrentUrl()));
     }
+    if (!$select) {
+      throw new \Exception(sprintf("No select list with id '%s' found on the page '%s'.", $arg1, $this->getSession()->getCurrentUrl()));
+    }
     if ($select->getValue() != $arg2) {
       throw new \Exception(sprintf("Select list with id '%s' was found but not set to value '%s'.", $arg1, $arg2));
     }
