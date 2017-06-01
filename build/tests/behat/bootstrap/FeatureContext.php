@@ -123,6 +123,81 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Checks that a checkbox in a row containing some text is ticked.
+   *
+   * @param string $rowMatch
+   *   The text to match in searching for a table row.
+   * @param string $idMatch
+   *   The pattern to use in searching for the checkbox (eg. enabled)
+   *
+   * @Then the checkbox named :rowMatch in table row having id :textMatch should be checked
+   */
+  public function theCheckboxNamedInTableRowHavingIdShouldBeChecked($rowMatch, $textMatch) {
+    try {
+      $row = $this->getSession()->getPage()->find('css', sprintf('table tr:contains("%s")', $textMatch));
+    } catch (Exception $e) {
+      throw new \Exception(sprintf("No table row with text '%s' found on the page '%s'.", $textMatch, $this->getSession()
+        ->getCurrentUrl()));
+    }
+
+    // There can be zero or more checkboxes. We take the first one (if any) that matches $textMatch.
+    $checkboxes = $row->findAll('css', "input[type=checkbox]");
+    $found = false;
+    foreach ($checkboxes as $checkbox) {
+      if (!((bool) preg_match('/' . preg_quote($rowMatch, '/') . '/ui', $checkbox->getAttribute('id')))) {
+        continue;
+      }
+      if (!$checkbox->isChecked()) {
+        throw new \Exception(sprintf("Checkbox with id '%s' in a row containing '%s' was found but was not checked.", $textMatch, $rowMatch));
+      }
+
+      $found = true;
+      break;
+    }
+
+    if (!$found) {
+      throw new \Exception(sprintf("Checkbox with id '%s' was not found in a row matching '%s'.", $idMatch, $rowMatch));
+    }
+  }
+
+  /**
+   * Checks that a checkbox in a row containing some text is NOT ticked.
+   *
+   * @param string $rowMatch
+   *   The text to match in searching for a table row.
+   * @param string $idMatch
+   *   The pattern to use in searching for the checkbox (eg. enabled)
+   *
+   * @Then the checkbox named :rowMatch in table row having id :textMatch should not be checked
+   */
+  public function theCheckboxNamedInTableRowHavingIdShouldBeNotChecked($rowMatch, $textMatch) {
+    try {
+      $row = $this->getSession()->getPage()->find('css', sprintf('table tr:contains("%s")', $textMatch));
+    } catch (Exception $e) {
+      throw new \Exception(sprintf("No table row with text '%s' found on the page '%s'.", $textMatch, $this->getSession()
+        ->getCurrentUrl()));
+    }
+
+    // There can be zero or more checkboxes. We take the first one (if any) that matches $textMatch.
+    $checkboxes = $row->findAll('css', "input[type=checkbox]");
+    $found = false;
+    foreach ($checkboxes as $checkbox) {
+      if (!((bool) preg_match('/' . preg_quote($rowMatch, '/') . '/ui', $checkbox->getAttribute('id')))) {
+        continue;
+      }
+      if ($checkbox->isChecked()) {
+        throw new \Exception(sprintf("Checkbox with id '%s' in a row containing '%s' was found but was checked.", $textMatch, $rowMatch));
+      }
+
+      $found = true;
+      break;
+    }
+
+    if (!$found) {
+      throw new \Exception(sprintf("Checkbox with id '%s' was not found in a row matching '%s'.", $idMatch, $rowMatch));
+    }
+  }
+  /**
    * Sets an id for the first iframe situated in the element specified by id.
    * Needed when wanting to fill in WYSIWYG editor situated in an iframe without identifier.
    *
