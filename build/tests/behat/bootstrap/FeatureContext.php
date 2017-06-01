@@ -57,6 +57,38 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Creates and authenticates a user with the given role via Drush.
+   *
+   * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role that doesn't force password change and the password "(?P<password>[^"]*)"$/
+   */
+  public function assertAuthenticatedByRoleWithPassword($username, $role, $password) {
+
+    $user = (object)array(
+      'name' => $username,
+      'pass' => $password,
+      'role' => $role,
+      'roles' => array($role),
+    );
+    $user->mail = "{$user->name}@example.com";
+    // Create a new user.
+    $this->userCreate($user);
+
+    // Find the user
+    $account = user_load_by_name($user->name);
+
+    // Remove the "Force password change on next login" record.
+    db_delete('password_policy_force_change')
+      ->condition('uid', $account->uid)
+      ->execute();
+    db_delete('password_policy_expiration')
+      ->condition('uid', $account->uid)
+      ->execute();
+
+    $this->login();
+
+  }
+
+  /**
    * @Then /^I logout$/
    */
   public function assertLogout() {
