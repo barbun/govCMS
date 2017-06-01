@@ -26,7 +26,7 @@ default:
       drush:
         root: ../../docroot
 
-# Separate profile for testing using the Drupal driver.
+# Separate profile for testing using the Drupal API driver.
 drupal:
   autoload:
       '': %paths.base%/bootstrap
