@@ -47,7 +47,7 @@ Feature:Meta tags
 
   @api @javascript
   Scenario: govCMS core successfully applies defaults
-    Given I am logged in as a user named "metatags_harry" with the "administrator" role that doesn't force password change
+    Given I am logged in as a user named "metatags_harry" with the "Site builder" role that doesn't force password change
     When I go to "/admin/config/search/metatags/config/global"
     Then the "edit-metatags-und-dctermscreator-item-value" field should contain "[site:name]"
     And the "edit-metatags-und-dctermsdate-item-value" field should contain "[current-date:custom:Y-m-d\TH:iP]"
