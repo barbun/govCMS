@@ -366,6 +366,14 @@
                strict="true"
                haltonerror="true"
                returnProperty="behatPass"/>
+        <!-- Run additional tests with another profile that uses Drupal API driver -->
+        <behat executable="${composer.bin}/behat"
+               config="${behat.config}"
+               verbose="true"
+               strict="true"
+               profile="drupal"
+               haltonerror="true"
+               returnProperty="behatPass"/>
     </target>
 
 </project>
