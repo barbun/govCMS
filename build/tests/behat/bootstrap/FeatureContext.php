@@ -231,4 +231,36 @@ JS;
     }
   }
 
+  /**
+   * Checks that specific checkbox is checked.
+   *
+   * @Then /^checkbox from xpath "(?P<field>[^"]*)" should be checked$/
+   */
+  public function checkboxFromXPathChecked($field, TraversableElement $container = null)
+  {
+    $checkbox = $this->getSession()->getPage()->find('xpath', $field);
+    if (!$checkbox) {
+      throw new \InvalidArgumentException(sprintf('No such checkbox %s', $checkbox));
+    }
+
+    if (!$checkbox->isChecked()) {
+      throw new \InvalidArgumentException(sprintf('Checkbox "%s" is not checked, but it should be.', $field));
+    }
+  }
+
+  /**
+   * Checks that specific checkbox is unchecked.
+   *
+   * @Then /^checkbox from xpath "(?P<field>[^"]*)" should not be checked$/
+   */
+  public function checkboxFromXPathNotChecked($field, TraversableElement $container = NULL) {
+    $checkbox = $this->getSession()->getPage()->find('xpath', $field);
+    if (!$checkbox) {
+      throw new \InvalidArgumentException(sprintf('No such checkbox %s', $checkbox));
+    }
+
+    if ($checkbox->isChecked()) {
+      throw new \InvalidArgumentException(sprintf('Checkbox "%s" is checked, but it should not be.', $field));
+    }
+  }
 }
