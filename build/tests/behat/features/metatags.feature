@@ -43,7 +43,6 @@ Feature:Meta tags
     And the response should contain "<meta name=\"description\" content=\"And when they battle in a puddle, its a tweetle beetle puddle battle\">"
     And the response should contain "<title>Fox in socks</title>"
     And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
-    And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
 
   @api @javascript
   Scenario: govCMS core successfully applies defaults
