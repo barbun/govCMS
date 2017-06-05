@@ -54,21 +54,29 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Creates and authenticates a user with the given role via Drush.
+   * Creates and authenticates a user with the given permissions.
    *
-   * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role that doesn't force password change and the password "(?P<password>[^"]*)"$/
+   * @param string password
+   *   The password to assign to the user being created.
+   * @param string permissions
+   *   A comma separated string containing permissions to be assigned to the user.
+   *
+   * @Given /^I am logged in with the password "(?P<password>[^"]*)" and the "(?P<role>[^"]*)" permissions$/
    */
-  public function assertAuthenticatedByRoleWithPassword($username, $role, $password) {
+  public function assertAuthenticatedWithPasswordAndPermission($password, $permissions) {
 
     $user = (object) array(
-      'name' => $username,
+      'name' => $this->getRandom()->name(8),
       'pass' => $password,
-      'role' => $role,
-      'roles' => array($role),
     );
     $user->mail = "{$user->name}@example.com";
     // Create a new user.
     $this->userCreate($user);
+
+    // Create and assign a temporary role with given permissions.
+    $permissions = explode(',', $permissions);
+    $rid = $this->getDriver()->roleCreate($permissions);
+    $this->getDriver()->userAddRole($user, $rid);
 
     // Find the user.
     $account = user_load_by_name($user->name);
