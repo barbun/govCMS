@@ -158,6 +158,28 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * @Then /^the radio button with id "([^"]*)" should be checked$/
+   */
+  public function RadioButtonWithIdShouldBeChecked($sId)
+  {
+    $elementByCss = $this->getSession()->getPage()->find('css', 'input[type="radio"]:checked#'.$sId);
+    if (!$elementByCss) {
+      throw new Exception('Radio button with id ' . $sId.' is not checked');
+    }
+  }
+
+  /**
+   * @Then /^the radio button with id "([^"]*)" should not be checked$/
+   */
+  public function RadioButtonWithIdShouldNotBeChecked($sId)
+  {
+    $elementByCss = $this->getSession()->getPage()->find('css', 'input[type="radio"]:not:checked#'.$sId);
+    if (!$elementByCss) {
+      throw new Exception('Radio button with id ' . $sId.' is not checked');
+    }
+  }
+
+  /**
    * Sets an id for the first iframe situated in the element specified by id.
    * Needed when wanting to fill in WYSIWYG editor situated in an iframe without identifier.
    *
