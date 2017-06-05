@@ -3,19 +3,14 @@ Feature: Password Policy
   In order to have a secure website the password policy should be configured securely.
 
   @api @javascript
-  Scenario: Check that the policies are available and enabled.
+  Scenario: Check that the policies are available, enabled and properly configured.
     Given I am logged in as a user named "amy_pwdpol" with the "administrator" role that doesn't force password change
     When I go to "/admin/config/people/password_policy/list"
     Then I should see "Australian Government ISM Policy (Strong)"
     And I should see "Australian Government ISM Policy (Weak)"
     And the checkbox named "enabled" in table row having id "Australian Government ISM Policy (Strong)" should be checked
     And the checkbox named "enabled" in table row having id "Australian Government ISM Policy (Weak)" should be checked
-
-  @api @javascript
-  Scenario: Check that the 'Strong' policy is configured as expected
-    Given I am logged in as a user named "barry_pwdpol" with the "administrator" role that doesn't force password change
-    When I go to "/admin/config/people/password_policy/list"
-    And I click "edit" in the "Australian Government ISM Policy (Strong)" row
+    When I click "edit" in the "Australian Government ISM Policy (Strong)" row
     Then the "authenticated user" checkbox should be checked
     And the "Content editor" checkbox should be checked
     And the "Content approver" checkbox should be checked
@@ -36,11 +31,6 @@ Feature: Password Policy
     And the "constraint_history" field should contain "8"
     And the "constraint_alphanumeric" field should contain "1"
     And the "constraint_complexity" field should contain "3"
-
-
-  @api @javascript
-  Scenario: Check that the 'Weak' policy is configured as expected
-    Given I am logged in as a user named "chris_pwdpol" with the "administrator" role that doesn't force password change
     When I go to "/admin/config/people/password_policy/list"
     And I click "edit" in the "Australian Government ISM Policy (Weak)" row
     Then the "authenticated user" checkbox should not be checked
