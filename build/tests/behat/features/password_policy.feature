@@ -82,7 +82,7 @@ Feature: Password Policy
     And the "edit-password-policy-force-change-roles-6" checkbox should not be checked
     And the "edit-password-policy-force-change-roles-7" checkbox should not be checked
 
-  @api @javascript @wip
+  @api @javascript @drupal
   Scenario: Check the password policies are actually applied
     Given I am logged in as a user named "fred_pwdpol" with the "administrator" role that doesn't force password change and the password "abc123^*"
     When I visit the user edit page for "fred_pwdpol"
@@ -95,4 +95,4 @@ Feature: Password Policy
     And I fill in "edit-pass-pass1" with "abc123^*foobarBash"
     And I fill in "edit-pass-pass2" with "abc123^*foobarBash"
     And I press "Save"
-    Then I should see the error message containing "Your pashword has not met the following requirement(s)"
+    Then I should see the success message containing "The changes have been saved"
