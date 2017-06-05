@@ -62,7 +62,7 @@ Feature: Password Policy
 
   @api @javascript @drupal
   Scenario: Check that password changes are forced for first-time logins and not forced for any of the roles.
-    Given I am logged in as a user with the "administer password policies" permission and don't need a password change
+    Given I am logged in as a user with the "force password change" permission and don't need a password change
     When I go to "admin/config/people/password_policy/password_change"
     Then the "edit-password-policy-new-login-change" checkbox should be checked
     And the "edit-password-policy-force-change-roles-2" checkbox should not be checked
@@ -74,7 +74,7 @@ Feature: Password Policy
 
   @api @javascript @drupal
   Scenario: Check the password policies are actually applied
-    Given I am logged in with the password "abc123^*" and the "administer password policies" permissions
+    Given I am logged in with the password "abc123^*" and the "change own password" permissions
     When I go to "/user"
     And I click "Edit"
     And I fill in "edit-current-pass" with "abc123^*"
