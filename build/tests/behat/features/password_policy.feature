@@ -2,9 +2,9 @@ Feature: Password Policy
 
   In order to have a secure website the password policy should be configured securely.
 
-  @api @javascript
+  @api @javascript @drupal
   Scenario: Check that the policies are available, enabled and properly configured.
-    Given I am logged in as a user named "amy_pwdpol" with the "administrator" role that doesn't force password change
+    Given I am logged in as a user with the "administer password policies" permission and don't need a password change
     When I go to "/admin/config/people/password_policy/list"
     Then I should see "Australian Government ISM Policy (Strong)"
     And I should see "Australian Government ISM Policy (Weak)"
