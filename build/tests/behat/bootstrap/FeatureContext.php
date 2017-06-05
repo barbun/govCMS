@@ -2,8 +2,6 @@
 
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Definition\Call\Given;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
@@ -11,8 +9,7 @@ use Behat\Behat\Hook\Scope\AfterStepScope;
 /**
  * Defines application features from the specific context.
  */
-class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
-{
+class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext {
 
   /**
    * Initializes context.
@@ -31,7 +28,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedByRole($username, $role) {
 
-    $user = (object)array(
+    $user = (object) array(
       'name' => $username,
       'pass' => $this->getRandom()->name(16),
       'role' => $role,
@@ -41,7 +38,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     // Create a new user.
     $this->userCreate($user);
 
-    // Find the user
+    // Find the user.
     $account = user_load_by_name($user->name);
 
     // Remove the "Force password change on next login" record.
@@ -76,7 +73,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $this->getDriver()->userAddRole($user, $rid);
     $this->roles[] = $rid;
 
-    // Find the user
+    // Find the user.
     $account = user_load_by_name($user->name);
 
     // Remove the "Force password change on next login" record.
@@ -92,6 +89,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Log out a user.
+   *
    * @Then /^I logout$/
    */
   public function assertLogout() {
@@ -99,11 +98,13 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Check that a user account with a particular name and role exists.
+   *
    * @Given /^a user named "(?P<username>[^"]*)" with role "(?P<role>[^"]*)" exists$/
    */
   public function assertAccountCreated($username, $role) {
     if (!user_load_by_name($username)) {
-      $user = (object)array(
+      $user = (object) array(
         'name' => $username,
         'pass' => $this->getRandom()->name(16),
         'role' => $role,
@@ -116,18 +117,23 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Access a user edit page.
+   *
    * @Given /^I visit the user edit page for "(?P<username>[^"]*)"$/
    */
   public function iVisitTheUserEditPageFor($username) {
     $account = user_load_by_name($username);
     if (!empty($account->uid)) {
       $this->getSession()->visit($this->locatePath('/user/' . $account->uid . '/edit'));
-    } else {
+    }
+    else {
       throw new \Exception('No such user');
     }
   }
 
   /**
+   * Check that the roles for a user can be modified.
+   *
    * @Then /^I should be able to change the "(?P<role_name>[^"]*)" role$/
    */
   public function iShouldBeAbleToChangeTheRole($role_name) {
@@ -136,6 +142,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Check that the roles for a user may not be modified.
+   *
    * @Then /^I should not be able to change the "(?P<role_name>[^"]*)" role$/
    */
   public function iShouldNotBeAbleToChangeTheRole($role_name) {
@@ -144,12 +152,18 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * @Then the :arg1 select list should be set to :arg2;
+   * Check that a particular option on a select list is selected.
+   *
+   * @Then the :arg1 select list should be set to :arg2
    */
   public function theSelectListShouldBeSetTo($arg1, $arg2) {
     try {
       $select = $this->getSession()->getPage()->find('css', '#' . $arg1);
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
+      throw new \Exception(sprintf("No select list with id '%s' found on the page '%s'.", $arg1, $this->getSession()->getCurrentUrl()));
+    }
+    if (!$select) {
       throw new \Exception(sprintf("No select list with id '%s' found on the page '%s'.", $arg1, $this->getSession()->getCurrentUrl()));
     }
     if ($select->getValue() != $arg2) {
@@ -159,7 +173,9 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
 
   /**
    * Sets an id for the first iframe situated in the element specified by id.
-   * Needed when wanting to fill in WYSIWYG editor situated in an iframe without identifier.
+   *
+   * Needed when wanting to fill in WYSIWYG editor situated in an iframe without
+   * identifier.
    *
    * @Given /^the iframe in element "(?P<element>[^"]*)" has id "(?P<id>[^"]*)"$/
    */
@@ -175,7 +191,7 @@ JS;
     try {
       $this->getSession()->executeScript($function);
     }
-    catch(Exception $e) {
+    catch (Exception $e) {
       throw new \Exception(sprintf('No iframe found in the element "%s" on the page "%s".', $element_id, $this->getSession()->getCurrentUrl()));
     }
   }
@@ -197,6 +213,8 @@ JS;
   }
 
   /**
+   * Test whether a user account can be blocked.
+   *
    * @Given /^I should be able to block the user$/
    */
   public function iShouldBeAbleToBlockTheUser() {
@@ -204,23 +222,29 @@ JS;
   }
 
   /**
+   * Confirm that a user account may not be blocked.
+   *
    * @Given /^I should not be able to block the user$/
    */
   public function iShouldNotBeAbleToBlockTheUser() {
     $this->assertSession()->elementNotExists('css', 'input[name=status]');
   }
 
-
   /**
+   * Test visiting an account cancel page.
+   *
    * @Given /^I visit the user cancel page for "(?P<username>[^"]*)"$/
    */
   public function iShouldNotBeAbleToCancelTheAccount($username) {
     $account = user_load_by_name($username);
-    return new Given('I visit "/user/' + $account->uid + '/cancel"', function () {
-    });
+    return new Given('I visit "/user/' + $account->uid + '/cancel"',
+      function () {}
+      );
   }
 
   /**
+   * Test that an account can be cancelled.
+   *
    * @Then /^I should be able to cancel the account "(?P<username>[^"]*)"$/
    */
   public function iShouldBeAbleToCancelTheAccount($username) {
@@ -232,10 +256,11 @@ JS;
   }
 
   /**
+   * Actions to take after a step has run.
+   *
    * @AfterStep
    */
-  public function takeScreenShotAfterFailedStep(afterStepScope $scope)
-  {
+  public function takeScreenShotAfterFailedStep(afterStepScope $scope) {
     if (99 === $scope->getTestResult()->getResultCode()) {
       $driver = $this->getSession()->getDriver();
       if (!($driver instanceof Selenium2Driver)) {
@@ -250,6 +275,7 @@ JS;
    * Selects a user in the VBO list.
    *
    * @param string $username
+   *   The username to select.
    *
    * @throws \InvalidArgumentException
    *   When no such username exists or the checkbox can't be found.
@@ -258,10 +284,12 @@ JS;
     if ($account = user_load_by_name($username)) {
       if ($checkbox = $this->getSession()->getPage()->find('css', 'input[value=' . $account->uid . ']')) {
         $checkbox->check();
-      } else {
+      }
+      else {
         throw new \InvalidArgumentException(sprintf('No such checkbox %s', $username));
       }
-    } else {
+    }
+    else {
       throw new \InvalidArgumentException(sprintf('No such username %s', $username));
     }
   }
