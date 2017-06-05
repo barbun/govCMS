@@ -144,9 +144,9 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * @Then the :arg1 select list should be set to :arg2;
+   * @Then the :arg1 select list should be set to :arg2
    */
-  public function theSelectListShouldBeSetTo($arg1, $arg2) {
+  public function theSelectListShouldBeSetTo2($arg1, $arg2) {
     try {
       $select = $this->getSession()->getPage()->find('css', '#' . $arg1);
     } catch (Exception $e) {
