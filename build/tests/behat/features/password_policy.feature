@@ -54,13 +54,13 @@ Feature: Password Policy
     And the "constraint_alphanumeric" field should contain "1"
     And the "constraint_complexity" field should contain ""
 
-  @api @javascript
+  @api @javascript @drupal
   Scenario: Check that the ASD password warning is hidden.
     Given I am logged in as a user with the "administer password policies" permission and don't need a password change
     When I go to "admin/config/people/password_policy/govcms"
     Then the "edit-govcms-password-policy-ready" select list should be set to "1"
 
-  @api @javascript
+  @api @javascript @drupal
   Scenario: Check that password changes are forced for first-time logins and not forced for any of the roles.
     Given I am logged in as a user with the "administer password policies" permission and don't need a password change
     When I go to "admin/config/people/password_policy/password_change"
