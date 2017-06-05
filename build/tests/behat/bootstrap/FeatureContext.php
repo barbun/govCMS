@@ -80,6 +80,9 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     db_delete('password_policy_expiration')
       ->condition('uid', $account->uid)
       ->execute();
+    db_delete('password_policy_history')
+      ->condition('uid', $account->uid)
+      ->execute();
 
     $this->login();
 
