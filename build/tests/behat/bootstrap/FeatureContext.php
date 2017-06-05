@@ -57,6 +57,41 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Creates and authenticates a user with the given permission.
+   *
+   * @Given /^I am logged in as a user with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
+   */
+  public function assertAuthenticatedByPermission($permissions) {
+    // Create user.
+    $user = (object) array(
+      'name' => $this->getRandom()->name(8),
+      'pass' => $this->getRandom()->name(16),
+    );
+    $user->mail = "{$user->name}@example.com";
+    $this->userCreate($user);
+
+    // Create and assign a temporary role with given permissions.
+    $permissions = explode(',', $permissions);
+    $rid = $this->getDriver()->roleCreate($permissions);
+    $this->getDriver()->userAddRole($user, $rid);
+    $this->roles[] = $rid;
+
+    // Find the user
+    $account = user_load_by_name($user->name);
+
+    // Remove the "Force password change on next login" record.
+    db_delete('password_policy_force_change')
+      ->condition('uid', $account->uid)
+      ->execute();
+    db_delete('password_policy_expiration')
+      ->condition('uid', $account->uid)
+      ->execute();
+
+    // Login.
+    $this->login();
+  }
+
+  /**
    * @Then /^I logout$/
    */
   public function assertLogout() {

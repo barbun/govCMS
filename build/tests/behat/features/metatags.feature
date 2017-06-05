@@ -43,10 +43,9 @@ Feature:Meta tags
     And the response should contain "<meta name=\"description\" content=\"And when they battle in a puddle, its a tweetle beetle puddle battle\">"
     And the response should contain "<title>Fox in socks</title>"
     And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
-    And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
 
   @api @javascript
-  Scenario: govCMS core successfully applies defaults
+  Scenario: govCMS core successfully applies default meta-tags configuration.
     Given I am logged in as a user named "metatags_harry" with the "Site builder" role that doesn't force password change
     When I go to "/admin/config/search/metatags/config/global"
     Then the "edit-metatags-und-dctermscreator-item-value" field should contain "[site:name]"
