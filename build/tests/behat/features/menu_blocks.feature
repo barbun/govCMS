@@ -4,9 +4,9 @@ Feature:Menu blocks
   When I navigate to the list of the blocks
   Then I can see the options for 3 default menu blocks
 
-  @api @javascript
+  @api @javascript @drupal
   Scenario: 3 default govCMS menu blocks appear in the list of menu blocks.
-    Given I am logged in as a user named "menu_amy" with the "Site editor" role that doesn't force password change
+    Given I am logged in as a user with the "administer blocks" permission and don't need a password change
     When I go to "/admin/structure/block"
     Then I should see "Main menu (levels 2-3)"
     And I should see "Main Menu (Expanded)"
