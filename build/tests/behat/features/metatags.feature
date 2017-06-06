@@ -3,6 +3,8 @@ Feature:Meta tags
   So content contains relevant SEO
   As an editor
   I can create content and provide metatags
+  And default govCMS metatags are set
+  And changing the sitename/slogan affects default govCMS metatags.
 
   @api @javascript
   Scenario: Meta-tags are auto set
@@ -41,3 +43,39 @@ Feature:Meta tags
     And the response should contain "<meta name=\"description\" content=\"And when they battle in a puddle, its a tweetle beetle puddle battle\">"
     And the response should contain "<title>Fox in socks</title>"
     And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
+
+  @api @javascript @drupal
+  Scenario: govCMS core successfully applies default meta-tags configuration.
+    Given I am logged in as a user with the "administer meta tags" permission and don't need a password change
+    When I go to "/admin/config/search/metatags/config/global"
+    Then the "edit-metatags-und-dctermscreator-item-value" field should contain "[site:name]"
+    And the "edit-metatags-und-dctermsdate-item-value" field should contain "[current-date:custom:Y-m-d\TH:iP]"
+    And the "edit-metatags-und-dctermsdescription-item-value" field should contain "[site:slogan]"
+    And the "edit-metatags-und-dctermslanguage-item-value" field should contain "en"
+    And the "edit-metatags-und-dctermspublisher-item-value" field should contain "[site:name]"
+    And the "edit-metatags-und-dctermssubject-item-value" field should contain "[site:slogan]"
+    And the "edit-metatags-und-dctermstype-item-value" field should contain "other"
+    And the "edit-metatags-und-generator-value" field should contain "Drupal 7 (http://drupal.org) + govCMS (http://govcms.gov.au)"
+    When I go to "/admin/config/search/metatags/config/node"
+    Then the "edit-metatags-und-dctermslanguage-item-value" field should contain "en"
+
+  @api @javascript @drupal
+  Scenario: Meta-tags are modified when the site name and/or slogan change
+    Given I am logged in as a user with the "administer meta tags,administer site configuration" permission and don't need a password change
+    When I go to "/admin/config/system/site-information"
+    And I fill in "My Sitename" for "Site name"
+    And I fill in "Everything is Awesome!!!" for "Slogan"
+    And press "Save configuration"
+    Given the cache has been cleared
+    When I go to homepage
+    Then the response should contain "<meta name=\"dcterms.creator\" content=\"My Sitename\">"
+    And the response should contain "<meta name=\"dcterms.publisher\" content=\"My Sitename\">"
+    And the response should contain "<meta name=\"dcterms.subject\" content=\"Everything is Awesome!!!\">"
+    When I go to "/admin/config/system/site-information"
+    And I fill in "govCMS" for "Site name"
+    And I fill in "" for "Slogan"
+    And press "Save configuration"
+    Given the cache has been cleared
+    When I go to homepage
+    Then the response should contain "<meta name=\"dcterms.creator\" content=\"govCMS\">"
+    And the response should not contain "<meta name=\"dcterms.subject\""
