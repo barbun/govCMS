@@ -1,7 +1,7 @@
 Feature: Permissions
   Check that permissions are as expected.
 
-  @api @role @wip
+  @api @role
   Scenario: Check anonymous user permissions
     Given I am logged in as a user named "amy_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
@@ -130,7 +130,7 @@ Feature: Permissions
     And the "Moderate all content from Needs Review to Published" checkbox should not be checked
     And the "Administer XML sitemap settings." checkbox should not be checked
 
-  @api @role @wip
+  @api @role
   Scenario: Check authenticated user permissions
     Given I am logged in as a user named "betty_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
@@ -259,7 +259,7 @@ Feature: Permissions
     And the "Moderate all content from Needs Review to Published" checkbox should not be checked
     And the "Administer XML sitemap settings." checkbox should not be checked
 
-  @api @role @wip
+  @api @role
   Scenario: Check Content editor user permissions
     Given I am logged in as a user named "christine_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
@@ -375,7 +375,7 @@ Feature: Permissions
     And the "Moderate all content from Needs Review to Published" checkbox should not be checked
     And the "Administer XML sitemap settings." checkbox should not be checked
 
-  @api @role @wip
+  @api @role
   Scenario: Check Content editor user permissions
     Given I am logged in as a user named "daniel_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
@@ -491,7 +491,7 @@ Feature: Permissions
     And the "Moderate all content from Needs Review to Published" checkbox should be checked
     And the "Administer XML sitemap settings." checkbox should not be checked
 
-  @api @role @wip
+  @api @role
   Scenario: Check Content editor user permissions
     Given I am logged in as a user named "eric_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
@@ -607,7 +607,7 @@ Feature: Permissions
     And the "Moderate all content from Needs Review to Published" checkbox should not be checked
     And the "Administer XML sitemap settings." checkbox should be checked
 
-  @api @role @wip
+  @api @role
   Scenario: Check Content editor user permissions
     Given I am logged in as a user named "fred_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
@@ -723,7 +723,7 @@ Feature: Permissions
     And the "Moderate all content from Needs Review to Published" checkbox should be checked
     And the "Administer XML sitemap settings." checkbox should be checked
 
-  @api @role @wip
+  @api @role
   Scenario: Check Content editor user permissions
     Given I am logged in as a user named "gerry_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
