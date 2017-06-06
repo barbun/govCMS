@@ -2,6 +2,8 @@
 
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Definition\Call\Given;
+use Behat\Gherkin\Node\PyStringNode;
+use Behat\Gherkin\Node\TableNode;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
@@ -27,7 +29,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role that doesn't force password change$/
    */
   public function assertAuthenticatedByRole($username, $role) {
-
+    // Create user.
     $user = (object) array(
       'name' => $username,
       'pass' => $this->getRandom()->name(16),
@@ -35,7 +37,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       'roles' => array($role),
     );
     $user->mail = "{$user->name}@example.com";
-    // Create a new user.
     $this->userCreate($user);
 
     // Find the user.
@@ -49,8 +50,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       ->condition('uid', $account->uid)
       ->execute();
 
+    // Login.
     $this->login();
-
   }
 
   /**
@@ -117,7 +118,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Access a user edit page.
+   * Access the user edit page.
    *
    * @Given /^I visit the user edit page for "(?P<username>[^"]*)"$/
    */
@@ -161,9 +162,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       $select = $this->getSession()->getPage()->find('css', '#' . $arg1);
     }
     catch (Exception $e) {
-      throw new \Exception(sprintf("No select list with id '%s' found on the page '%s'.", $arg1, $this->getSession()->getCurrentUrl()));
-    }
-    if (!$select) {
       throw new \Exception(sprintf("No select list with id '%s' found on the page '%s'.", $arg1, $this->getSession()->getCurrentUrl()));
     }
     if ($select->getValue() != $arg2) {
