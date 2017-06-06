@@ -330,7 +330,7 @@ Feature: Permissions
     And the "Assign Site builder role" checkbox should not be checked
     And the "Assign Site editor role" checkbox should not be checked
     And the "Administer scheduler" checkbox should not be checked
-    And the "Schedule content publication" checkbox should be checked
+    And the "Schedule content publication" checkbox should not be checked
     And the "Override default scheduler time" checkbox should be checked
     And the "Administer search" checkbox should not be checked
     And the "Administer Search API" checkbox should not be checked
@@ -446,7 +446,7 @@ Feature: Permissions
     And the "Assign Site builder role" checkbox should not be checked
     And the "Assign Site editor role" checkbox should not be checked
     And the "Administer scheduler" checkbox should not be checked
-    And the "Schedule content publication" checkbox should be checked
+    And the "Schedule content publication" checkbox should not be checked
     And the "Override default scheduler time" checkbox should be checked
     And the "Administer search" checkbox should not be checked
     And the "Administer Search API" checkbox should not be checked
