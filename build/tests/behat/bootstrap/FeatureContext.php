@@ -235,9 +235,7 @@ JS;
    */
   public function iShouldNotBeAbleToCancelTheAccount($username) {
     $account = user_load_by_name($username);
-    return new Given('I visit "/user/' + $account->uid + '/cancel"',
-      function () {}
-      );
+    return new Given('I visit "/user/' . $account->uid . '/cancel"', function () {});
   }
 
   /**
