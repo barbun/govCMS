@@ -208,9 +208,9 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @param string $textMatch
    *   The pattern to use in searching for the checkbox (eg. enabled)
    *
-   * @Then the checkbox named :rowMatch in table row having id :textMatch should be checked
+   * @Then the checkbox named :rowMatch in table row with text :textMatch should be checked
    */
-  public function theCheckboxNamedInTableRowHavingIdShouldBeChecked($rowMatch, $textMatch) {
+  public function theCheckboxNamedInTableRowWithTextShouldBeChecked($rowMatch, $textMatch) {
     try {
       $row = $this->getSession()->getPage()->find('css', sprintf('table tr:contains("%s")', $textMatch));
     }
@@ -248,9 +248,9 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @param string $textMatch
    *   The pattern to use in searching for the checkbox (eg. enabled)
    *
-   * @Then the checkbox named :rowMatch in table row having id :textMatch should not be checked
+   * @Then the checkbox named :rowMatch in table row with text :textMatch should not be checked
    */
-  public function theCheckboxNamedInTableRowHavingIdShouldBeNotChecked($rowMatch, $textMatch) {
+  public function theCheckboxNamedInTableRowWithTextShouldBeNotChecked($rowMatch, $textMatch) {
     try {
       $row = $this->getSession()->getPage()->find('css', sprintf('table tr:contains("%s")', $textMatch));
     }

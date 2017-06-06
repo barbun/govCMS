@@ -8,8 +8,8 @@ Feature: Password Policy
     When I go to "/admin/config/people/password_policy/list"
     Then I should see "Australian Government ISM Policy (Strong)"
     And I should see "Australian Government ISM Policy (Weak)"
-    And the checkbox named "enabled" in table row having id "Australian Government ISM Policy (Strong)" should be checked
-    And the checkbox named "enabled" in table row having id "Australian Government ISM Policy (Weak)" should be checked
+    And the checkbox named "enabled" in table row with text "Australian Government ISM Policy (Strong)" should be checked
+    And the checkbox named "enabled" in table row with text "Australian Government ISM Policy (Weak)" should be checked
     When I click "edit" in the "Australian Government ISM Policy (Strong)" row
     Then the "authenticated user" checkbox should be checked
     And the "Content editor" checkbox should be checked
