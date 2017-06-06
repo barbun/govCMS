@@ -61,7 +61,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    *
    * @Given /^I am logged in as a user with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
    */
-  public function assertAuthenticatedByPermission($permissions) {
+  public function assertAuthenticatedWithPermission($permissions) {
     // Create user.
     $user = (object) array(
       'name' => $this->getRandom()->name(8),
