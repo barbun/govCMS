@@ -376,7 +376,7 @@ Feature: Permissions
     And the "Administer XML sitemap settings." checkbox should not be checked
 
   @api @role
-  Scenario: Check Content editor user permissions
+  Scenario: Check Content approver user permissions
     Given I am logged in as a user named "daniel_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Content approver" row
@@ -492,7 +492,7 @@ Feature: Permissions
     And the "Administer XML sitemap settings." checkbox should not be checked
 
   @api @role
-  Scenario: Check Content editor user permissions
+  Scenario: Check Site Builder user permissions
     Given I am logged in as a user named "eric_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Site builder" row
@@ -608,7 +608,7 @@ Feature: Permissions
     And the "Administer XML sitemap settings." checkbox should be checked
 
   @api @role
-  Scenario: Check Content editor user permissions
+  Scenario: Check Site editor user permissions
     Given I am logged in as a user named "fred_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Site editor" row
@@ -678,7 +678,7 @@ Feature: Permissions
     And the "Assign Site builder role" checkbox should be checked
     And the "Assign Site editor role" checkbox should be checked
     And the "Administer scheduler" checkbox should be checked
-    And the "Schedule content publication" checkbox should be checked
+    And the "Schedule content publication" checkbox should not be checked
     And the "Override default scheduler time" checkbox should be checked
     And the "Administer search" checkbox should be checked
     And the "Administer Search API" checkbox should be checked
@@ -724,7 +724,7 @@ Feature: Permissions
     And the "Administer XML sitemap settings." checkbox should be checked
 
   @api @role
-  Scenario: Check Content editor user permissions
+  Scenario: Check Administrator user permissions
     Given I am logged in as a user named "gerry_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "administrator" row
