@@ -144,7 +144,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * @Then the :arg1 select list should be set to :arg2
+   * @Then the :arg1 select list should be set to :arg2;
    */
   public function theSelectListShouldBeSetTo($arg1, $arg2) {
     try {
