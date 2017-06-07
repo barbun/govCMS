@@ -4,14 +4,34 @@ Feature:Social Media Links
   I want to have a configurable block provided
   So that minimal configuration for social media links is required out of the box
 
-  @api @javascript @wip
+  @api @javascript @drupal @wip
   Scenario: The social media links block should be available OOTB
-    Given I am logged in as "John" with the "Site Editor" role that doesn't force a password change
+    Given I am logged in as a user with the "administer blocks" permission and don't need a password change
     When I visit /admin/structure/block
-    Then I can see a "Social Links" block available
-    And when I edit that block
-    And I fill in the values (add
-  {test value} to one of the links?)
+    Then the "edit-blocks-govcms-social-links-services-region" select list should be set to "sidebar_second"
+    When I follow "edit-blocks-govcms-social-links-services-configure"
+    Then the "Block title" field should contain ""
+    And the "Facebook URL" field should contain "https://www.facebook.com/"
+    And the "Twitter URL" field should contain "https://twitter.com/"
+    And the "Youtube URL" field should contain "https://www.youtube.com/user/"
+    And the "Vimeo URL" field should contain "http://www.vimeo.com"
+    And the "Flickr URL" field should contain "https://www.flickr.com/"
+    And the "Instagram URL" field should contain "https://www.instagram.com/"
+    And the "Linkedin URL" field should contain "https://www.linkedin.com/"
+    And the "RSS Feed URL" field should contain "rss.xml"
+    And the "Email URL" field should contain "contact"
+    When for "Email URL" I enter "https://nowhere.net"
+    And I click "Save block"
+    Then I should see "The block configuration has been saved."
+    When I am on the homepage
+    Then I should see the "Connect with us" block
+    And I follow "edit-blocks-govcms-social-links-services-configure"
+    Then the "Email URL" field should contain "https://nowhere.net"
+    When for "Email URL" I enter "https://nowhere.net"
+    And I click "Save block"
+    When I click "Content types"
+    Then the
+    And I fill in the values (add {test value} to one of the links?)
     And I hit "Save block"
     Then I see "The block configuration has been saved."
 
