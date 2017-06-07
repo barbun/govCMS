@@ -24,6 +24,30 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Clean the password state tables for a user.
+   *
+   * Remove any password history, expiration of flag forcing a password change
+   * when they next log in.
+   *
+   * @param int $uid
+   *   The user's uid.
+   */
+  private function cleanPasswordState($uid) {
+    $tables = [
+      'password_policy_force_change',
+      'password_policy_expiration',
+      'password_policy_history',
+    ];
+
+    foreach ($tables as $table) {
+      db_delete($table)
+        ->condition('uid', $uid)
+        ->execute();
+
+    }
+  }
+
+  /**
    * Creates and authenticates a user with the given role via Drush.
    *
    * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role that doesn't force password change$/
@@ -43,12 +67,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $account = user_load_by_name($user->name);
 
     // Remove the "Force password change on next login" record.
-    db_delete('password_policy_force_change')
-      ->condition('uid', $account->uid)
-      ->execute();
-    db_delete('password_policy_expiration')
-      ->condition('uid', $account->uid)
-      ->execute();
+    $this->cleanPasswordState($account->uid);
 
     // Login.
     $this->login();
@@ -83,15 +102,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $account = user_load_by_name($user->name);
 
     // Remove the "Force password change on next login" record.
-    db_delete('password_policy_force_change')
-      ->condition('uid', $account->uid)
-      ->execute();
-    db_delete('password_policy_expiration')
-      ->condition('uid', $account->uid)
-      ->execute();
-    db_delete('password_policy_history')
-      ->condition('uid', $account->uid)
-      ->execute();
+    $this->cleanPasswordState($account->uid);
 
     $this->login();
 
@@ -121,12 +132,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $account = user_load_by_name($user->name);
 
     // Remove the "Force password change on next login" record.
-    db_delete('password_policy_force_change')
-      ->condition('uid', $account->uid)
-      ->execute();
-    db_delete('password_policy_expiration')
-      ->condition('uid', $account->uid)
-      ->execute();
+    $this->cleanPasswordState($account->uid);
 
     // Login.
     $this->login();
