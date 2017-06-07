@@ -296,8 +296,7 @@ JS;
    *
    * @Then /^checkbox from xpath "(?P<field>[^"]*)" should be checked$/
    */
-  public function checkboxFromXPathChecked($field, TraversableElement $container = null)
-  {
+  public function checkboxFromXPathChecked($field, TraversableElement $container = NULL) {
     $checkbox = $this->getSession()->getPage()->find('xpath', $field);
     if (!$checkbox) {
       throw new \InvalidArgumentException(sprintf('No such checkbox %s', $checkbox));
@@ -323,4 +322,5 @@ JS;
       throw new \InvalidArgumentException(sprintf('Checkbox "%s" is checked, but it should not be.', $field));
     }
   }
+
 }
