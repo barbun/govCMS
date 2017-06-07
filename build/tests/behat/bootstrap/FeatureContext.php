@@ -220,12 +220,12 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @Then the checkbox named :rowMatch in table row with text :textMatch should be checked
    */
   public function theCheckboxNamedInTableRowWithTextShouldBeChecked($rowMatch, $textMatch) {
-    try {
-      $row = $this->getSession()->getPage()->find('css', sprintf('table tr:contains("%s")', $textMatch));
-    }
-    catch (Exception $e) {
-      throw new \Exception(sprintf("No table row with text '%s' found on the page '%s'.", $textMatch, $this->getSession()
-        ->getCurrentUrl()));
+    // Locate the table row containing $rowMatch.
+    $row = $this->getSession()->getPage()->find('css', sprintf('table tr:contains("%s")', $textMatch));
+    if (!$row) {
+      throw new \Exception(sprintf("No table row with text '%s' found on the page '%s'.",
+        $textMatch,
+        $this->getSession()->getCurrentUrl()));
     }
 
     // There can be zero or more checkboxes. We take the first one (if any) that
