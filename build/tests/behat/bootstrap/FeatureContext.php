@@ -203,6 +203,15 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Checks that a checkbox in a row containing some text is ticked.
    *
+   * Lets you provide a piece of text to use in locating a table row and another
+   * piece of text to locate a checkbox within that row, then test whether the
+   * checkbox is ticked. The use of text avoids reliance on a table having
+   * particular content and ordering of that content and makes the test much
+   * more readable:
+   *
+   * "And the checkbox named "enabled" in table row with text "Australian
+   * Government ISM Policy (Strong)" should be checked".
+   *
    * @param string $rowMatch
    *   The text to match in searching for a table row.
    * @param string $textMatch
