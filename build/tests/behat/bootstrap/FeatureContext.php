@@ -76,10 +76,10 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Creates and authenticates a user with the given permissions.
    *
-   * @param string password
+   * @param string $password
    *   The password to assign to the user being created.
-   * @param string permissions
-   *   A comma separated string containing permissions to be assigned to the user.
+   * @param string $permissions
+   *   A comma separated string containing permissions to be assigned.
    *
    * @Given /^I am logged in with the password "(?P<password>[^"]*)" and the "(?P<role>[^"]*)" permissions$/
    */
@@ -247,7 +247,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     }
 
     // There can be zero or more checkboxes in the table. We take the first one
-    //(if any) that matches $textMatch.
+    // (if any) that matches $textMatch.
     $checkboxes = $row->findAll('css', "input[type=checkbox]");
     $found = FALSE;
     foreach ($checkboxes as $checkbox) {
