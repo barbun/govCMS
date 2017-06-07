@@ -228,11 +228,12 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
         $this->getSession()->getCurrentUrl()));
     }
 
-    // There can be zero or more checkboxes. We take the first one (if any) that
-    // matches $textMatch.
+    // There can be zero or more checkboxes in the table. We take the first one
+    //(if any) that matches $textMatch.
     $checkboxes = $row->findAll('css', "input[type=checkbox]");
     $found = FALSE;
     foreach ($checkboxes as $checkbox) {
+      // Does this checkbox's ID match?
       if (!((bool) preg_match('/' . preg_quote($rowMatch, '/') . '/ui', $checkbox->getAttribute('id')))) {
         continue;
       }
@@ -244,6 +245,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       break;
     }
 
+    // No matching checkbox found? Complain.
     if (!$found) {
       throw new \Exception(sprintf("Checkbox with id '%s' was not found in a row matching '%s'.", $textMatch, $rowMatch));
     }
