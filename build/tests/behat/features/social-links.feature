@@ -1,6 +1,6 @@
 Feature:Social Media Links
 
-  As a site builder
+  As a user able to administer blocks
   I want to have a configurable block provided
   So that minimal configuration for social media links is required out of the box
 
