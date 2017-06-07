@@ -25,6 +25,15 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Set default browser window size.
+   *
+   * @BeforeScenario @drupal
+   */
+  public function resizeWindow() {
+    $this->getSession()->getDriver()->maximizeWindow();
+  }
+
+  /**
    * Creates and authenticates a user with the given role via Drush.
    *
    * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role that doesn't force password change$/
@@ -266,4 +275,27 @@ JS;
     }
   }
 
+  /**
+   * Asserts that an element, specified by CSS selector, exists.
+   *
+   * @param string $selector
+   *   The CSS selector to search for.
+   *
+   * @Then the element :selector should exist
+   */
+  public function theElementShouldExist($selector) {
+    $this->assertSession()->elementExists('css', $selector);
+  }
+
+  /**
+   * Asserts that an element, specified by CSS selector, does not exist.
+   *
+   * @param string $selector
+   *   The CSS selector to search for.
+   *
+   * @Then the element :selector should not exist
+   */
+  public function theElementShouldNotExist($selector) {
+    $this->assertSession()->elementNotExists('css', $selector);
+  }
 }
