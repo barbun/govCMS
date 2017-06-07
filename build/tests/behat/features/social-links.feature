@@ -4,10 +4,10 @@ Feature:Social Media Links
   I want to have a configurable block provided
   So that minimal configuration for social media links is required out of the box
 
-  @api @javascript @drupal @wip
+  @api @javascript @drupal
   Scenario: The social media links block should be available OOTB
     Given I am logged in as a user with the "administer blocks" permission and don't need a password change
-    When I visit /admin/structure/block
+    When I go to "/admin/structure/block"
     Then the "edit-blocks-govcms-social-links-services-region" select list should be set to "sidebar_second"
     When I follow "edit-blocks-govcms-social-links-services-configure"
     Then the "Block title" field should contain ""
@@ -20,33 +20,13 @@ Feature:Social Media Links
     And the "Linkedin URL" field should contain "https://www.linkedin.com/"
     And the "RSS Feed URL" field should contain "rss.xml"
     And the "Email URL" field should contain "contact"
-    When for "Email URL" I enter "https://nowhere.net"
-    And I click "Save block"
+    When for "Linkedin URL" I enter "http://example.com/nowhereinparticular"
+    And I press "Save block"
     Then I should see "The block configuration has been saved."
     When I am on the homepage
-    Then I should see the "Connect with us" block
-    And I follow "edit-blocks-govcms-social-links-services-configure"
-    Then the "Email URL" field should contain "https://nowhere.net"
-    When for "Email URL" I enter "https://nowhere.net"
-    And I click "Save block"
-    When I click "Content types"
-    Then the
-    And I fill in the values (add {test value} to one of the links?)
-    And I hit "Save block"
-    Then I see "The block configuration has been saved."
-
-  @api @javascript @wip
-  Scenario: The social media links block should be configured with govCMS accounts by default
-    Given I am logged in as "John" with the "Site Editor" role that doesn't force a password change
-    When I visit /admin/structure/block/edit/
-    And I fill in the values (add {test value} to one of the links?)
-    And I hit "Save block"
-    Then I see "The block configuration has been saved."
-
-  @api @javascript @wip
-  Scenario: The social media links block should appear on the front page and have the configured links
-    Given I am logged in as "John" with the "Site Editor" role that doesn't force a password change
-    And when I visit homepage
-    And I can see the Connect with us block
-    And within that block I can see a link
-    And that link points to the {test value}
+    Then I should see the heading "Connect with us" in the "sidebar_second" region
+    And the response should contain "http://example.com/nowhereinparticular"
+    And I go to "/admin/structure/block/manage/govcms_social_links/services/configure"
+    When for "Linkedin URL" I enter "https://www.linkedin.com/"
+    And I press "Save block"
+    Then I should see "The block configuration has been saved."
