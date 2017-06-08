@@ -1,11 +1,17 @@
 Feature: Permissions
   Check that permissions are as expected.
 
-  @api @role
+  @api @role @drupal @wip
   Scenario: Check anonymous user permissions
-    Given I am logged in as a user named "amy_perms" with the "administrator" role that doesn't force password change
+    Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "anonymous user" row
+    Then the "anonymous user" role should have permission to:
+      """
+      access comments
+      post comments
+      """
+
     Then the "Administer theme settings" checkbox should not be checked
     And the "Administer block types" checkbox should not be checked
     And the "Administer beans" checkbox should not be checked
