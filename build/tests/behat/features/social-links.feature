@@ -10,22 +10,29 @@ Feature:Social Media Links
     When I go to "/admin/structure/block"
     Then the "edit-blocks-govcms-social-links-services-region" select list should be set to "sidebar_second"
     When I follow "edit-blocks-govcms-social-links-services-configure"
-    Then the "Block title" field should contain ""
-    And the "Facebook URL" field should contain "https://www.facebook.com/"
-    And the "Twitter URL" field should contain "https://twitter.com/"
-    And the "Youtube URL" field should contain "https://www.youtube.com/user/"
-    And the "Vimeo URL" field should contain "http://www.vimeo.com"
-    And the "Flickr URL" field should contain "https://www.flickr.com/"
-    And the "Instagram URL" field should contain "https://www.instagram.com/"
-    And the "Linkedin URL" field should contain "https://www.linkedin.com/"
-    And the "RSS Feed URL" field should contain "rss.xml"
-    And the "Email URL" field should contain "contact"
-    When for "Linkedin URL" I enter "http://example.com/nowhereinparticular"
+    And I fill in the following:
+    | facebook | http://example.com/facebook |
+    | twitter | http://example.com/twitter |
+    | youtube | http://example.com/youtube |
+    | vimeo | http://example.com/vimeo |
+    | flickr | http://example.com/flickr |
+    | instagram | http://example.com/instagram |
+    | linkedin | http://example.com/linkedin |
+    | rss | http://example.com/rss |
+    | email | http://example.com/email |
     And I press "Save block"
     Then I should see "The block configuration has been saved."
     When I am on the homepage
     Then I should see the heading "Connect with us" in the "sidebar_second" region
-    And the response should contain "http://example.com/nowhereinparticular"
+    And the response should contain "<a href=\"http://example.com/facebook\"><img typeof=\"foaf:Image\" src=\"http://govcms.local/profiles/govcms/modules/custom/govcms_social_links/images/facebook.png\" alt=\"Facebook\" title=\"Facebook\"></a>"
+    And the response should contain "<a href=\"http://example.com/twitter\"><img typeof=\"foaf:Image\" src=\"http://govcms.local/profiles/govcms/modules/custom/govcms_social_links/images/twitter.png\" alt=\"Twitter\" title=\"Twitter\"></a>"
+    And the response should contain "<a href=\"http://example.com/youtube\"><img typeof=\"foaf:Image\" src=\"http://govcms.local/profiles/govcms/modules/custom/govcms_social_links/images/youtube.png\" alt=\"Youtube\" title=\"Youtube\"></a>"
+    And the response should contain "<a href=\"http://example.com/vimeo\"><img typeof=\"foaf:Image\" src=\"http://govcms.local/profiles/govcms/modules/custom/govcms_social_links/images/vimeo.png\" alt=\"Vimeo\" title=\"Vimeo\"></a>"
+    And the response should contain "<a href=\"http://example.com/flickr\"><img typeof=\"foaf:Image\" src=\"http://govcms.local/profiles/govcms/modules/custom/govcms_social_links/images/flickr.png\" alt=\"Flickr\" title=\"Flickr\"></a>"
+    And the response should contain "<a href=\"http://example.com/instagram\"><img typeof=\"foaf:Image\" src=\"http://govcms.local/profiles/govcms/modules/custom/govcms_social_links/images/instagram.png\" alt=\"Instagram\" title=\"Instagram\"></a>"
+    And the response should contain "<a href=\"http://example.com/linkedin\"><img typeof=\"foaf:Image\" src=\"http://govcms.local/profiles/govcms/modules/custom/govcms_social_links/images/linkedin.png\" alt=\"Linkedin\" title=\"Linkedin\"></a>"
+    And the response should contain "<a href=\"http://example.com/rss\"><img typeof=\"foaf:Image\" src=\"http://govcms.local/profiles/govcms/modules/custom/govcms_social_links/images/rss.png\" alt=\"RSS Feed\" title=\"RSS Feed\"></a>"
+    And the response should contain "<a href=\"http://example.com/email\"><img typeof=\"foaf:Image\" src=\"http://govcms.local/profiles/govcms/modules/custom/govcms_social_links/images/email.png\" alt=\"Email\" title=\"Email\"></a>"
     And I go to "/admin/structure/block/manage/govcms_social_links/services/configure"
     When for "Linkedin URL" I enter "https://www.linkedin.com/"
     And I press "Save block"
