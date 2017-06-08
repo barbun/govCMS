@@ -25,11 +25,11 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Set default browser window size.
+   * Set default browser window size to maximum.
    *
    * @BeforeScenario @drupal
    */
-  public function resizeWindow() {
+  public function maximizeWindow() {
     $this->getSession()->getDriver()->maximizeWindow();
   }
 
@@ -298,4 +298,5 @@ JS;
   public function theElementShouldNotExist($selector) {
     $this->assertSession()->elementNotExists('css', $selector);
   }
+
 }
