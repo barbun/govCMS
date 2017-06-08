@@ -24,6 +24,15 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Set default browser window size to maximum.
+   *
+   * @BeforeScenario @drupal
+   */
+  public function maximizeWindow() {
+    $this->getSession()->getDriver()->maximizeWindow();
+  }
+
+  /**
    * Creates and authenticates a user with the given role via Drush.
    *
    * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role that doesn't force password change$/
@@ -57,12 +66,12 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Creates and authenticates a user with the given permission.
    *
-   * @Given /^I am logged in as a user with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
+   * @Given /^I am logged in as a user (?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
    */
-  public function assertAuthenticatedWithPermission($permissions) {
+  public function assertAuthenticatedWithPermission($username, $permissions) {
     // Create user.
     $user = (object) array(
-      'name' => $this->getRandom()->name(8),
+      'name' => !empty($username) ? $username : $this->getRandom()->name(8),
       'pass' => $this->getRandom()->name(16),
     );
     $user->mail = "{$user->name}@example.com";
