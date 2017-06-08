@@ -31,4 +31,3 @@ Feature: Basic bean
     Given I am on "/block/new-bean"
     Then I should see the heading "Beans are good for you"
     And I should see "govCMS is the best!"
-    Then I logout
