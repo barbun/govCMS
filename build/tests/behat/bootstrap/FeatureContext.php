@@ -300,28 +300,4 @@ JS;
     }
   }
 
-  /**
-   * Asserts that an element, specified by CSS selector, exists.
-   *
-   * @param string $selector
-   *   The CSS selector to search for.
-   *
-   * @Then the element :selector should exist
-   */
-  public function theElementShouldExist($selector) {
-    $this->assertSession()->elementExists('css', $selector);
-  }
-
-  /**
-   * Asserts that an element, specified by CSS selector, does not exist.
-   *
-   * @param string $selector
-   *   The CSS selector to search for.
-   *
-   * @Then the element :selector should not exist
-   */
-  public function theElementShouldNotExist($selector) {
-    $this->assertSession()->elementNotExists('css', $selector);
-  }
-
 }
