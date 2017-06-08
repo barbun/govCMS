@@ -7,6 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
+//use Drupal\DrupalExtension\Context\MinkContext;
 
 /**
  * Defines application features from the specific context.
@@ -250,6 +251,107 @@ JS;
     $this->getSession()->getPage()->pressButton('edit-submit--2');
     $this->assertSession()->elementExists('css', 'input[value=Next][type=submit]');
     return new Given('I should not see "is protected from cancellation, and was not cancelled."');
+  }
+
+  /**
+   * Converts a role name to an rid if required.
+   *
+   * @param mixed $rid
+   *   The role ID or name.
+   *
+   * @return int
+   *  The role ID
+   */
+  private function roleToRid($rid) {
+    if (is_numeric($rid)) {
+      return $rid;
+    }
+
+    return array_search($rid, user_roles());
+  }
+
+  /**
+   * Asserts that a role as a set of permissions.
+   *
+   * @param string $rid
+   *   The role ID.
+   * @param \Behat\Gherkin\Node\PyStringNode $permissions
+   *   The permissions to check for.
+   *
+   * @Then the :role role should have permissions:
+   * @Then the :role role should have permission to:
+   */
+  public function assertPermissions($rid, PyStringNode $permissions) {
+    $rid = self::roleToRid($rid);
+    foreach ($permissions->getStrings() as $permission) {
+      $this->assertPermission($rid, $permission);
+    }
+  }
+
+  /**
+   * Asserts that a role does NOT have a set of permissions.
+   *
+   * @param string $rid
+   *   The role ID.
+   * @param \Behat\Gherkin\Node\PyStringNode $permissions
+   *   The permissions to check for.
+   *
+   * @Then the :role role should not have permissions:
+   * @Then the :role role should not have permission to:
+   */
+  public function assertNoPermissions($rid, PyStringNode $permissions) {
+    $rid = self::roleToRid($rid);
+    foreach ($permissions->getStrings() as $permission) {
+      $this->assertNoPermission($rid, $permission);
+    }
+  }
+
+  /**
+   * Asserts that a role has a specific permission.
+   *
+   * @param string $rid
+   *   The role ID.
+   * @param string $permission
+   *   The permission to check for.
+   *
+   * @Given the :role role has the :permission permission
+   * @Given the :role role has permission to :permission
+   *
+   * @Then the :role role should have the :permission permission
+   * @Then the :role role should have permission to :permission
+   */
+  public function assertPermission($rid, $permission) {
+    $rid = self::roleToRid($rid);
+    $mink = new Drupal\DrupalExtension\Context\MinkContext();
+    $mink->setMink($this->getMink());
+    $mink->assertAtPath('/admin/people/permissions/' . $rid);
+    $this->assertSession()->checkboxChecked($rid . '[' . $permission . ']');
+  }
+
+  /**
+   * Asserts that a role does not have a specific permission.
+   *
+   * @param string $rid
+   *   The role ID.
+   * @param string $permission
+   *   The permission to check for.
+   *
+   * @Given the :role role does not have the :permission permission
+   * @Given the :role role does not have permission to :permission
+   *
+   * @Then the :role role should not have the :permission permission
+   * @Then the :role role should not have permission to :permission
+   */
+  public function assertNoPermission($rid, $permission) {
+    $rid = self::roleToRid($rid);
+    $this->minkContext->assertAtPath('/admin/people/permissions/' . $rid);
+    $field = $rid . '[' . $permission . ']';
+    try {
+      $this->assertSession()->fieldNotExists($field);
+    }
+    catch (ExpectationException $e) {
+      $this->assertSession()->checkboxNotChecked($field);
+    }
   }
 
   /**
