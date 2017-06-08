@@ -24,6 +24,15 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Set default browser window size to maximum.
+   *
+   * @BeforeScenario @drupal
+   */
+  public function maximizeWindow() {
+    $this->getSession()->getDriver()->maximizeWindow();
+  }
+
+  /**
    * Clean the password state tables for a user.
    *
    * Remove any password history, expiration of flag forcing a password change
@@ -43,7 +52,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       db_delete($table)
         ->condition('uid', $uid)
         ->execute();
-
     }
   }
 
@@ -429,6 +437,30 @@ JS;
     else {
       throw new \InvalidArgumentException(sprintf('No such username %s', $username));
     }
+  }
+
+  /**
+   * Asserts that an element, specified by CSS selector, exists.
+   *
+   * @param string $selector
+   *   The CSS selector to search for.
+   *
+   * @Then the element :selector should exist
+   */
+  public function theElementShouldExist($selector) {
+    $this->assertSession()->elementExists('css', $selector);
+  }
+
+  /**
+   * Asserts that an element, specified by CSS selector, does not exist.
+   *
+   * @param string $selector
+   *   The CSS selector to search for.
+   *
+   * @Then the element :selector should not exist
+   */
+  public function theElementShouldNotExist($selector) {
+    $this->assertSession()->elementNotExists('css', $selector);
   }
 
 }
