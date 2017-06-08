@@ -7,7 +7,6 @@ use Behat\Gherkin\Node\TableNode;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
-//use Drupal\DrupalExtension\Context\MinkContext;
 
 /**
  * Defines application features from the specific context.
