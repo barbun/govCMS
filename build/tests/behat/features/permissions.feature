@@ -10,837 +10,875 @@ Feature: Permissions
       """
       access comments
       post comments
+      view any basic_content bean
+      view any image_and_text bean
+      access comments
+      post comments
+      edit own comments
+      access contextual links
+      access content
+      search content
+      access site map
+      access service links
+      """
+    And the "anonymous user" role should not have permission to:
+      """
+      administer theme settings checkbox
+      administer search api
+      administer bean types
+      administer beans
+      access bean overview
+      edit bean view mode
+      view bean page
+      administer bean settings
+      view bean revisions
+      create any basic_content bean
+      edit any basic_content bean
+      basic content: delete bean
+      create any image_and_text bean
+      edit any image_and_text bean
+      delete any image_and_text bean
+      administer blocks
+      administer comments
+      skip comment approval
+      administer contact forms
+      administer crumbs
+      admin_display_suite
+      access draggableviews
+      access event log
+      administer fields
+      bypass file access
+      administer files
+      use the rich text text format
+      administer google analytics
+      administer image styles
+      access broken links report
+      access own broken links report
+      administer maintenance mode
+      add media from remote sources
+      administer menu
+      administer meta tags
+      edit meta tags
+      bypass node access
+      administer content types
+      administer nodes
+      access content overview
+      view own unpublished content
+      view revisions
+      revert revisions
+      create webform content
+      edit own webform content
+      edit any webform content
+      delete own webform content
+      delete any webform content
+      use page manager
+      use panels dashboard
+      view pane admin links
+      administer pane access
+      use panels in place editing
+      change layouts in place editing
+      administer advanced pane settings
+      use panels caching features
+      use panel locks
+      use ipe with page manager
+      unblock expired accounts
+      force password change
+      administer url aliases
+      create url aliases
+      administer quicktabs
+      administer redirects
+      assign all roles
+      assign content editor role
+      assign content approver role
+      assign site builder role
+      assign site editor role
+      administer scheduler
+      schedule publishing of nodes
+      override default scheduler time
+      administer search
+      administer shield
+      administer shortcuts
+      customize shortcut links
+      switch shortcut sets
+      administer themes
+      administer actions
+      access administration pages
+      access site in maintenance mode
+      view the administration theme
+      access site reports
+      administer taxonomy
+      edit terms in 1
+      delete terms in 1
+      edit terms in 2
+      delete terms in 2
+      administer users
+      access user profiles
+      view user actions
+      view any unpublished content
+      administer views
+      access all views
+      access all webform results
+      access own webform results
+      edit all webform submissions
+      delete all webform submissions
+      access own webform submissions
+      edit own webform submissions
+      delete own webform submissions
+      set webform_clear times
+      view all unpublished content
+      administer workbench moderation
+      bypass workbench moderation
+      view moderation history
+      view moderation messages
+      use workbench_moderation my drafts tab
+      use workbench_moderation needs review tab
+      moderate content from draft to needs_review
+      moderate content from needs_review to draft
+      moderate content from needs_review to published
+      administer xmlsitemap
       """
 
-    Then the "Administer theme settings" checkbox should not be checked
-    And the "Administer bean types" checkbox should not be checked
-    And the "Administer beans" checkbox should not be checked
-    And the "access bean overview" checkbox should not be checked
-    And the "edit bean view mode" checkbox should not be checked
-    And the "View Bean page" checkbox should not be checked
-    And the "Administer Bean Settings" checkbox should not be checked
-    And the "View Bean revisions" checkbox should not be checked
-    And the "create any basic_content bean" checkbox should not be checked
-    And the "edit any basic_content bean" checkbox should not be checked
-    And the "Basic content: View Bean" checkbox should be checked
-    And the "Basic content: Delete Bean" checkbox should not be checked
-    And the "create any image_and_text bean" checkbox should not be checked
-    And the "edit any image_and_text bean" checkbox should not be checked
-    And the "Image and Text: View Bean" checkbox should be checked
-    And the "delete any image_and_text bean" checkbox should not be checked
-    And the "Administer blocks" checkbox should not be checked
-    And the "administer comments" checkbox should not be checked
-    And the "access comments" checkbox should be checked
-    And the "Post comments" checkbox should be checked
-    And the "Skip comment approval" checkbox should not be checked
-    And the "Edit own comments" checkbox should be checked
-    And the "administer contact forms" checkbox should not be checked
-    And the "Use contextual links" checkbox should be checked
-    And the "Administer Crumbs" checkbox should not be checked
-    And the "admin_display_suite" checkbox should not be checked
-    And the "Access draggableviews" checkbox should not be checked
-    And the "Access event log" checkbox should not be checked
-    And the "Administer fields" checkbox should not be checked
-    And the "Bypass file access" checkbox should not be checked
-    And the "Administer files" checkbox should not be checked
-    And the "Use the Rich text text format" checkbox should not be checked
-    And the "Administer Google Analytics" checkbox should not be checked
-    And the "Administer image styles" checkbox should not be checked
-    And the "Access broken links report" checkbox should not be checked
-    And the "Access own broken links report" checkbox should not be checked
-    And the "Administer Maintenance Mode" checkbox should not be checked
-    And the "add media from remote sources" checkbox should not be checked
-    And the "Administer menu" checkbox should not be checked
-    And the "Administer meta tags" checkbox should not be checked
-    And the "Edit meta tags" checkbox should not be checked
-    And the "Bypass node access" checkbox should not be checked
-    And the "Administer content types" checkbox should not be checked
-    And the "Administer nodes" should not be checked
-    And the "Access content overview" checkbox should not be checked
-    And the "Access content" checkbox should be checked
-    And the "View own unpublished content" checkbox should not be checked
-    And the "View revisions" checkbox should not be checked
-    And the "Revert revisions" checkbox should not be checked
-    And the "create webform content" checkbox should not be checked
-    And the "edit own webform content" checkbox should not be checked
-    And the "edit any webform content" checkbox should not be checked
-    And the "delete own webform content" checkbox should not be checked
-    And the "delete any webform content" checkbox should not be checked
-    And the "Use Page Manager" checkbox should not be checked
-    And the "Use Panels Dashboard" checkbox should not be checked
-    And the "view pane admin links" checkbox should not be checked
-    And the "administer pane access" checkbox should not be checked
-    And the "use panels in place editing" checkbox should not be checked
-    And the "change layouts in place editing" checkbox should not be checked
-    And the "administer advanced pane settings" checkbox should not be checked
-    And the "use panels caching features" checkbox should not be checked
-    And the "Use panel locks" checkbox should not be checked
-    And the "use ipe with page manager" checkbox should not be checked
-    And the "unblock expired accounts" checkbox should not be checked
-    And the "Force password change" checkbox should not be checked
-    And the "Administer URL aliases" checkbox should not be checked
-    And the "create url aliases" checkbox should not be checked
-    And the "Administer Quicktabs" checkbox should not be checked
-    And the "administer redirects" checkbox should not be checked
-    And the "Assign all roles" checkbox should not be checked
-    And the "Assign Content editor role" checkbox should not be checked
-    And the "Assign Content approver role" checkbox should not be checked
-    And the "Assign Site builder role" checkbox should not be checked
-    And the "Assign Site editor role" checkbox should not be checked
-    And the "Administer scheduler" checkbox should not be checked
-    And the "schedule publishing of nodes" checkbox should not be checked
-    And the "Override default scheduler time" checkbox should not be checked
-    And the "Administer search" checkbox should not be checked
-    And the "search content" checkbox should be checked
-    And the "Administer Search API" checkbox should not be checked
-    And the "access service links" checkbox should be checked
-    And the "administer shield" checkbox should not be checked
-    And the "Administer shortcuts" checkbox should not be checked
-    And the "customize shortcut links" checkbox should not be checked
-    And the "switch shortcut sets" checkbox should not be checked
-    And the "access site map" checkbox should be checked
-    And the "Administer themes" checkbox should not be checked
-    And the "Administer actions" checkbox should not be checked
-    And the "access administration pages" checkbox should not be checked
-    And the "access site in maintenance mode" checkbox should not be checked
-    And the "View the administration theme" checkbox should not be checked
-    And the "access site reports" checkbox should not be checked
-    And the "administer taxonomy" checkbox should not be checked
-    And the "edit terms in 1" checkbox should not be checked
-    And the "delete terms in 1" checkbox should not be checked
-    And the "edit terms in 2" checkbox should not be checked
-    And the "delete terms in 2" checkbox should not be checked
-    And the "Administer users" checkbox should not be checked
-    And the "access user profiles" checkbox should not be checked
-    And the "View User Actions" checkbox should not be checked
-    And the "View any unpublished content" checkbox should not be checked
-    And the "Administer views" checkbox should not be checked
-    And the "access all views" checkbox should not be checked
-    And the "access all webform results" checkbox should not be checked
-    And the "Access own webform results" checkbox should not be checked
-    And the "Edit all webform submissions" checkbox should not be checked
-    And the "Delete all webform submissions" checkbox should not be checked
-    And the "Access own webform submissions" checkbox should not be checked
-    And the "Edit own webform submissions" checkbox should not be checked
-    And the "Delete own webform submissions" checkbox should not be checked
-    And the "set webform_clear times" checkbox should not be checked
-    And the "View all unpublished content" checkbox should not be checked
-    And the "Administer Workbench Moderation" checkbox should not be checked
-    And the "bypass workbench moderation" checkbox should not be checked
-    And the "View moderation history" checkbox should not be checked
-    And the "view moderation messages" checkbox should not be checked
-    And the "use workbench_moderation my drafts tab" checkbox should not be checked
-    And the "use workbench_moderation needs review tab" checkbox should not be checked
-    And the "moderate content from draft to needs_review" checkbox should not be checked
-    And the "moderate content from needs_review to draft" checkbox should not be checked
-    And the "moderate content from needs_review to published" checkbox should not be checked
-    And the "administer xmlsitemap" checkbox should not be checked
-
-  @api @role
+  @api @role @wip
   Scenario: Check authenticated user permissions
     Given I am logged in as a user named "betty_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "authenticated user" row
-    Then the "Administer theme settings" checkbox should not be checked
-    And the "Administer bean types" checkbox should not be checked
-    And the "Administer beans" checkbox should not be checked
-    And the "access bean overview" checkbox should not be checked
-    And the "edit bean view mode" checkbox should not be checked
-    And the "View Bean page" checkbox should not be checked
-    And the "Administer Bean Settings" checkbox should not be checked
-    And the "View Bean revisions" checkbox should not be checked
-    And the "create any basic_content bean" checkbox should not be checked
-    And the "edit any basic_content bean" checkbox should not be checked
-    And the "Basic content: View Bean" checkbox should be checked
-    And the "Basic content: Delete Bean" checkbox should not be checked
-    And the "create any image_and_text bean" checkbox should not be checked
-    And the "edit any image_and_text bean" checkbox should not be checked
-    And the "Image and Text: View Bean" checkbox should be checked
-    And the "delete any image_and_text bean" checkbox should not be checked
-    And the "Administer blocks" checkbox should not be checked
-    And the "administer comments" checkbox should not be checked
-    And the "access comments" checkbox should be checked
-    And the "Post comments" checkbox should be checked
-    And the "Skip comment approval" checkbox should be checked
-    And the "Edit own comments" checkbox should be checked
-    And the "administer contact forms" checkbox should not be checked
-    And the "Use contextual links" checkbox should be checked
-    And the "Administer Crumbs" checkbox should not be checked
-    And the "admin_display_suite" checkbox should not be checked
-    And the "Access draggableviews" checkbox should not be checked
-    And the "Access event log" checkbox should not be checked
-    And the "Administer fields" checkbox should not be checked
-    And the "Bypass file access" checkbox should not be checked
-    And the "Administer files" checkbox should not be checked
-    And the "Use the Rich text text format" checkbox should be checked
-    And the "Administer Google Analytics" checkbox should not be checked
-    And the "Administer image styles" checkbox should not be checked
-    And the "Access broken links report" checkbox should not be checked
-    And the "Access own broken links report" checkbox should not be checked
-    And the "Administer Maintenance Mode" checkbox should not be checked
-    And the "add media from remote sources" checkbox should not be checked
-    And the "Administer menu" checkbox should not be checked
-    And the "Administer meta tags" checkbox should not be checked
-    And the "Edit meta tags" checkbox should not be checked
-    And the "Bypass node access" checkbox should not be checked
-    And the "Administer content types" checkbox should not be checked
-    And the "Administer nodes" should not be checked
-    And the "Access content overview" checkbox should not be checked
-    And the "Access content" checkbox should be checked
-    And the "View own unpublished content" checkbox should be checked
-    And the "View revisions" checkbox should not be checked
-    And the "Revert revisions" checkbox should not be checked
-    And the "create webform content" checkbox should not be checked
-    And the "edit own webform content" checkbox should not be checked
-    And the "edit any webform content" checkbox should not be checked
-    And the "delete own webform content" checkbox should not be checked
-    And the "delete any webform content" checkbox should not be checked
-    And the "Use Page Manager" checkbox should not be checked
-    And the "Use Panels Dashboard" checkbox should not be checked
-    And the "view pane admin links" checkbox should not be checked
-    And the "administer pane access" checkbox should not be checked
-    And the "use panels in place editing" checkbox should not be checked
-    And the "change layouts in place editing" checkbox should not be checked
-    And the "administer advanced pane settings" checkbox should not be checked
-    And the "use panels caching features" checkbox should not be checked
-    And the "Use panel locks" checkbox should not be checked
-    And the "use ipe with page manager" checkbox should not be checked
-    And the "unblock expired accounts" checkbox should not be checked
-    And the "Force password change" checkbox should not be checked
-    And the "Administer URL aliases" checkbox should not be checked
-    And the "create url aliases" checkbox should not be checked
-    And the "Administer Quicktabs" checkbox should not be checked
-    And the "administer redirects" checkbox should not be checked
-    And the "Assign all roles" checkbox should not be checked
-    And the "Assign Content editor role" checkbox should not be checked
-    And the "Assign Content approver role" checkbox should not be checked
-    And the "Assign Site builder role" checkbox should not be checked
-    And the "Assign Site editor role" checkbox should not be checked
-    And the "Administer scheduler" checkbox should not be checked
-    And the "schedule publishing of nodes" checkbox should not be checked
-    And the "Override default scheduler time" checkbox should not be checked
-    And the "Administer search" checkbox should not be checked
-    And the "search content" checkbox should be checked
-    And the "Administer Search API" checkbox should not be checked
-    And the "access service links" checkbox should be checked
-    And the "administer shield" checkbox should not be checked
-    And the "Administer shortcuts" checkbox should not be checked
-    And the "customize shortcut links" checkbox should not be checked
-    And the "switch shortcut sets" checkbox should not be checked
-    And the "access site map" checkbox should be checked
-    And the "Administer themes" checkbox should not be checked
-    And the "Administer actions" checkbox should not be checked
-    And the "access administration pages" checkbox should not be checked
-    And the "access site in maintenance mode" checkbox should not be checked
-    And the "View the administration theme" checkbox should not be checked
-    And the "access site reports" checkbox should not be checked
-    And the "administer taxonomy" checkbox should not be checked
-    And the "edit terms in 1" checkbox should not be checked
-    And the "delete terms in 1" checkbox should not be checked
-    And the "edit terms in 2" checkbox should not be checked
-    And the "delete terms in 2" checkbox should not be checked
-    And the "Administer users" checkbox should not be checked
-    And the "access user profiles" checkbox should not be checked
-    And the "View User Actions" checkbox should not be checked
-    And the "View any unpublished content" checkbox should not be checked
-    And the "Administer views" checkbox should not be checked
-    And the "access all views" checkbox should not be checked
-    And the "access all webform results" checkbox should not be checked
-    And the "Access own webform results" checkbox should not be checked
-    And the "Edit all webform submissions" checkbox should not be checked
-    And the "Delete all webform submissions" checkbox should not be checked
-    And the "Access own webform submissions" checkbox should not be checked
-    And the "Edit own webform submissions" checkbox should not be checked
-    And the "Delete own webform submissions" checkbox should not be checked
-    And the "set webform_clear times" checkbox should not be checked
-    And the "View all unpublished content" checkbox should not be checked
-    And the "Administer Workbench Moderation" checkbox should not be checked
-    And the "bypass workbench moderation" checkbox should not be checked
-    And the "View moderation history" checkbox should not be checked
-    And the "view moderation messages" checkbox should not be checked
-    And the "use workbench_moderation my drafts tab" checkbox should not be checked
-    And the "use workbench_moderation needs review tab" checkbox should not be checked
-    And the "moderate content from draft to needs_review" checkbox should not be checked
-    And the "moderate content from needs_review to draft" checkbox should not be checked
-    And the "moderate content from needs_review to published" checkbox should not be checked
-    And the "administer xmlsitemap" checkbox should not be checked
+    And the "authenticated user" role should have permission to:
+      """
+      basic content: view bean
+      image and text: view bean
+      access comments
+      post comments
+      skip comment approval
+      edit own comments
+      use contextual links
+      use the rich text text format
+      access content
+      view own unpublished content
+      search content
+      access service links
+      access site map
+      """
+    And the "authenticated user" role should not have permission to:
+      """
+      administer theme settings
+      administer bean types
+      administer beans
+      access bean overview
+      edit bean view mode
+      view bean page
+      administer bean settings
+      view bean revisions
+      create any basic_content bean
+      edit any basic_content bean
+      basic content: delete bean
+      create any image_and_text bean
+      edit any image_and_text bean
+      delete any image_and_text bean
+      administer blocks
+      administer comments
+      administer contact forms
+      administer crumbs
+      admin_display_suite
+      access draggableviews
+      access event log
+      administer fields
+      bypass file access
+      administer files
+      administer google analytics
+      administer image styles
+      access broken links report
+      access own broken links report
+      administer maintenance mode
+      add media from remote sources
+      administer menu
+      administer meta tags
+      edit meta tags
+      bypass node access
+      administer content types
+      administer nodes
+      access content overview
+      view revisions
+      revert revisions
+      create webform content
+      edit own webform content
+      edit any webform content
+      delete own webform content
+      delete any webform content
+      use page manager
+      use panels dashboard
+      view pane admin links
+      administer pane access
+      use panels in place editing
+      change layouts in place editing
+      administer advanced pane settings
+      use panels caching features
+      use panel locks
+      use ipe with page manager
+      unblock expired accounts
+      force password change
+      administer url aliases
+      create url aliases
+      administer quicktabs
+      administer redirects
+      assign all roles
+      assign content editor role
+      assign content approver role
+      assign site builder role
+      assign site editor role
+      administer scheduler
+      schedule publishing of nodes
+      override default scheduler time
+      administer search
+      administer search api
+      administer shield
+      administer shortcuts
+      customize shortcut links
+      switch shortcut sets
+      administer themes
+      administer actions
+      access administration pages
+      access site in maintenance mode
+      view the administration theme
+      access site reports
+      administer taxonomy
+      edit terms in 1
+      delete terms in 1
+      edit terms in 2
+      delete terms in 2
+      administer users
+      access user profiles
+      view user actions
+      view any unpublished content
+      administer views
+      access all views
+      access all webform results
+      access own webform results
+      edit all webform submissions
+      delete all webform submissions
+      access own webform submissions
+      edit own webform submissions
+      delete own webform submissions
+      set webform_clear times
+      view all unpublished content
+      administer workbench moderation
+      bypass workbench moderation
+      view moderation history
+      view moderation messages
+      use workbench_moderation my drafts tab
+      use workbench_moderation needs review tab
+      moderate content from draft to needs_review
+      moderate content from needs_review to draft
+      moderate content from needs_review to published
+      administer xmlsitemap
+      """
 
-  @api @role
+  @api @role @wip
   Scenario: Check Content editor user permissions
     Given I am logged in as a user named "christine_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Content editor" row
-    Then the "Administer theme settings" checkbox should not be checked
-    And the "Administer bean types" checkbox should not be checked
-    And the "Administer beans" checkbox should not be checked
-    And the "access bean overview" checkbox should not be checked
-    And the "edit bean view mode" checkbox should not be checked
-    And the "View Bean page" checkbox should not be checked
-    And the "Administer Bean Settings" checkbox should not be checked
-    And the "View Bean revisions" checkbox should not be checked
-    And the "create any basic_content bean" checkbox should be checked
-    And the "edit any basic_content bean" checkbox should be checked
-    And the "Basic content: Delete Bean" checkbox should be checked
-    And the "create any image_and_text bean" checkbox should be checked
-    And the "edit any image_and_text bean" checkbox should be checked
-    And the "delete any image_and_text bean" checkbox should be checked
-    And the "Administer blocks" checkbox should not be checked
-    And the "administer comments" checkbox should not be checked
-    And the "administer contact forms" checkbox should not be checked
-    And the "Administer Crumbs" checkbox should not be checked
-    And the "admin_display_suite" checkbox should not be checked
-    And the "Access draggableviews" checkbox should not be checked
-    And the "Access event log" checkbox should not be checked
-    And the "Administer fields" checkbox should not be checked
-    And the "Bypass file access" checkbox should not be checked
-    And the "Administer files" checkbox should be checked
-    And the "Administer Google Analytics" checkbox should not be checked
-    And the "Administer image styles" checkbox should not be checked
-    And the "Access broken links report" checkbox should not be checked
-    And the "Access own broken links report" checkbox should not be checked
-    And the "Administer Maintenance Mode" checkbox should not be checked
-    And the "add media from remote sources" checkbox should be checked
-    And the "Administer menu" checkbox should not be checked
-    And the "Administer meta tags" checkbox should not be checked
-    And the "Edit meta tags" checkbox should be checked
-    And the "Bypass node access" checkbox should not be checked
-    And the "Administer content types" checkbox should not be checked
-    And the "Administer nodes" should not be checked
-    And the "Access content overview" checkbox should be checked
-    And the "View revisions" checkbox should be checked
-    And the "Revert revisions" checkbox should be checked
-    And the "create webform content" checkbox should be checked
-    And the "edit own webform content" checkbox should not be checked
-    And the "edit any webform content" checkbox should be checked
-    And the "delete own webform content" checkbox should not be checked
-    And the "delete any webform content" checkbox should be checked
-    And the "Use Page Manager" checkbox should not be checked
-    And the "Use Panels Dashboard" checkbox should not be checked
-    And the "view pane admin links" checkbox should not be checked
-    And the "administer pane access" checkbox should not be checked
-    And the "use panels in place editing" checkbox should not be checked
-    And the "change layouts in place editing" checkbox should not be checked
-    And the "administer advanced pane settings" checkbox should not be checked
-    And the "use panels caching features" checkbox should not be checked
-    And the "Use panel locks" checkbox should not be checked
-    And the "use ipe with page manager" checkbox should not be checked
-    And the "unblock expired accounts" checkbox should not be checked
-    And the "Force password change" checkbox should not be checked
-    And the "Administer URL aliases" checkbox should not be checked
-    And the "create url aliases" checkbox should not be checked
-    And the "Administer Quicktabs" checkbox should not be checked
-    And the "administer redirects" checkbox should not be checked
-    And the "Assign all roles" checkbox should not be checked
-    And the "Assign Content editor role" checkbox should not be checked
-    And the "Assign Content approver role" checkbox should not be checked
-    And the "Assign Site builder role" checkbox should not be checked
-    And the "Assign Site editor role" checkbox should not be checked
-    And the "Administer scheduler" checkbox should not be checked
-    And the "schedule publishing of nodes" checkbox should not be checked
-    And the "Override default scheduler time" checkbox should be checked
-    And the "Administer search" checkbox should not be checked
-    And the "Administer Search API" checkbox should not be checked
-    And the "administer shield" checkbox should not be checked
-    And the "Administer shortcuts" checkbox should not be checked
-    And the "customize shortcut links" checkbox should not be checked
-    And the "switch shortcut sets" checkbox should not be checked
-    And the "Administer themes" checkbox should not be checked
-    And the "Administer actions" checkbox should not be checked
-    And the "access administration pages" checkbox should be checked
-    And the "access site in maintenance mode" checkbox should be checked
-    And the "View the administration theme" checkbox should be checked
-    And the "access site reports" checkbox should not be checked
-    And the "administer taxonomy" checkbox should not be checked
-    And the "edit terms in 1" checkbox should not be checked
-    And the "delete terms in 1" checkbox should not be checked
-    And the "edit terms in 2" checkbox should not be checked
-    And the "delete terms in 2" checkbox should not be checked
-    And the "Administer users" checkbox should not be checked
-    And the "access user profiles" checkbox should not be checked
-    And the "View User Actions" checkbox should not be checked
-    And the "View any unpublished content" checkbox should be checked
-    And the "Administer views" checkbox should not be checked
-    And the "access all views" checkbox should not be checked
-    And the "access all webform results" checkbox should be checked
-    And the "Access own webform results" checkbox should be checked
-    And the "Edit all webform submissions" checkbox should not be checked
-    And the "Delete all webform submissions" checkbox should not be checked
-    And the "Access own webform submissions" checkbox should be checked
-    And the "Edit own webform submissions" checkbox should be checked
-    And the "Delete own webform submissions" checkbox should be checked
-    And the "set webform_clear times" checkbox should not be checked
-    And the "View all unpublished content" checkbox should be checked
-    And the "Administer Workbench Moderation" checkbox should not be checked
-    And the "bypass workbench moderation" checkbox should not be checked
-    And the "View moderation history" checkbox should be checked
-    And the "view moderation messages" checkbox should be checked
-    And the "use workbench_moderation my drafts tab" checkbox should be checked
-    And the "use workbench_moderation needs review tab" checkbox should be checked
-    And the "moderate content from draft to needs_review" checkbox should be checked
-    And the "moderate content from needs_review to draft" checkbox should be checked
-    And the "moderate content from needs_review to published" checkbox should not be checked
-    And the "administer xmlsitemap" checkbox should not be checked
+    Then the "Content editor" role should have permission to:
+      """
+      create any basic_content bean
+      edit any basic_content bean
+      basic content: delete bean
+      create any image_and_text bean
+      edit any image_and_text bean
+      delete any image_and_text bean
+      administer files
+      add media from remote sources
+      edit meta tags
+      access content overview
+      view revisions
+      revert revisions
+      create webform content
+      edit any webform content
+      delete any webform content
+      override default scheduler time
+      access administration pages
+      access site in maintenance mode
+      view the administration theme
+      view any unpublished content
+      access all webform results
+      access own webform results
+      access own webform submissions
+      edit own webform submissions
+      delete own webform submissions
+      view all unpublished content
+      view moderation history
+      view moderation messages
+      use workbench_moderation my drafts tab
+      use workbench_moderation needs review tab
+      moderate content from draft to needs_review
+      moderate content from needs_review to draft
+      """
+    And the "Content editor" role should not have permission to:
+     """
+      administer theme settings
+      administer bean types
+      administer beans
+      access bean overview
+      edit bean view mode
+      view bean page
+      administer bean settings
+      view bean revisions
+      administer blocks
+      administer comments
+      administer contact forms
+      administer crumbs
+      admin_display_suite
+      access draggableviews
+      access event log
+      administer fields
+      bypass file access
+      administer google analytics
+      administer image styles
+      access broken links report
+      access own broken links report
+      administer maintenance mode
+      administer menu
+      administer meta tags
+      bypass node access
+      administer content types
+      administer nodes
+      edit own webform content
+      delete own webform content
+      use page manager
+      use panels dashboard
+      view pane admin links
+      administer pane access
+      use panels in place editing
+      change layouts in place editing
+      administer advanced pane settings
+      use panels caching features
+      use panel locks
+      use ipe with page manager
+      unblock expired accounts
+      force password change
+      administer url aliases
+      create url aliases
+      administer quicktabs
+      administer redirects
+      assign all roles
+      assign content editor role
+      assign content approver role
+      assign site builder role
+      assign site editor role
+      administer scheduler
+      schedule publishing of nodes
+      administer search
+      administer search api
+      administer shield
+      administer shortcuts
+      customize shortcut links
+      switch shortcut sets
+      administer themes
+      administer actions
+      access site reports
+      administer taxonomy
+      edit terms in 1
+      delete terms in 1
+      edit terms in 2
+      delete terms in 2
+      administer users
+      access user profiles
+      view user actions
+      administer views
+      access all views
+      edit all webform submissions
+      delete all webform submissions
+      administer workbench moderation
+      set webform_clear times
+      bypass workbench moderation
+      moderate content from needs_review to published
+      administer xmlsitemap
+      """
 
-  @api @role
+  @api @role @wip
   Scenario: Check Content approver user permissions
     Given I am logged in as a user named "daniel_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Content approver" row
-    Then the "Administer theme settings" checkbox should not be checked
-    And the "Administer bean types" checkbox should not be checked
-    And the "Administer beans" checkbox should not be checked
-    And the "access bean overview" checkbox should not be checked
-    And the "edit bean view mode" checkbox should not be checked
-    And the "View Bean page" checkbox should not be checked
-    And the "Administer Bean Settings" checkbox should not be checked
-    And the "View Bean revisions" checkbox should not be checked
-    And the "create any basic_content bean" checkbox should be checked
-    And the "edit any basic_content bean" checkbox should be checked
-    And the "Basic content: Delete Bean" checkbox should be checked
-    And the "create any image_and_text bean" checkbox should be checked
-    And the "edit any image_and_text bean" checkbox should be checked
-    And the "delete any image_and_text bean" checkbox should be checked
-    And the "Administer blocks" checkbox should not be checked
-    And the "administer comments" checkbox should not be checked
-    And the "administer contact forms" checkbox should not be checked
-    And the "Administer Crumbs" checkbox should not be checked
-    And the "admin_display_suite" checkbox should not be checked
-    And the "Access draggableviews" checkbox should not be checked
-    And the "Access event log" checkbox should not be checked
-    And the "Administer fields" checkbox should not be checked
-    And the "Bypass file access" checkbox should not be checked
-    And the "Administer files" checkbox should be checked
-    And the "Administer Google Analytics" checkbox should not be checked
-    And the "Administer image styles" checkbox should not be checked
-    And the "Access broken links report" checkbox should not be checked
-    And the "Access own broken links report" checkbox should not be checked
-    And the "Administer Maintenance Mode" checkbox should not be checked
-    And the "add media from remote sources" checkbox should be checked
-    And the "Administer menu" checkbox should not be checked
-    And the "Administer meta tags" checkbox should not be checked
-    And the "Edit meta tags" checkbox should be checked
-    And the "Bypass node access" checkbox should not be checked
-    And the "Administer content types" checkbox should not be checked
-    And the "Administer nodes" should not be checked
-    And the "Access content overview" checkbox should be checked
-    And the "View revisions" checkbox should be checked
-    And the "Revert revisions" checkbox should be checked
-    And the "create webform content" checkbox should be checked
-    And the "edit own webform content" checkbox should not be checked
-    And the "edit any webform content" checkbox should be checked
-    And the "delete own webform content" checkbox should not be checked
-    And the "delete any webform content" checkbox should be checked
-    And the "Use Page Manager" checkbox should not be checked
-    And the "Use Panels Dashboard" checkbox should not be checked
-    And the "view pane admin links" checkbox should not be checked
-    And the "administer pane access" checkbox should not be checked
-    And the "use panels in place editing" checkbox should not be checked
-    And the "change layouts in place editing" checkbox should not be checked
-    And the "administer advanced pane settings" checkbox should not be checked
-    And the "use panels caching features" checkbox should not be checked
-    And the "Use panel locks" checkbox should not be checked
-    And the "use ipe with page manager" checkbox should not be checked
-    And the "unblock expired accounts" checkbox should not be checked
-    And the "Force password change" checkbox should not be checked
-    And the "Administer URL aliases" checkbox should not be checked
-    And the "create url aliases" checkbox should not be checked
-    And the "Administer Quicktabs" checkbox should not be checked
-    And the "administer redirects" checkbox should not be checked
-    And the "Assign all roles" checkbox should not be checked
-    And the "Assign Content editor role" checkbox should not be checked
-    And the "Assign Content approver role" checkbox should not be checked
-    And the "Assign Site builder role" checkbox should not be checked
-    And the "Assign Site editor role" checkbox should not be checked
-    And the "Administer scheduler" checkbox should not be checked
-    And the "schedule publishing of nodes" checkbox should not be checked
-    And the "Override default scheduler time" checkbox should be checked
-    And the "Administer search" checkbox should not be checked
-    And the "Administer Search API" checkbox should not be checked
-    And the "administer shield" checkbox should not be checked
-    And the "Administer shortcuts" checkbox should not be checked
-    And the "customize shortcut links" checkbox should not be checked
-    And the "switch shortcut sets" checkbox should not be checked
-    And the "Administer themes" checkbox should not be checked
-    And the "Administer actions" checkbox should not be checked
-    And the "access administration pages" checkbox should be checked
-    And the "access site in maintenance mode" checkbox should be checked
-    And the "View the administration theme" checkbox should be checked
-    And the "access site reports" checkbox should not be checked
-    And the "administer taxonomy" checkbox should not be checked
-    And the "edit terms in 1" checkbox should not be checked
-    And the "delete terms in 1" checkbox should not be checked
-    And the "edit terms in 2" checkbox should not be checked
-    And the "delete terms in 2" checkbox should not be checked
-    And the "Administer users" checkbox should not be checked
-    And the "access user profiles" checkbox should not be checked
-    And the "View User Actions" checkbox should not be checked
-    And the "View any unpublished content" checkbox should be checked
-    And the "Administer views" checkbox should not be checked
-    And the "access all views" checkbox should not be checked
-    And the "access all webform results" checkbox should be checked
-    And the "Access own webform results" checkbox should be checked
-    And the "Edit all webform submissions" checkbox should not be checked
-    And the "Delete all webform submissions" checkbox should not be checked
-    And the "Access own webform submissions" checkbox should be checked
-    And the "Edit own webform submissions" checkbox should be checked
-    And the "Delete own webform submissions" checkbox should be checked
-    And the "set webform_clear times" checkbox should not be checked
-    And the "View all unpublished content" checkbox should be checked
-    And the "Administer Workbench Moderation" checkbox should not be checked
-    And the "bypass workbench moderation" checkbox should not be checked
-    And the "View moderation history" checkbox should be checked
-    And the "view moderation messages" checkbox should be checked
-    And the "use workbench_moderation my drafts tab" checkbox should be checked
-    And the "use workbench_moderation needs review tab" checkbox should be checked
-    And the "moderate content from draft to needs_review" checkbox should be checked
-    And the "moderate content from needs_review to draft" checkbox should be checked
-    And the "moderate content from needs_review to published" checkbox should be checked
-    And the "administer xmlsitemap" checkbox should not be checked
+    Then the "Content editor" role should have permission to:
+      """
+      create any basic_content bean
+      edit any basic_content bean
+      basic content: delete bean
+      create any image_and_text bean
+      edit any image_and_text bean
+      delete any image_and_text bean
+      administer files
+      add media from remote sources
+      edit meta tags
+      access content overview
+      view revisions
+      revert revisions
+      create webform content
+      edit any webform content
+      delete any webform content
+      override default scheduler time
+      access administration pages
+      access site in maintenance mode
+      view the administration theme
+      view any unpublished content
+      access all webform results
+      access own webform results
+      access own webform submissions
+      edit own webform submissions
+      delete own webform submissions
+      view all unpublished content
+      view moderation history
+      view moderation messages
+      use workbench_moderation my drafts tab
+      use workbench_moderation needs review tab
+      moderate content from draft to needs_review
+      moderate content from needs_review to draft
+      moderate content from needs_review to published
+      """
+    And the "Content approver" role should not have permission to:
+      """
+      administer theme settings
+      administer bean types
+      administer beans
+      access bean overview
+      edit bean view mode
+      view bean page
+      administer bean settings
+      view bean revisions
+      administer blocks
+      administer comments
+      administer contact forms
+      administer crumbs
+      admin_display_suite
+      access draggableviews
+      access event log
+      administer fields
+      bypass file access
+      administer google analytics
+      administer image styles
+      access broken links report
+      access own broken links report
+      administer maintenance mode
+      administer menu
+      administer meta tags
+      bypass node access
+      administer content types
+      administer nodes
+      edit own webform content
+      delete own webform content
+      use page manager
+      use panels dashboard
+      view pane admin links
+      administer pane access
+      use panels in place editing
+      change layouts in place editing
+      administer advanced pane settings
+      use panels caching features
+      use panel locks
+      use ipe with page manager
+      unblock expired accounts
+      force password change
+      administer url aliases
+      create url aliases
+      administer quicktabs
+      administer redirects
+      assign all roles
+      assign content editor role
+      assign content approver role
+      assign site builder role
+      assign site editor role
+      administer scheduler
+      schedule publishing of nodes
+      administer search
+      administer search api
+      administer shield
+      administer shortcuts
+      customize shortcut links
+      switch shortcut sets
+      administer themes
+      administer actions
+      access site reports
+      administer taxonomy
+      edit terms in 1
+      delete terms in 1
+      edit terms in 2
+      delete terms in 2
+      administer users
+      access user profiles
+      view user actions
+      administer views
+      access all views
+      edit all webform submissions
+      delete all webform submissions
+      set webform_clear times
+      administer workbench moderation
+      bypass workbench moderation
+      administer xmlsitemap
+      """
 
-  @api @role
+  @api @role @wip
   Scenario: Check Site Builder user permissions
     Given I am logged in as a user named "eric_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Site builder" row
-    Then the "Administer theme settings" checkbox should be checked
-    And the "Administer bean types" checkbox should be checked
-    And the "Administer beans" checkbox should be checked
-    And the "access bean overview" checkbox should be checked
-    And the "edit bean view mode" checkbox should be checked
-    And the "View Bean page" checkbox should be checked
-    And the "Administer Bean Settings" checkbox should be checked
-    And the "View Bean revisions" checkbox should be checked
-    And the "create any basic_content bean" checkbox should be checked
-    And the "edit any basic_content bean" checkbox should be checked
-    And the "Basic content: Delete Bean" checkbox should be checked
-    And the "create any image_and_text bean" checkbox should be checked
-    And the "edit any image_and_text bean" checkbox should be checked
-    And the "delete any image_and_text bean" checkbox should be checked
-    And the "Administer blocks" checkbox should be checked
-    And the "administer comments" checkbox should not be checked
-    And the "administer contact forms" checkbox should be checked
-    And the "Administer Crumbs" checkbox should be checked
-    And the "admin_display_suite" checkbox should be checked
-    And the "Access draggableviews" checkbox should be checked
-    And the "Access event log" checkbox should be checked
-    And the "Administer fields" checkbox should be checked
-    And the "Bypass file access" checkbox should be checked
-    And the "Administer files" checkbox should be checked
-    And the "Administer Google Analytics" checkbox should be checked
-    And the "Administer image styles" checkbox should be checked
-    And the "Access broken links report" checkbox should be checked
-    And the "Access own broken links report" checkbox should be checked
-    And the "Administer Maintenance Mode" checkbox should be checked
-    And the "add media from remote sources" checkbox should not be checked
-    And the "Administer menu" checkbox should be checked
-    And the "Administer meta tags" checkbox should be checked
-    And the "Edit meta tags" checkbox should be checked
-    And the "Bypass node access" checkbox should be checked
-    And the "Administer content types" checkbox should be checked
-    And the "Administer nodes" should be checked
-    And the "Access content overview" checkbox should be checked
-    And the "View revisions" checkbox should be checked
-    And the "Revert revisions" checkbox should be checked
-    And the "create webform content" checkbox should be checked
-    And the "edit own webform content" checkbox should not be checked
-    And the "edit any webform content" checkbox should be checked
-    And the "delete own webform content" checkbox should not be checked
-    And the "delete any webform content" checkbox should be checked
-    And the "Use Page Manager" checkbox should be checked
-    And the "Use Panels Dashboard" checkbox should be checked
-    And the "view pane admin links" checkbox should be checked
-    And the "administer pane access" checkbox should be checked
-    And the "use panels in place editing" checkbox should be checked
-    And the "change layouts in place editing" checkbox should be checked
-    And the "administer advanced pane settings" checkbox should be checked
-    And the "use panels caching features" checkbox should be checked
-    And the "Use panel locks" checkbox should be checked
-    And the "use ipe with page manager" checkbox should be checked
-    And the "unblock expired accounts" checkbox should be checked
-    And the "Force password change" checkbox should be checked
-    And the "Administer URL aliases" checkbox should be checked
-    And the "create url aliases" checkbox should be checked
-    And the "Administer Quicktabs" checkbox should be checked
-    And the "administer redirects" checkbox should be checked
-    And the "Assign all roles" checkbox should not be checked
-    And the "Assign Content editor role" checkbox should not be checked
-    And the "Assign Content approver role" checkbox should not be checked
-    And the "Assign Site builder role" checkbox should not be checked
-    And the "Assign Site editor role" checkbox should not be checked
-    And the "Administer scheduler" checkbox should be checked
-    And the "schedule publishing of nodes" checkbox should not be checked
-    And the "Override default scheduler time" checkbox should be checked
-    And the "Administer search" checkbox should be checked
-    And the "Administer Search API" checkbox should be checked
-    And the "administer shield" checkbox should be checked
-    And the "Administer shortcuts" checkbox should not be checked
-    And the "customize shortcut links" checkbox should not be checked
-    And the "switch shortcut sets" checkbox should not be checked
-    And the "Administer themes" checkbox should be checked
-    And the "Administer actions" checkbox should be checked
-    And the "access administration pages" checkbox should be checked
-    And the "access site in maintenance mode" checkbox should be checked
-    And the "View the administration theme" checkbox should be checked
-    And the "access site reports" checkbox should be checked
-    And the "administer taxonomy" checkbox should be checked
-    And the "edit terms in 1" checkbox should be checked
-    And the "delete terms in 1" checkbox should be checked
-    And the "edit terms in 2" checkbox should not be checked
-    And the "delete terms in 2" checkbox should not be checked
-    And the "Administer users" checkbox should be checked
-    And the "access user profiles" checkbox should be checked
-    And the "View User Actions" checkbox should be checked
-    And the "View any unpublished content" checkbox should be checked
-    And the "Administer views" checkbox should be checked
-    And the "access all views" checkbox should be checked
-    And the "access all webform results" checkbox should be checked
-    And the "Access own webform results" checkbox should be checked
-    And the "Edit all webform submissions" checkbox should be checked
-    And the "Delete all webform submissions" checkbox should be checked
-    And the "Access own webform submissions" checkbox should be checked
-    And the "Edit own webform submissions" checkbox should not be checked
-    And the "Delete own webform submissions" checkbox should not be checked
-    And the "set webform_clear times" checkbox should be checked
-    And the "View all unpublished content" checkbox should be checked
-    And the "Administer Workbench Moderation" checkbox should be checked
-    And the "bypass workbench moderation" checkbox should be checked
-    And the "View moderation history" checkbox should be checked
-    And the "view moderation messages" checkbox should be checked
-    And the "use workbench_moderation my drafts tab" checkbox should be checked
-    And the "use workbench_moderation needs review tab" checkbox should be checked
-    And the "moderate content from draft to needs_review" checkbox should not be checked
-    And the "moderate content from needs_review to draft" checkbox should not be checked
-    And the "moderate content from needs_review to published" checkbox should not be checked
-    And the "administer xmlsitemap" checkbox should be checked
+    And the "Site builder" role should have permission to:
+      """
+      then the "administer theme settings
+      administer bean types
+      administer beans
+      access bean overview
+      edit bean view mode
+      view bean page
+      administer bean settings
+      view bean revisions
+      create any basic_content bean
+      edit any basic_content bean
+      basic content: delete bean
+      create any image_and_text bean
+      edit any image_and_text bean
+      delete any image_and_text bean
+      administer blocks
+      administer contact forms
+      administer crumbs
+      admin_display_suite
+      access draggableviews
+      access event log
+      administer fields
+      bypass file access
+      administer files
+      administer google analytics
+      administer image styles
+      access broken links report
+      access own broken links report
+      administer maintenance mode
+      administer menu
+      administer meta tags
+      edit meta tags
+      bypass node access
+      administer content types
+      administer nodes
+      access content overview
+      view revisions
+      revert revisions
+      create webform content
+      edit any webform content
+      delete any webform content
+      use page manager
+      use panels dashboard
+      view pane admin links
+      administer pane access
+      use panels in place editing
+      change layouts in place editing
+      administer advanced pane settings
+      use panels caching features
+      use panel locks
+      use ipe with page manager
+      unblock expired accounts
+      force password change
+      administer url aliases
+      create url aliases
+      administer quicktabs
+      administer redirects
+      administer scheduler
+      override default scheduler time
+      administer search
+      administer search api
+      administer shield
+      administer themes
+      administer actions
+      access administration pages
+      access site in maintenance mode
+      view the administration theme
+      access site reports
+      administer taxonomy
+      edit terms in 1
+      delete terms in 1
+      administer users
+      access user profiles
+      view user actions
+      view any unpublished content
+      administer views
+      access all views
+      access all webform results
+      access own webform results
+      edit all webform submissions
+      delete all webform submissions
+      access own webform submissions
+      set webform_clear times
+      view all unpublished content
+      administer workbench moderation
+      bypass workbench moderation
+      view moderation history
+      view moderation messages
+      use workbench_moderation my drafts tab
+      use workbench_moderation needs review tab
+      administer xmlsitemap
+      """
+    And the "Site builder" role should not have permission to:
+      """
+      administer comments
+      add media from remote sources
+      edit own webform content
+      delete own webform content
+      assign all roles
+      assign content editor role
+      assign content approver role
+      assign site builder role
+      assign site editor role
+      administer shortcuts
+      customize shortcut links
+      switch shortcut sets
+      edit terms in 2
+      delete terms in 2
+      schedule publishing of nodes
+      edit own webform submissions
+      delete own webform submissions
+      moderate content from draft to needs_review
+      moderate content from needs_review to draft
+      moderate content from needs_review to published
+      """
 
-  @api @role
+  @api @role @wip
   Scenario: Check Site editor user permissions
     Given I am logged in as a user named "fred_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Site editor" row
-    Then the "Administer theme settings" checkbox should be checked
-    And the "Administer bean types" checkbox should not be checked
-    And the "Administer beans" checkbox should be checked
-    And the "access bean overview" checkbox should be checked
-    And the "edit bean view mode" checkbox should be checked
-    And the "View Bean page" checkbox should be checked
-    And the "Administer Bean Settings" checkbox should not be checked
-    And the "View Bean revisions" checkbox should be checked
-    And the "create any basic_content bean" checkbox should be checked
-    And the "edit any basic_content bean" checkbox should be checked
-    And the "Basic content: Delete Bean" checkbox should be checked
-    And the "create any image_and_text bean" checkbox should be checked
-    And the "edit any image_and_text bean" checkbox should be checked
-    And the "delete any image_and_text bean" checkbox should be checked
-    And the "Administer blocks" checkbox should be checked
-    And the "administer comments" checkbox should be checked
-    And the "administer contact forms" checkbox should be checked
-    And the "Administer Crumbs" checkbox should not be checked
-    And the "admin_display_suite" checkbox should not be checked
-    And the "Access draggableviews" checkbox should be checked
-    And the "Access event log" checkbox should be checked
-    And the "Administer fields" checkbox should not be checked
-    And the "Bypass file access" checkbox should be checked
-    And the "Administer files" checkbox should be checked
-    And the "Administer Google Analytics" checkbox should be checked
-    And the "Administer image styles" checkbox should not be checked
-    And the "Access broken links report" checkbox should be checked
-    And the "Access own broken links report" checkbox should be checked
-    And the "Administer Maintenance Mode" checkbox should be checked
-    And the "add media from remote sources" checkbox should be checked
-    And the "Administer menu" checkbox should be checked
-    And the "Administer meta tags" checkbox should be checked
-    And the "Edit meta tags" checkbox should be checked
-    And the "Bypass node access" checkbox should be checked
-    And the "Administer content types" checkbox should not be checked
-    And the "Administer nodes" should be checked
-    And the "Access content overview" checkbox should be checked
-    And the "View revisions" checkbox should be checked
-    And the "Revert revisions" checkbox should be checked
-    And the "create webform content" checkbox should be checked
-    And the "edit own webform content" checkbox should not be checked
-    And the "edit any webform content" checkbox should be checked
-    And the "delete own webform content" checkbox should not be checked
-    And the "delete any webform content" checkbox should be checked
-    And the "Use Page Manager" checkbox should be checked
-    And the "Use Panels Dashboard" checkbox should be checked
-    And the "view pane admin links" checkbox should be checked
-    And the "administer pane access" checkbox should be checked
-    And the "use panels in place editing" checkbox should be checked
-    And the "change layouts in place editing" checkbox should be checked
-    And the "administer advanced pane settings" checkbox should be checked
-    And the "use panels caching features" checkbox should be checked
-    And the "Use panel locks" checkbox should be checked
-    And the "use ipe with page manager" checkbox should be checked
-    And the "unblock expired accounts" checkbox should be checked
-    And the "Force password change" checkbox should be checked
-    And the "Administer URL aliases" checkbox should be checked
-    And the "create url aliases" checkbox should be checked
-    And the "Administer Quicktabs" checkbox should be checked
-    And the "administer redirects" checkbox should be checked
-    And the "Assign all roles" checkbox should not be checked
-    And the "Assign Content editor role" checkbox should be checked
-    And the "Assign Content approver role" checkbox should be checked
-    And the "Assign Site builder role" checkbox should be checked
-    And the "Assign Site editor role" checkbox should be checked
-    And the "Administer scheduler" checkbox should be checked
-    And the "schedule publishing of nodes" checkbox should not be checked
-    And the "Override default scheduler time" checkbox should be checked
-    And the "Administer search" checkbox should be checked
-    And the "Administer Search API" checkbox should be checked
-    And the "administer shield" checkbox should be checked
-    And the "Administer shortcuts" checkbox should be checked
-    And the "customize shortcut links" checkbox should be checked
-    And the "switch shortcut sets" checkbox should be checked
-    And the "Administer themes" checkbox should be checked
-    And the "Administer actions" checkbox should be checked
-    And the "access administration pages" checkbox should be checked
-    And the "access site in maintenance mode" checkbox should be checked
-    And the "View the administration theme" checkbox should be checked
-    And the "access site reports" checkbox should be checked
-    And the "administer taxonomy" checkbox should be checked
-    And the "edit terms in 1" checkbox should be checked
-    And the "delete terms in 1" checkbox should be checked
-    And the "edit terms in 2" checkbox should not be checked
-    And the "delete terms in 2" checkbox should not be checked
-    And the "Administer users" checkbox should be checked
-    And the "access user profiles" checkbox should be checked
-    And the "View User Actions" checkbox should be checked
-    And the "View any unpublished content" checkbox should be checked
-    And the "Administer views" checkbox should be checked
-    And the "access all views" checkbox should be checked
-    And the "access all webform results" checkbox should be checked
-    And the "Access own webform results" checkbox should be checked
-    And the "Edit all webform submissions" checkbox should be checked
-    And the "Delete all webform submissions" checkbox should be checked
-    And the "Access own webform submissions" checkbox should be checked
-    And the "Edit own webform submissions" checkbox should be checked
-    And the "Delete own webform submissions" checkbox should be checked
-    And the "set webform_clear times" checkbox should be checked
-    And the "View all unpublished content" checkbox should be checked
-    And the "Administer Workbench Moderation" checkbox should be checked
-    And the "bypass workbench moderation" checkbox should be checked
-    And the "View moderation history" checkbox should be checked
-    And the "view moderation messages" checkbox should be checked
-    And the "use workbench_moderation my drafts tab" checkbox should be checked
-    And the "use workbench_moderation needs review tab" checkbox should be checked
-    And the "moderate content from draft to needs_review" checkbox should be checked
-    And the "moderate content from needs_review to draft" checkbox should be checked
-    And the "moderate content from needs_review to published" checkbox should be checked
-    And the "administer xmlsitemap" checkbox should be checked
+    Then the "Site editor" role should have permission to:
+    """
+      administer theme settings
+      administer beans
+      access bean overview
+      edit bean view mode
+      view bean page
+      view bean revisions
+      create any basic_content bean
+      edit any basic_content bean
+      basic content: delete bean
+      create any image_and_text bean
+      edit any image_and_text bean
+      delete any image_and_text bean
+      administer blocks
+      administer comments
+      administer contact forms
+      access draggableviews
+      access event log
+      bypass file access
+      administer files
+      administer google analytics
+      access broken links report
+      access own broken links report
+      administer maintenance mode
+      add media from remote sources
+      administer menu
+      administer meta tags
+      edit meta tags
+      bypass node access
+      administer nodes
+      access content overview
+      view revisions
+      revert revisions
+      create webform content
+      edit any webform content
+      delete any webform content
+      use page manager
+      use panels dashboard
+      view pane admin links
+      administer pane access
+      use panels in place editing
+      change layouts in place editing
+      administer advanced pane settings
+      use panels caching features
+      use panel locks
+      use ipe with page manager
+      unblock expired accounts
+      force password change
+      administer url aliases
+      create url aliases
+      administer quicktabs
+      administer redirects
+      assign content editor role
+      assign content approver role
+      assign site builder role
+      assign site editor role
+      administer scheduler
+      override default scheduler time
+      administer search
+      administer search api
+      administer shield
+      administer shortcuts
+      customize shortcut links
+      switch shortcut sets
+      administer themes
+      administer actions
+      access administration pages
+      access site in maintenance mode
+      view the administration theme
+      access site reports
+      administer taxonomy
+      edit terms in 1
+      delete terms in 1
+      administer users
+      access user profiles
+      view user actions
+      view any unpublished content
+      administer views
+      access all views
+      access all webform results
+      access own webform results
+      edit all webform submissions
+      delete all webform submissions
+      access own webform submissions
+      edit own webform submissions
+      delete own webform submissions
+      set webform_clear times
+      view all unpublished content
+      administer workbench moderation
+      bypass workbench moderation
+      view moderation history
+      view moderation messages
+      use workbench_moderation my drafts tab
+      use workbench_moderation needs review tab
+      moderate content from draft to needs_review
+      moderate content from needs_review to draft
+      moderate content from needs_review to published
+      administer xmlsitemap
+      """
+    And the "Site editor" role should not have permission to:
+      """
+      administer fields
+      administer bean types
+      administer bean settings
+      administer crumbs
+      admin_display_suite
+      administer image styles
+      administer content types
+      edit own webform content
+      delete own webform content
+      assign all roles
+      schedule publishing of nodes
+      edit terms in 2
+      delete terms in 2
+  """
 
-  @api @role
+  @api @role @wip
   Scenario: Check Administrator user permissions
     Given I am logged in as a user named "gerry_perms" with the "administrator" role that doesn't force password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "administrator" row
-    Then the "Administer theme settings" checkbox should be checked
-    And the "Administer bean types" checkbox should be checked
-    And the "Administer beans" checkbox should be checked
-    And the "access bean overview" checkbox should be checked
-    And the "edit bean view mode" checkbox should be checked
-    And the "View Bean page" checkbox should be checked
-    And the "Administer Bean Settings" checkbox should be checked
-    And the "View Bean revisions" checkbox should be checked
-    And the "create any basic_content bean" checkbox should be checked
-    And the "edit any basic_content bean" checkbox should be checked
-    And the "Basic content: Delete Bean" checkbox should be checked
-    And the "create any image_and_text bean" checkbox should be checked
-    And the "edit any image_and_text bean" checkbox should be checked
-    And the "delete any image_and_text bean" checkbox should be checked
-    And the "Administer blocks" checkbox should be checked
-    And the "administer comments" checkbox should be checked
-    And the "administer contact forms" checkbox should be checked
-    And the "Administer Crumbs" checkbox should be checked
-    And the "admin_display_suite" checkbox should be checked
-    And the "Access draggableviews" checkbox should be checked
-    And the "Access event log" checkbox should be checked
-    And the "Administer fields" checkbox should be checked
-    And the "Bypass file access" checkbox should be checked
-    And the "Administer files" checkbox should be checked
-    And the "Administer Google Analytics" checkbox should be checked
-    And the "Administer image styles" checkbox should be checked
-    And the "Access broken links report" checkbox should be checked
-    And the "Access own broken links report" checkbox should be checked
-    And the "Administer Maintenance Mode" checkbox should be checked
-    And the "add media from remote sources" checkbox should be checked
-    And the "Administer menu" checkbox should be checked
-    And the "Administer meta tags" checkbox should be checked
-    And the "Edit meta tags" checkbox should be checked
-    And the "Bypass node access" checkbox should be checked
-    And the "Administer content types" checkbox should be checked
-    And the "Administer nodes" should be checked
-    And the "Access content overview" checkbox should be checked
-    And the "View revisions" checkbox should be checked
-    And the "Revert revisions" checkbox should be checked
-    And the "create webform content" checkbox should be checked
-    And the "edit own webform content" checkbox should be checked
-    And the "edit any webform content" checkbox should be checked
-    And the "delete own webform content" checkbox should be checked
-    And the "delete any webform content" checkbox should be checked
-    And the "Use Page Manager" checkbox should be checked
-    And the "Use Panels Dashboard" checkbox should be checked
-    And the "view pane admin links" checkbox should be checked
-    And the "administer pane access" checkbox should be checked
-    And the "use panels in place editing" checkbox should be checked
-    And the "change layouts in place editing" checkbox should be checked
-    And the "administer advanced pane settings" checkbox should be checked
-    And the "use panels caching features" checkbox should be checked
-    And the "Use panel locks" checkbox should be checked
-    And the "use ipe with page manager" checkbox should be checked
-    And the "unblock expired accounts" checkbox should be checked
-    And the "Force password change" checkbox should be checked
-    And the "Administer URL aliases" checkbox should be checked
-    And the "create url aliases" checkbox should be checked
-    And the "Administer Quicktabs" checkbox should be checked
-    And the "administer redirects" checkbox should be checked
-    And the "Assign all roles" checkbox should be checked
-    And the "Assign Content editor role" checkbox should be checked
-    And the "Assign Content approver role" checkbox should be checked
-    And the "Assign Site builder role" checkbox should be checked
-    And the "Assign Site editor role" checkbox should be checked
-    And the "Administer scheduler" checkbox should be checked
-    And the "schedule publishing of nodes" checkbox should be checked
-    And the "Override default scheduler time" checkbox should be checked
-    And the "Administer search" checkbox should be checked
-    And the "Administer Search API" checkbox should be checked
-    And the "administer shield" checkbox should be checked
-    And the "Administer shortcuts" checkbox should be checked
-    And the "customize shortcut links" checkbox should be checked
-    And the "switch shortcut sets" checkbox should be checked
-    And the "Administer themes" checkbox should be checked
-    And the "Administer actions" checkbox should be checked
-    And the "access administration pages" checkbox should be checked
-    And the "access site in maintenance mode" checkbox should be checked
-    And the "View the administration theme" checkbox should be checked
-    And the "access site reports" checkbox should be checked
-    And the "administer taxonomy" checkbox should be checked
-    And the "edit terms in 1" checkbox should be checked
-    And the "delete terms in 1" checkbox should be checked
-    And the "edit terms in 2" checkbox should not be checked
-    And the "delete terms in 2" checkbox should not be checked
-    And the "Administer users" checkbox should be checked
-    And the "access user profiles" checkbox should be checked
-    And the "View User Actions" checkbox should be checked
-    And the "View any unpublished content" checkbox should be checked
-    And the "Administer views" checkbox should be checked
-    And the "access all views" checkbox should be checked
-    And the "access all webform results" checkbox should be checked
-    And the "Access own webform results" checkbox should be checked
-    And the "Edit all webform submissions" checkbox should be checked
-    And the "Delete all webform submissions" checkbox should be checked
-    And the "Access own webform submissions" checkbox should be checked
-    And the "Edit own webform submissions" checkbox should be checked
-    And the "Delete own webform submissions" checkbox should be checked
-    And the "set webform_clear times" checkbox should be checked
-    And the "View all unpublished content" checkbox should be checked
-    And the "Administer Workbench Moderation" checkbox should be checked
-    And the "bypass workbench moderation" checkbox should be checked
-    And the "View moderation history" checkbox should be checked
-    And the "view moderation messages" checkbox should be checked
-    And the "use workbench_moderation my drafts tab" checkbox should be checked
-    And the "use workbench_moderation needs review tab" checkbox should be checked
-    And the "moderate content from draft to needs_review" checkbox should be checked
-    And the "moderate content from needs_review to draft" checkbox should be checked
-    And the "moderate content from needs_review to published" checkbox should be checked
-    And the "administer xmlsitemap" checkbox should be checked
+    Then the "administrator" role should have permission to:
+    """
+      administer theme settings
+      administer bean types
+      administer beans
+      access bean overview
+      edit bean view mode
+      view bean page
+      administer bean settings
+      view bean revisions
+      create any basic_content bean
+      edit any basic_content bean
+      basic content: delete bean
+      create any image_and_text bean
+      edit any image_and_text bean
+      delete any image_and_text bean
+      administer blocks
+      administer comments
+      administer contact forms
+      administer crumbs
+      admin_display_suite
+      access draggableviews
+      access event log
+      administer fields
+      bypass file access
+      administer files
+      administer google analytics
+      administer image styles
+      access broken links report
+      access own broken links report
+      administer maintenance mode
+      add media from remote sources
+      administer menu
+      administer meta tags
+      edit meta tags
+      bypass node access
+      administer content types
+      administer nodes
+      access content overview
+      view revisions
+      revert revisions
+      create webform content
+      edit own webform content
+      edit any webform content
+      delete own webform content
+      delete any webform content
+      use page manager
+      use panels dashboard
+      view pane admin links
+      administer pane access
+      use panels in place editing
+      change layouts in place editing
+      administer advanced pane settings
+      use panels caching features
+      use panel locks
+      use ipe with page manager
+      unblock expired accounts
+      force password change
+      administer url aliases
+      create url aliases
+      administer quicktabs
+      administer redirects
+      assign all roles
+      assign content editor role
+      assign content approver role
+      assign site builder role
+      assign site editor role
+      administer scheduler
+      schedule publishing of nodes
+      override default scheduler time
+      administer search
+      administer search api
+      administer shield
+      administer shortcuts
+      customize shortcut links
+      switch shortcut sets
+      administer themes
+      administer actions
+      access administration pages
+      access site in maintenance mode
+      view the administration theme
+      access site reports
+      administer taxonomy
+      edit terms in 1
+      delete terms in 1
+      administer users
+      access user profiles
+      view user actions
+      view any unpublished content
+      administer views
+      access all views
+      access all webform results
+      access own webform results
+      edit all webform submissions
+      delete all webform submissions
+      access own webform submissions
+      edit own webform submissions
+      delete own webform submissions
+      set webform_clear times
+      view all unpublished content
+      administer workbench moderation
+      bypass workbench moderation
+      view moderation history
+      view moderation messages
+      use workbench_moderation my drafts tab
+      use workbench_moderation needs review tab
+      moderate content from draft to needs_review
+      moderate content from needs_review to draft
+      moderate content from needs_review to published
+      administer xmlsitemap
+      """
+    And the "administrator" role should have permission to:
+      """
+      edit terms in 2
+      delete terms in 2
+      """
