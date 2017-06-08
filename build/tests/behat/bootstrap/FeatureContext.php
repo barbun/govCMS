@@ -66,12 +66,12 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Creates and authenticates a user with the given permission.
    *
-   * @Given /^I am logged in as a user with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
+   * @Given /^I am logged in as a user (?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
    */
-  public function assertAuthenticatedWithPermission($permissions) {
+  public function assertAuthenticatedWithPermission($username, $permissions) {
     // Create user.
     $user = (object) array(
-      'name' => $this->getRandom()->name(8),
+      'name' => !empty($username) ? $username : $this->getRandom()->name(8),
       'pass' => $this->getRandom()->name(16),
     );
     $user->mail = "{$user->name}@example.com";
@@ -298,30 +298,6 @@ JS;
     else {
       throw new \InvalidArgumentException(sprintf('No such username %s', $username));
     }
-  }
-
-  /**
-   * Asserts that an element, specified by CSS selector, exists.
-   *
-   * @param string $selector
-   *   The CSS selector to search for.
-   *
-   * @Then the element :selector should exist
-   */
-  public function theElementShouldExist($selector) {
-    $this->assertSession()->elementExists('css', $selector);
-  }
-
-  /**
-   * Asserts that an element, specified by CSS selector, does not exist.
-   *
-   * @param string $selector
-   *   The CSS selector to search for.
-   *
-   * @Then the element :selector should not exist
-   */
-  public function theElementShouldNotExist($selector) {
-    $this->assertSession()->elementNotExists('css', $selector);
   }
 
 }

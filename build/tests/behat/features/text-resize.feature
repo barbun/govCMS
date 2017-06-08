@@ -8,11 +8,11 @@ Feature: Text resize
   Scenario: Text resize links are present on a page
     Given I am an anonymous user
     When I go to homepage
-    Then the element ".block-govcms-text-resize" should exist
+    Then I should see a ".block-govcms-text-resize" element
     And the ".block-govcms-text-resize" element should contain "Smaller text"
     And the ".block-govcms-text-resize" element should contain "Larger text"
     And the ".block-govcms-text-resize" element should contain "Reset text size"
     When I click "Larger text"
-    Then the element "body.large-fonts" should exist
+    Then I should see a "body.large-fonts" element
     When I click "Reset text size"
-    Then the element "body.large-fonts" should not exist
+    Then I should not see a "body.large-fonts" element
