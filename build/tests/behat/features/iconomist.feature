@@ -26,7 +26,8 @@ Feature: Iconomist
     And the cache has been cleared
     And I am on the homepage
     Then the response should contain "acquia.ico\" type=\"image/vnd.microsoft.icon\" sizes=\"100x200\""
-    And the response should contain "<link rel=\"apple-touch-icon\" href=\"http://govcms.local/themes/stark/logo.png\" type=\"image/png\" sizes=\"30x40\">"
+    And the response should contain "<link rel=\"apple-touch-icon\""
+    And the response should contain "/themes/stark/logo.png\" type=\"image/png\" sizes=\"30x40\">"
     And I am logged in as a user with the "administer theme settings" permission and don't need a password change
     When I go to "/admin/appearance/settings/"
     And I press "Remove icon"
