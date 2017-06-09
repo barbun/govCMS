@@ -30,6 +30,9 @@ Feature: Iconomist
     And I am logged in as a user with the "administer theme settings" permission and don't need a password change
     When I go to "/admin/appearance/settings/"
     And I press "Remove icon"
+    And I wait for AJAX to finish
     And I press "Remove icon"
+    And I wait for AJAX to finish
     And I press "Save configuration"
     Then the response should not contain "acquia.ico\" type=\"image/vnd.microsoft.icon\" sizes=\"100x200\""
+    And the response should not contain "themes/stark/logo.png\" type=\"image/png\" sizes=\"30x40\">"
