@@ -279,7 +279,7 @@ JS;
   }
 
   /**
-   * Asserts that a role as a set of permissions.
+   * Asserts that a role has a set of permissions.
    *
    * @param string $rid
    *   The role ID.
