@@ -108,7 +108,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Creates and authenticates a user with the given permission.
    *
-   * @Given /^I am logged in as a user (?:|named )(?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
+   * @Given /^I am logged in as a user (?:|named "(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
    */
   public function assertAuthenticatedWithPermission($username, $permissions) {
     // Create user.
