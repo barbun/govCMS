@@ -26,13 +26,7 @@ default:
       drush:
         root: ../../docroot
       region_map:
-        page_top: 'div.region-page-top'
-        header: '#header'
-        navigation_bar: 'div.region-navigation'
-        content: '#content'
         sidebar_second: 'section.region-sidebar-second'
-        footer: 'footer.region-footer'
-        page_bottom: 'div.region-page-bottom'
 
 # Separate profile for testing using the Drupal API driver.
 drupal:
