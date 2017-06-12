@@ -71,11 +71,11 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     // Check if a user with this role is already logged in.
     if (!$this->loggedInWithRole($role)) {
       // Create user (and project)
-      $user = (object) [
+      $user = (object) array(
         'name' => !empty($username) ? $username : $this->getRandom()->name(8),
         'pass' => $this->getRandom()->name(16),
         'role' => $role,
-      ];
+      );
       $user->mail = "{$user->name}@example.com";
 
       $this->userCreate($user);
