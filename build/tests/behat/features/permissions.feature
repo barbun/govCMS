@@ -1,7 +1,7 @@
 Feature: Permissions
   Check that permissions are as expected.
 
-  @api @role @drupal @wip
+  @api @role @drupal
   Scenario: Check anonymous user permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
@@ -138,9 +138,9 @@ Feature: Permissions
       administer xmlsitemap
       """
 
-  @api @role @wip
+  @api @role @drupal
   Scenario: Check authenticated user permissions
-    Given I am logged in as a user named "betty_perms" with the "administrator" role that doesn't force password change
+    Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "authenticated user" row
     And the "authenticated user" role should have permission to:
@@ -273,9 +273,9 @@ Feature: Permissions
       administer xmlsitemap
       """
 
-  @api @role @wip
+  @api @role @drupal
   Scenario: Check Content editor user permissions
-    Given I am logged in as a user named "christine_perms" with the "administrator" role that doesn't force password change
+    Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Content editor" row
     Then the "Content editor" role should have permission to:
@@ -395,9 +395,9 @@ Feature: Permissions
       administer xmlsitemap
       """
 
-  @api @role @wip
+  @api @role @drupal
   Scenario: Check Content approver user permissions
-    Given I am logged in as a user named "daniel_perms" with the "administrator" role that doesn't force password change
+    Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Content approver" row
     Then the "Content editor" role should have permission to:
@@ -517,9 +517,9 @@ Feature: Permissions
       administer xmlsitemap
       """
 
-  @api @role @wip
+  @api @role  @drupal
   Scenario: Check Site Builder user permissions
-    Given I am logged in as a user named "eric_perms" with the "administrator" role that doesn't force password change
+    Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Site builder" row
     And the "Site builder" role should have permission to:
@@ -639,9 +639,9 @@ Feature: Permissions
       moderate content from needs_review to published
       """
 
-  @api @role @wip
+  @api @role @drupal
   Scenario: Check Site editor user permissions
-    Given I am logged in as a user named "fred_perms" with the "administrator" role that doesn't force password change
+    Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Site editor" row
     Then the "Site editor" role should have permission to:
@@ -761,9 +761,9 @@ Feature: Permissions
       delete terms in 2
   """
 
-  @api @role @wip
+  @api @role @drupal
   Scenario: Check Administrator user permissions
-    Given I am logged in as a user named "gerry_perms" with the "administrator" role that doesn't force password change
+    Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "administrator" row
     Then the "administrator" role should have permission to:
