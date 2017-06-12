@@ -55,6 +55,10 @@ drupal:
           drupal_root: ../../docroot
         drush:
           root: ../../docroot
+        selectors:
+          message_selector: '.messages'
+          error_message_selector: '.messages.error'
+          success_message_selector: '.messages.status'
 
 
 imports:

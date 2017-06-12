@@ -7,6 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
+use Behat\Mink\Element\Element;
 
 /**
  * Defines application features from the specific context.
@@ -33,40 +34,81 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Creates and authenticates a user with the given role via Drush.
+   * Retrieve a table row with two specified texts from a given element.
    *
-   * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role that doesn't force password change$/
+   * @param \Behat\Mink\Element\Element $element
+   *   The page object to search within.
+   * @param string $rowText
+   *   The text to search for to identify the table row(s).
+   * @param string $findText
+   *   The matching text to find in the table row(s).
+   *
+   * @return \Behat\Mink\Element\NodeElement
+   *   The table row, if found.
+   *
+   * @throws \Exception
+   *   When no such match is found.
+   */
+  public function getTableRowWithText(Element $element, $rowText, $findText) {
+    $rows = $element->findAll('css', sprintf('table tr:contains("%s")', $rowText));
+    if (empty($rows)) {
+      throw new \Exception(sprintf('No rows with text "%s" found on the page %s', $rowText, $this->getSession()->getCurrentUrl()));
+    }
+    foreach ($rows as $row) {
+      if (strpos($row->getText(), $findText) !== FALSE) {
+        return $row;
+      }
+    }
+    throw new \Exception(sprintf('Failed to find a row with text "%s" that also contains "%s" on the page %s', $rowText, $findText, $this->getSession()->getCurrentUrl()));
+  }
+
+  /**
+   * Creates and authenticates a user with the given role.
+   *
+   * @Given /^I am logged in as a user (?:|named "(?P<username>[^"]*)" )with the "(?P<role>[^"]*)" role that doesn't force password change$/
    */
   public function assertAuthenticatedByRole($username, $role) {
-    // Create user.
-    $user = (object) array(
-      'name' => $username,
-      'pass' => $this->getRandom()->name(16),
-      'role' => $role,
-      'roles' => array($role),
-    );
-    $user->mail = "{$user->name}@example.com";
-    $this->userCreate($user);
+    // Check if a user with this role is already logged in.
+    if (!$this->loggedInWithRole($role)) {
+      // Create user (and project)
+      $user = (object) [
+        'name' => !empty($username) ? $username : $this->getRandom()->name(8),
+        'pass' => $this->getRandom()->name(16),
+        'role' => $role,
+      ];
+      $user->mail = "{$user->name}@example.com";
 
-    // Find the user.
-    $account = user_load_by_name($user->name);
+      $this->userCreate($user);
 
-    // Remove the "Force password change on next login" record.
-    db_delete('password_policy_force_change')
-      ->condition('uid', $account->uid)
-      ->execute();
-    db_delete('password_policy_expiration')
-      ->condition('uid', $account->uid)
-      ->execute();
+      $roles = explode(',', $role);
+      $roles = array_map('trim', $roles);
+      foreach ($roles as $role) {
+        if (!in_array(strtolower($role), array('authenticated', 'authenticated user'))) {
+          // Only add roles other than 'authenticated user'.
+          $this->getDriver()->userAddRole($user, $role);
+        }
+      }
 
-    // Login.
-    $this->login();
+      // Find the user.
+      $account = user_load_by_name($user->name);
+
+      // Remove the "Force password change on next login" record.
+      db_delete('password_policy_force_change')
+        ->condition('uid', $account->uid)
+        ->execute();
+      db_delete('password_policy_expiration')
+        ->condition('uid', $account->uid)
+        ->execute();
+
+      // Login.
+      $this->login();
+    }
   }
 
   /**
    * Creates and authenticates a user with the given permission.
    *
-   * @Given /^I am logged in as a user (?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
+   * @Given /^I am logged in as a user (?:|named )(?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
    */
   public function assertAuthenticatedWithPermission($username, $permissions) {
     // Create user.
@@ -123,6 +165,22 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       $user->mail = "{$user->name}@example.com";
       // Create a new user.
       $this->userCreate($user);
+    }
+  }
+
+  /**
+   * Ensure that a user account is deleted.
+   *
+   * @Given /^a user named "(?P<username>[^"]*)" is deleted$/
+   */
+  public function assertAccountDeleted($username) {
+    $user = user_load_by_name($username);
+    // Create a new user.
+    if (!empty($user)) {
+      $this->getDriver()->userDelete($user);
+    }
+    else {
+      throw new \Exception('No such user');
     }
   }
 
@@ -298,6 +356,29 @@ JS;
     else {
       throw new \InvalidArgumentException(sprintf('No such username %s', $username));
     }
+  }
+
+  /**
+   * Takes a screenshot for debugging purposes.
+   *
+   * @param string $filename
+   *   The name of the screenshot file.
+   *
+   * @When I take a screenshot named :filename
+   */
+  public function takeScreenshot($filename) {
+    $screenshot = $this->getSession()->getDriver()->getScreenshot();
+    // If this file is in tests/features/bootstrap, the screenshot be in tests.
+    file_put_contents(__DIR__ . '../../' . $filename . '.png', $screenshot);
+  }
+
+  /**
+   * Find text in the table rows containing given text.
+   *
+   * @Then I should see (the text ):text in a table row with (the text ):rowText
+   */
+  public function assertTextInTableRowWithText($text, $rowText) {
+    $this->getTableRowWithText($this->getSession()->getPage(), $rowText, $text);
   }
 
 }
