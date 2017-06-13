@@ -24,7 +24,7 @@ Feature: Permissions
     And the "anonymous user" role should not have permission to:
       """
       administer theme settings checkbox
-      administer search api
+      administer search_api
       administer bean types
       administer beans
       access bean overview
@@ -34,7 +34,7 @@ Feature: Permissions
       view bean revisions
       create any basic_content bean
       edit any basic_content bean
-      basic content: delete bean
+      delete any basic_content bean
       create any image_and_text bean
       edit any image_and_text bean
       delete any image_and_text bean
@@ -79,7 +79,7 @@ Feature: Permissions
       change layouts in place editing
       administer advanced pane settings
       use panels caching features
-      use panel locks
+      use panels locks
       use ipe with page manager
       unblock expired accounts
       force password change
@@ -88,10 +88,10 @@ Feature: Permissions
       administer quicktabs
       administer redirects
       assign all roles
-      assign content editor role
-      assign content approver role
-      assign site builder role
-      assign site editor role
+      assign Content editor role
+      assign Content approver role
+      assign Site builder role
+      assign Site editor role
       administer scheduler
       schedule publishing of nodes
       override default scheduler time
@@ -145,14 +145,14 @@ Feature: Permissions
     And I click "edit permissions" in the "authenticated user" row
     And the "authenticated user" role should have permission to:
       """
-      basic content: view bean
-      image and text: view bean
+      view any basic_content bean
+      view any image_and_text bean
       access comments
       post comments
       skip comment approval
       edit own comments
-      use contextual links
-      use the rich text text format
+      access contextual links
+      use text format rich_text
       access content
       view own unpublished content
       search content
@@ -171,7 +171,7 @@ Feature: Permissions
       view bean revisions
       create any basic_content bean
       edit any basic_content bean
-      basic content: delete bean
+      delete any basic_content bean
       create any image_and_text bean
       edit any image_and_text bean
       delete any image_and_text bean
@@ -213,7 +213,7 @@ Feature: Permissions
       change layouts in place editing
       administer advanced pane settings
       use panels caching features
-      use panel locks
+      use panels locks
       use ipe with page manager
       unblock expired accounts
       force password change
@@ -222,15 +222,15 @@ Feature: Permissions
       administer quicktabs
       administer redirects
       assign all roles
-      assign content editor role
-      assign content approver role
-      assign site builder role
-      assign site editor role
+      assign Content editor role
+      assign Content approver role
+      assign Site builder role
+      assign Site editor role
       administer scheduler
       schedule publishing of nodes
       override default scheduler time
       administer search
-      administer search api
+      administer search_api
       administer shield
       administer shortcuts
       customize shortcut links
@@ -282,7 +282,7 @@ Feature: Permissions
       """
       create any basic_content bean
       edit any basic_content bean
-      basic content: delete bean
+      delete any basic_content bean
       create any image_and_text bean
       edit any image_and_text bean
       delete any image_and_text bean
@@ -352,7 +352,7 @@ Feature: Permissions
       change layouts in place editing
       administer advanced pane settings
       use panels caching features
-      use panel locks
+      use panels locks
       use ipe with page manager
       unblock expired accounts
       force password change
@@ -361,14 +361,14 @@ Feature: Permissions
       administer quicktabs
       administer redirects
       assign all roles
-      assign content editor role
-      assign content approver role
-      assign site builder role
-      assign site editor role
+      assign Content editor role
+      assign Content approver role
+      assign Site builder role
+      assign Site editor role
       administer scheduler
       schedule publishing of nodes
       administer search
-      administer search api
+      administer search_api
       administer shield
       administer shortcuts
       customize shortcut links
@@ -404,7 +404,7 @@ Feature: Permissions
       """
       create any basic_content bean
       edit any basic_content bean
-      basic content: delete bean
+      delete any basic_content bean
       create any image_and_text bean
       edit any image_and_text bean
       delete any image_and_text bean
@@ -475,7 +475,7 @@ Feature: Permissions
       change layouts in place editing
       administer advanced pane settings
       use panels caching features
-      use panel locks
+      use panels locks
       use ipe with page manager
       unblock expired accounts
       force password change
@@ -484,14 +484,14 @@ Feature: Permissions
       administer quicktabs
       administer redirects
       assign all roles
-      assign content editor role
-      assign content approver role
-      assign site builder role
-      assign site editor role
+      assign Content editor role
+      assign Content approver role
+      assign Site builder role
+      assign Site editor role
       administer scheduler
       schedule publishing of nodes
       administer search
-      administer search api
+      administer search_api
       administer shield
       administer shortcuts
       customize shortcut links
@@ -524,7 +524,7 @@ Feature: Permissions
     And I click "edit permissions" in the "Site builder" row
     And the "Site builder" role should have permission to:
       """
-      then the "administer theme settings
+      administer theme settings
       administer bean types
       administer beans
       access bean overview
@@ -534,7 +534,7 @@ Feature: Permissions
       view bean revisions
       create any basic_content bean
       edit any basic_content bean
-      basic content: delete bean
+      delete any basic_content bean
       create any image_and_text bean
       edit any image_and_text bean
       delete any image_and_text bean
@@ -572,7 +572,7 @@ Feature: Permissions
       change layouts in place editing
       administer advanced pane settings
       use panels caching features
-      use panel locks
+      use panels locks
       use ipe with page manager
       unblock expired accounts
       force password change
@@ -583,7 +583,7 @@ Feature: Permissions
       administer scheduler
       override default scheduler time
       administer search
-      administer search api
+      administer search_api
       administer shield
       administer themes
       administer actions
@@ -622,10 +622,10 @@ Feature: Permissions
       edit own webform content
       delete own webform content
       assign all roles
-      assign content editor role
-      assign content approver role
-      assign site builder role
-      assign site editor role
+      assign Content editor role
+      assign Content approver role
+      assign Site builder role
+      assign Site editor role
       administer shortcuts
       customize shortcut links
       switch shortcut sets
@@ -646,15 +646,15 @@ Feature: Permissions
     And I click "edit permissions" in the "Site editor" row
     Then the "Site editor" role should have permission to:
     """
-      administer theme settings
       administer beans
+      administer theme settings
       access bean overview
       edit bean view mode
       view bean page
       view bean revisions
       create any basic_content bean
       edit any basic_content bean
-      basic content: delete bean
+      delete any basic_content bean
       create any image_and_text bean
       edit any image_and_text bean
       delete any image_and_text bean
@@ -689,7 +689,7 @@ Feature: Permissions
       change layouts in place editing
       administer advanced pane settings
       use panels caching features
-      use panel locks
+      use panels locks
       use ipe with page manager
       unblock expired accounts
       force password change
@@ -697,14 +697,14 @@ Feature: Permissions
       create url aliases
       administer quicktabs
       administer redirects
-      assign content editor role
-      assign content approver role
-      assign site builder role
-      assign site editor role
+      assign Content editor role
+      assign Content approver role
+      assign Site builder role
+      assign Site editor role
       administer scheduler
       override default scheduler time
       administer search
-      administer search api
+      administer search_api
       administer shield
       administer shortcuts
       customize shortcut links
@@ -778,7 +778,7 @@ Feature: Permissions
       view bean revisions
       create any basic_content bean
       edit any basic_content bean
-      basic content: delete bean
+      delete any basic_content bean
       create any image_and_text bean
       edit any image_and_text bean
       delete any image_and_text bean
@@ -820,7 +820,7 @@ Feature: Permissions
       change layouts in place editing
       administer advanced pane settings
       use panels caching features
-      use panel locks
+      use panels locks
       use ipe with page manager
       unblock expired accounts
       force password change
@@ -829,15 +829,15 @@ Feature: Permissions
       administer quicktabs
       administer redirects
       assign all roles
-      assign content editor role
-      assign content approver role
-      assign site builder role
-      assign site editor role
+      assign Content editor role
+      assign Content approver role
+      assign Site builder role
+      assign Site editor role
       administer scheduler
       schedule publishing of nodes
       override default scheduler time
       administer search
-      administer search api
+      administer search_api
       administer shield
       administer shortcuts
       customize shortcut links
