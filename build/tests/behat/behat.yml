@@ -25,6 +25,8 @@ default:
         drupal_root: ../../docroot
       drush:
         root: ../../docroot
+      region_map:
+        sidebar_second: 'section.region-sidebar-second'
 
 # Separate profile for testing using the Drupal API driver.
 drupal:
