@@ -34,32 +34,26 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Retrieve a table row with two specified texts from a given element.
+   * Retrieve a table row(s) containing specified element id|name|label|value.
    *
    * @param \Behat\Mink\Element\Element $element
    *   The page object to search within.
-   * @param string $rowText
+   * @param string $rowElement
    *   The text to search for to identify the table row(s).
-   * @param string $findText
-   *   The matching text to find in the table row(s).
    *
    * @return \Behat\Mink\Element\NodeElement
-   *   The table row, if found.
+   *   The table rows, if found.
    *
    * @throws \Exception
    *   When no such match is found.
    */
-  public function getTableRowWithText(Element $element, $rowText, $findText) {
-    $rows = $element->findAll('css', sprintf('table tr:contains("%s")', $rowText));
+  public function getTableRowWithElement(Element $element, $rowElement) {
+    $rows = $element->findAll('css', sprintf('table tr:contains("%s")', $rowElement));
     if (empty($rows)) {
-      throw new \Exception(sprintf('No rows with text "%s" found on the page %s', $rowText, $this->getSession()->getCurrentUrl()));
+      throw new \Exception(sprintf('No rows containing the element with id|name|label|value "%s" found on the page %s', $rowElement, $this->getSession()->getCurrentUrl()));
     }
-    foreach ($rows as $row) {
-      if (strpos($row->getText(), $findText) !== FALSE) {
-        return $row;
-      }
-    }
-    throw new \Exception(sprintf('Failed to find a row with text "%s" that also contains "%s" on the page %s', $rowText, $findText, $this->getSession()->getCurrentUrl()));
+
+    return $rows;
   }
 
   /**
@@ -171,11 +165,12 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Ensure that a user account is deleted.
    *
-   * @Given /^a user named "(?P<username>[^"]*)" is deleted$/
+   * @When /^a user named "(?P<username>[^"]*)" is deleted$/
    */
   public function assertAccountDeleted($username) {
+    // Find the user.
     $user = user_load_by_name($username);
-    // Create a new user.
+    // If such user exists then delete it.
     if (!empty($user)) {
       $this->getDriver()->userDelete($user);
     }
@@ -373,12 +368,19 @@ JS;
   }
 
   /**
-   * Find text in the table rows containing given text.
+   * Find an element in the table rows containing given element.
    *
-   * @Then I should see (the text ):text in a table row with (the text ):rowText
+   * @Then I should see (the text ):findElement in a table row containing (the text ):rowElement
    */
-  public function assertTextInTableRowWithText($text, $rowText) {
-    $this->getTableRowWithText($this->getSession()->getPage(), $rowText, $text);
+  public function assertTextInTableRowWithElement($findText, $rowElement) {
+    $rows = $this->getTableRowWithElement($this->getSession()->getPage(), $rowElement);
+    // Loop through all found rows and try to find our element.
+    foreach ($rows as $row) {
+      if (strpos($row->getText(), $findText) !== FALSE) {
+        return TRUE;
+      }
+    }
+    throw new \Exception(sprintf('Failed to find a row with the element "%s" that also contains "%s" on the page %s', $rowElement, $findText, $this->getSession()->getCurrentUrl()));
   }
 
 }

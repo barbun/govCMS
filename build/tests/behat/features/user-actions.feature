@@ -21,15 +21,15 @@ Feature: User Actions
     And I press "Cancel account"
     Then I should see the success message containing "MyUser has been disabled."
     And I logout
-    Given a user named "MyUser" is deleted
-    When I am logged in as a user with the "Site editor" role that doesn't force password change
+    When a user named "MyUser" is deleted
+    Given I am logged in as a user with the "Site editor" role that doesn't force password change
     And I am on "/admin/reports/user-actions"
-    Then I should see "login" in a table row with the text "roman"
-    And I should see "logout" in a table row with the text "roman"
-    And I should see "login" in a table row with the text "barbun"
-    And I should see "logout" in a table row with the text "barbun"
-    And I should see "insert" in a table row with the text "User: MyUser"
-    And I should see "update" in a table row with the text "User: MyUser"
+    Then I should see "login" in a table row containing the text "roman"
+    And I should see "logout" in a table row containing the text "roman"
+    And I should see "login" in a table row containing the text "barbun"
+    And I should see "logout" in a table row containing the text "barbun"
+    And I should see "insert" in a table row containing the text "User: MyUser"
+    And I should see "update" in a table row containing the text "User: MyUser"
 
   @api @javascript @drupal
   Scenario: Perform typical node actions and verify that they are logged.
@@ -59,6 +59,6 @@ Feature: User Actions
     And I logout
     Given I am logged in as a user with the "Site editor" role that doesn't force password change
     And I am on "/admin/reports/user-actions"
-    Then I should see "insert" in a table row with the text "news_article: govCMS News"
-    And I should see "update" in a table row with the text "news_article: govCMS Updates"
-    And I should see "delete" in a table row with the text "news_article: govCMS Updates"
+    Then I should see "insert" in a table row containing the text "news_article: govCMS News"
+    And I should see "update" in a table row containing the text "news_article: govCMS Updates"
+    And I should see "delete" in a table row containing the text "news_article: govCMS Updates"
