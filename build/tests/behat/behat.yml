@@ -59,7 +59,8 @@ drupal:
           root: ../../docroot
         selectors:
           success_message_selector: '.messages.status'
-
+          message_selector: '.messages'
+          error_message_selector: '.messages.error'
 
 imports:
   - behat.govcms.yml
