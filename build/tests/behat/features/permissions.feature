@@ -143,7 +143,7 @@ Feature: Permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "authenticated user" row
-    And the "authenticated user" role should have permission to:
+    Then the "authenticated user" role should have permission to:
       """
       view any basic_content bean
       view any image_and_text bean
@@ -400,7 +400,7 @@ Feature: Permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Content approver" row
-    Then the "Content editor" role should have permission to:
+    Then the "Content approver" role should have permission to:
       """
       create any basic_content bean
       edit any basic_content bean
@@ -522,7 +522,7 @@ Feature: Permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
     And I click "edit permissions" in the "Site builder" row
-    And the "Site builder" role should have permission to:
+    Then the "Site builder" role should have permission to:
       """
       administer theme settings
       administer bean types
@@ -877,7 +877,7 @@ Feature: Permissions
       moderate content from needs_review to published
       administer xmlsitemap
       """
-    And the "administrator" role should have permission to:
+    And the "administrator" role should not have permission to:
       """
       edit terms in 2
       delete terms in 2
