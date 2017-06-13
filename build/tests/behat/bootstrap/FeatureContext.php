@@ -34,7 +34,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-<  * Clean the password state tables for a user.
+   * Clean the password state tables for a specific user.
    *
    * Remove any password history, expiration of flag forcing a password change
    * when they next log in.
@@ -116,50 +116,16 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Creates and authenticates a user with the given permissions.
-   *
-   * @param string $password
-   *   The password to assign to the user being created.
-   * @param string $permissions
-   *   A comma separated string containing permissions to be assigned.
-   *
-   * @Given /^I am logged in with the password "(?P<password>[^"]*)" and the "(?P<role>[^"]*)" permissions$/
-   */
-  public function assertAuthenticatedWithPasswordAndPermission($password, $permissions) {
-
-    $user = (object) array(
-      'name' => $this->getRandom()->name(8),
-      'pass' => $password,
-    );
-    $user->mail = "{$user->name}@example.com";
-    // Create a new user.
-    $this->userCreate($user);
-
-    // Create and assign a temporary role with given permissions.
-    $permissions = explode(',', $permissions);
-    $rid = $this->getDriver()->roleCreate($permissions);
-    $this->getDriver()->userAddRole($user, $rid);
-
-    // Find the user.
-    $account = user_load_by_name($user->name);
-
-    // Remove the "Force password change on next login" record.
-    $this->cleanPasswordState($account->uid);
-
-    $this->login();
-
-  }
-
-  /**
    * Creates and authenticates a user with the given permission.
    *
    * @Given /^I am logged in as a user (?:|named )(?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
+   * @Given /^I am logged in as a user with the password "(?P<password>[^"]*)" and the "(?P<permissions>[^"]*)" permission$/
    */
-  public function assertAuthenticatedWithPermission($username, $permissions) {
+  public function assertAuthenticatedWithPermission($username = '', $password = '', $permissions) {
     // Create user.
     $user = (object) array(
       'name' => !empty($username) ? $username : $this->getRandom()->name(8),
-      'pass' => $this->getRandom()->name(16),
+      'pass' => !empty($password) ? $password : $this->getRandom()->name(16),
     );
     $user->mail = "{$user->name}@example.com";
     $this->userCreate($user);
@@ -172,7 +138,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
 
     // Find the user.
     $account = user_load_by_name($user->name);
-
     // Remove the "Force password change on next login" record.
     $this->cleanPasswordState($account->uid);
 
@@ -278,13 +243,12 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Checks that a checkbox in a row containing some text is ticked.
+   * Checks that a checkbox in a row containing specific text is ticked.
    *
    * Lets you provide a piece of text to use in locating a table row and another
-   * piece of text to locate a checkbox within that row, then test whether the
+   * piece of text to find a checkbox within that row, then test whether the
    * checkbox is ticked. The use of text avoids reliance on a table having
-   * particular content and ordering of that content and makes the test much
-   * more readable:
+   * particular content order and makes the test much more readable:
    *
    * "And the checkbox named "enabled" in table row with text "Australian
    * Government ISM Policy (Strong)" should be checked".
@@ -297,34 +261,17 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @Then the checkbox named :rowMatch in table row with text :textMatch should be checked
    */
   public function theCheckboxNamedInTableRowWithTextShouldBeChecked($rowMatch, $textMatch) {
-    // Locate the table row containing $rowMatch.
-    $row = $this->getSession()->getPage()->find('css', sprintf('table tr:contains("%s")', $textMatch));
-    if (!$row) {
-      throw new \Exception(sprintf("No table row with text '%s' found on the page '%s'.",
-        $textMatch,
-        $this->getSession()->getCurrentUrl()));
-    }
-
-    // There can be zero or more checkboxes in the table. We take the first one
-    // (if any) that matches $textMatch.
-    $checkboxes = $row->findAll('css', "input[type=checkbox]");
-    $found = FALSE;
-    foreach ($checkboxes as $checkbox) {
-      // Does this checkbox's ID match?
-      if (!((bool) preg_match('/' . preg_quote($rowMatch, '/') . '/ui', $checkbox->getAttribute('id')))) {
-        continue;
+    // Find the table rows containing $rowMatch.
+    $rows = $this->getTableRowWithElement($this->getSession()->getPage(), $textMatch);
+    // Loop through all found rows and try to find our element.
+    foreach ($rows as $row) {
+      $checkbox = $row->find('css', sprintf('[id*="%s"]', $rowMatch));
+      if (empty($checkbox)) {
+        throw new \Exception(sprintf('No checkbox named "%s" found in the table row with text "%s"', $rowMatch, $textMatch, $this->getSession()->getCurrentUrl()));
       }
       if (!$checkbox->isChecked()) {
         throw new \Exception(sprintf("Checkbox with id '%s' in a row containing '%s' was found but was not checked.", $textMatch, $rowMatch));
       }
-
-      $found = TRUE;
-      break;
-    }
-
-    // No matching checkbox found? Complain.
-    if (!$found) {
-      throw new \Exception(sprintf("Checkbox with id '%s' was not found in a row matching '%s'.", $textMatch, $rowMatch));
     }
   }
 
@@ -339,32 +286,17 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @Then the checkbox named :rowMatch in table row with text :textMatch should not be checked
    */
   public function theCheckboxNamedInTableRowWithTextShouldBeNotChecked($rowMatch, $textMatch) {
-    try {
-      $row = $this->getSession()->getPage()->find('css', sprintf('table tr:contains("%s")', $textMatch));
-    }
-    catch (Exception $e) {
-      throw new \Exception(sprintf("No table row with text '%s' found on the page '%s'.", $textMatch, $this->getSession()
-        ->getCurrentUrl()));
-    }
-
-    // There can be zero or more checkboxes. We take the first one (if any) that
-    // matches $textMatch.
-    $checkboxes = $row->findAll('css', "input[type=checkbox]");
-    $found = FALSE;
-    foreach ($checkboxes as $checkbox) {
-      if (!((bool) preg_match('/' . preg_quote($rowMatch, '/') . '/ui', $checkbox->getAttribute('id')))) {
-        continue;
+    // Find the table rows containing $rowMatch.
+    $rows = $this->getTableRowWithElement($this->getSession()->getPage(), $textMatch);
+    // Loop through all found rows and try to find our element.
+    foreach ($rows as $row) {
+      $checkbox = $row->find('css', sprintf('[id*="%s"]', $rowMatch));
+      if (empty($checkbox)) {
+        throw new \Exception(sprintf('No checkbox named "%s" found in the table row with text "%s"', $rowMatch, $textMatch, $this->getSession()->getCurrentUrl()));
       }
       if ($checkbox->isChecked()) {
         throw new \Exception(sprintf("Checkbox with id '%s' in a row containing '%s' was found but was checked.", $textMatch, $rowMatch));
       }
-
-      $found = TRUE;
-      break;
-    }
-
-    if (!$found) {
-      throw new \Exception(sprintf("Checkbox with id '%s' was not found in a row matching '%s'.", $textMatch, $rowMatch));
     }
   }
 
