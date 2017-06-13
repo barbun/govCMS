@@ -7,6 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
+use Behat\Mink\Element\Element;
 
 /**
  * Defines application features from the specific context.
@@ -33,7 +34,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Clean the password state tables for a user.
+<  * Clean the password state tables for a user.
    *
    * Remove any password history, expiration of flag forcing a password change
    * when they next log in.
@@ -42,11 +43,11 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    *   The user's uid.
    */
   private function cleanPasswordState($uid) {
-    $tables = [
+    $tables = array(
       'password_policy_force_change',
       'password_policy_expiration',
       'password_policy_history',
-    ];
+    );
 
     foreach ($tables as $table) {
       db_delete($table)
@@ -56,29 +57,62 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Creates and authenticates a user with the given role via Drush.
+   * Retrieve a table row(s) containing specified element id|name|label|value.
    *
-   * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role that doesn't force password change$/
+   * @param \Behat\Mink\Element\Element $element
+   *   The page object to search within.
+   * @param string $rowElement
+   *   The text to search for to identify the table row(s).
+   *
+   * @return \Behat\Mink\Element\NodeElement
+   *   The table rows, if found.
+   *
+   * @throws \Exception
+   *   When no such match is found.
+   */
+  public function getTableRowWithElement(Element $element, $rowElement) {
+    $rows = $element->findAll('css', sprintf('table tr:contains("%s")', $rowElement));
+    if (empty($rows)) {
+      throw new \Exception(sprintf('No rows containing the element with id|name|label|value "%s" found on the page %s', $rowElement, $this->getSession()->getCurrentUrl()));
+    }
+
+    return $rows;
+  }
+
+  /**
+   * Creates and authenticates a user with the given role.
+   *
+   * @Given /^I am logged in as a user (?:|named "(?P<username>[^"]*)" )with the "(?P<role>[^"]*)" role that doesn't force password change$/
    */
   public function assertAuthenticatedByRole($username, $role) {
-    // Create user.
-    $user = (object) array(
-      'name' => $username,
-      'pass' => $this->getRandom()->name(16),
-      'role' => $role,
-      'roles' => array($role),
-    );
-    $user->mail = "{$user->name}@example.com";
-    $this->userCreate($user);
+    // Check if a user with this role is already logged in.
+    if (!$this->loggedInWithRole($role)) {
+      // Create user (and project)
+      $user = (object) array(
+        'name' => !empty($username) ? $username : $this->getRandom()->name(8),
+        'pass' => $this->getRandom()->name(16),
+        'role' => $role,
+      );
+      $user->mail = "{$user->name}@example.com";
 
-    // Find the user.
-    $account = user_load_by_name($user->name);
+      $this->userCreate($user);
 
-    // Remove the "Force password change on next login" record.
-    $this->cleanPasswordState($account->uid);
+      $roles = explode(',', $role);
+      $roles = array_map('trim', $roles);
+      foreach ($roles as $role) {
+        if (!in_array(strtolower($role), array('authenticated', 'authenticated user'))) {
+          // Only add roles other than 'authenticated user'.
+          $this->getDriver()->userAddRole($user, $role);
+        }
+      }
+      // Find the user.
+      $account = user_load_by_name($user->name);
+      // Remove the "Force password change on next login" record.
+      $this->cleanPasswordState($account->uid);
 
-    // Login.
-    $this->login();
+      // Login.
+      $this->login();
+    }
   }
 
   /**
@@ -119,7 +153,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Creates and authenticates a user with the given permission.
    *
-   * @Given /^I am logged in as a user (?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
+   * @Given /^I am logged in as a user (?:|named )(?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
    */
   public function assertAuthenticatedWithPermission($username, $permissions) {
     // Create user.
@@ -171,6 +205,23 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       $user->mail = "{$user->name}@example.com";
       // Create a new user.
       $this->userCreate($user);
+    }
+  }
+
+  /**
+   * Ensure that a user account is deleted.
+   *
+   * @When /^a user named "(?P<username>[^"]*)" is deleted$/
+   */
+  public function assertAccountDeleted($username) {
+    // Find the user.
+    $user = user_load_by_name($username);
+    // If such user exists then delete it.
+    if (!empty($user)) {
+      $this->getDriver()->userDelete($user);
+    }
+    else {
+      throw new \Exception('No such user');
     }
   }
 
@@ -437,6 +488,36 @@ JS;
     else {
       throw new \InvalidArgumentException(sprintf('No such username %s', $username));
     }
+  }
+
+  /**
+   * Takes a screenshot for debugging purposes.
+   *
+   * @param string $filename
+   *   The name of the screenshot file.
+   *
+   * @When I take a screenshot named :filename
+   */
+  public function takeScreenshot($filename) {
+    $screenshot = $this->getSession()->getDriver()->getScreenshot();
+    // If this file is in tests/features/bootstrap, the screenshot be in tests.
+    file_put_contents(__DIR__ . '../../' . $filename . '.png', $screenshot);
+  }
+
+  /**
+   * Find an element in the table rows containing given element.
+   *
+   * @Then I should see (the text ):findElement in a table row containing (the text ):rowElement
+   */
+  public function assertTextInTableRowWithElement($findText, $rowElement) {
+    $rows = $this->getTableRowWithElement($this->getSession()->getPage(), $rowElement);
+    // Loop through all found rows and try to find our element.
+    foreach ($rows as $row) {
+      if (strpos($row->getText(), $findText) !== FALSE) {
+        return TRUE;
+      }
+    }
+    throw new \Exception(sprintf('Failed to find a row with the element "%s" that also contains "%s" on the page %s', $rowElement, $findText, $this->getSession()->getCurrentUrl()));
   }
 
 }

@@ -61,6 +61,8 @@ drupal:
           drupal_root: ../../docroot
         drush:
           root: ../../docroot
+        selectors:
+          success_message_selector: '.messages.status'
 
 
 imports:
