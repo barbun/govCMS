@@ -292,7 +292,7 @@ JS;
   public function assertPermissions($rid, PyStringNode $permissions) {
     $rid = self::roleToRid($rid);
     foreach ($permissions->getStrings() as $permission) {
-      $this->assertPermission($rid, $permission, TRUE);
+      $this->assertPermission($rid, trim($permission), TRUE);
     }
   }
 
@@ -310,7 +310,7 @@ JS;
   public function assertNoPermissions($rid, PyStringNode $permissions) {
     $rid = self::roleToRid($rid);
     foreach ($permissions->getStrings() as $permission) {
-      $this->assertNoPermission($rid, $permission, TRUE);
+      $this->assertNoPermission($rid, trim($permission), TRUE);
     }
   }
 
