@@ -27,6 +27,10 @@ default:
         root: ../../docroot
       region_map:
         sidebar_second: 'section.region-sidebar-second'
+      selectors:
+        message_selector: '.messages'
+        error_message_selector: '.messages.error'
+        success_message_selector: '.messages.status'
 
 # Separate profile for testing using the Drupal API driver.
 drupal:
