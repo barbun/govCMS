@@ -10,15 +10,15 @@ Feature: Social Media Links
     When I go to "/admin/structure/block/manage/govcms_social_links/services/configure"
     Then the "edit-regions-govcms-barton" select list should be set to "sidebar_second"
     And I fill in the following:
-    | facebook | http://example.com/facebook |
-    | twitter | http://example.com/twitter |
-    | youtube | http://example.com/youtube |
-    | vimeo | http://example.com/vimeo |
-    | flickr | http://example.com/flickr |
+    | facebook  | http://example.com/facebook  |
+    | twitter   | http://example.com/twitter   |
+    | youtube   | http://example.com/youtube   |
+    | vimeo     | http://example.com/vimeo     |
+    | flickr    | http://example.com/flickr    |
     | instagram | http://example.com/instagram |
-    | linkedin | http://example.com/linkedin |
-    | rss | http://example.com/rss |
-    | email | http://example.com/email |
+    | linkedin  | http://example.com/linkedin  |
+    | rss       | http://example.com/rss       |
+    | email     | http://example.com/email     |
     And I press "Save block"
     Then I should see "The block configuration has been saved."
     When I am on the homepage
