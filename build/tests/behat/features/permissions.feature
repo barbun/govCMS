@@ -1,7 +1,7 @@
 Feature: Permissions
   Check that permissions are as expected.
 
-  @api @role @drupal
+  @api @javascript @drupal
   Scenario: Check anonymous user permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
@@ -138,7 +138,7 @@ Feature: Permissions
       administer xmlsitemap
       """
 
-  @api @role @drupal
+  @api @javascript @drupal
   Scenario: Check authenticated user permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
@@ -273,7 +273,7 @@ Feature: Permissions
       administer xmlsitemap
       """
 
-  @api @role @drupal
+  @api @javascript @drupal
   Scenario: Check Content editor user permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
@@ -395,7 +395,7 @@ Feature: Permissions
       administer xmlsitemap
       """
 
-  @api @role @drupal
+  @api @javascript @drupal
   Scenario: Check Content approver user permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
@@ -517,7 +517,7 @@ Feature: Permissions
       administer xmlsitemap
       """
 
-  @api @role  @drupal
+  @api @javascript @drupal
   Scenario: Check Site Builder user permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
@@ -639,7 +639,7 @@ Feature: Permissions
       moderate content from needs_review to published
       """
 
-  @api @role @drupal
+  @api @javascript @drupal
   Scenario: Check Site editor user permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
@@ -761,7 +761,7 @@ Feature: Permissions
       delete terms in 2
   """
 
-  @api @role @drupal
+  @api @javascript @drupal
   Scenario: Check Administrator user permissions
     Given I am logged in as a user with the "administer permissions" permission and don't need a password change
     When I go to "/admin/people/permissions/roles"
