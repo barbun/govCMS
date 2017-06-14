@@ -91,7 +91,7 @@ class Iconomist {
     $theme = empty($form_state['build_info']['args']) ? NULL : $form_state['build_info']['args'][0];
     if (!isset($form_state['triggering_element'])) {
       // Load existing settings.
-      $form_state['values']['iconomist_icons'] = self::themeGetSetting('iconomist_icons', $theme) ?: array();
+      $form_state['values']['iconomist_icons'] = static::themeGetSetting('iconomist_icons', $theme) ?: array();
       // Set the number of icons.
       $form_state['storage']['iconomist_num_icons'] = count($form_state['values']['iconomist_icons']);
       // Store path/usage_id in storage.
@@ -115,7 +115,7 @@ class Iconomist {
     $form['theme_settings']['toggle_iconomist'] = array(
       '#type' => 'checkbox',
       '#title' => t('Iconomist Icons'),
-      '#default_value' => self::themeGetSetting('toggle_iconomist', $theme),
+      '#default_value' => static::themeGetSetting('toggle_iconomist', $theme),
     );
 
     // Iconomist fieldset.
@@ -303,8 +303,8 @@ class Iconomist {
    *   Available usage id.
    */
   public static function getUseId() {
-    $usage_id = self::variableGet('iconomist_counter', 1);
-    self::variableSet('iconomist_counter', $usage_id + 1);
+    $usage_id = static::variableGet('iconomist_counter', 1);
+    static::variableSet('iconomist_counter', $usage_id + 1);
     return $usage_id;
   }
 
@@ -336,10 +336,10 @@ class Iconomist {
     if ($icon['path']) {
       $path = _system_theme_settings_validate_path($icon['path']);
       if (!$path) {
-        self::formError($element['path'], t('Path is invalid'));
+        static::formError($element['path'], t('Path is invalid'));
         return;
       }
-      $file = self::getManagedFile($path);
+      $file = static::getManagedFile($path);
       if ($file) {
         $icon['fid'] = $file->fid;
       }
@@ -352,7 +352,7 @@ class Iconomist {
         $icon['fid'] = $file->fid;
       }
       else {
-        self::formError($element['upload'], t('Upload failed'));
+        static::formError($element['upload'], t('Upload failed'));
         return;
       }
     }
@@ -386,7 +386,7 @@ class Iconomist {
    */
   public static function settingsSubmit(array $form, array &$form_state) {
     $theme = empty($form_state['build_info']['args']) ? NULL : $form_state['build_info']['args'][0];
-    $existing_icons = self::themeGetSetting('iconomist_icons', $theme) ?: array();
+    $existing_icons = static::themeGetSetting('iconomist_icons', $theme) ?: array();
     $existing_file_usages = array();
     foreach ($existing_icons as $icon) {
       if (!empty($icon['usage_id'])) {
@@ -420,7 +420,7 @@ class Iconomist {
           $file->status = FILE_STATUS_PERMANENT;
           file_save($file);
           // Add file usage.
-          $icon['usage_id'] = self::getUseId();
+          $icon['usage_id'] = static::getUseId();
           file_usage_add($file, 'iconomist', 'theme', $icon['usage_id']);
         }
       }
@@ -431,8 +431,8 @@ class Iconomist {
    * Implements hook_preprocess_html().
    */
   public static function preprocessHtml(&$vars) {
-    $toggle = self::themeGetSetting('iconomist_toggle');
-    $icons = self::themeGetSetting('iconomist_icons') ?: array();
+    $toggle = static::themeGetSetting('iconomist_toggle');
+    $icons = static::themeGetSetting('iconomist_icons') ?: array();
     if ($toggle || empty($icons)) {
       // Do nothing if iconomist is toggled off or no icons.
       return;
