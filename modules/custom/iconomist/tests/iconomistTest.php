@@ -5,8 +5,6 @@
  * PHP unit tests for Iconomist.
  */
 
-use PHPUnit\Framework\TestCase;
-
 require_once 'iconomist.test.class.php';
 
 /**
@@ -27,7 +25,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
           'width' => '',
           'height' => '',
           'rel' => 'icon',
-          'fid' => '2',
+          'fid' => '21',
         ),
         1 => array(
           'usage_id' => 3,
@@ -35,7 +33,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
           'width' => '64',
           'height' => '64',
           'rel' => 'icon',
-          'fid' => '3',
+          'fid' => '22',
         ),
       ),
     ),
@@ -44,40 +42,212 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   /**
    * Setup function for tests.
    */
-  public function setUp()
-  {
+  public function setUp() {
 
     IconomistTest::themeSetSettings(self::$settings);
   }
 
   /**
-   * Teardown function for tests.
-   */
-  public function tearDown()
-  {
-
-  }
-
-  /**
-   * Iconomist_form_system_theme_settings_alter saves state in the storage array.
+   * Iconomist_form_system_theme_settings_alter implements sitewide settings.
    *
    * @test
    */
-  public function savesState() {
+  public function implementsSitewideSettings() {
     $form = array();
     $form_state = array();
 
-    // The theme argument should be used too.
+    IconomistTest::themeSettingsAlter($form, $form_state);
+    unset($form_state['add_icon']);
+    unset($form_state['iconomist_icons']);
+
+    // If sitewide settings are properly implemented, they should be reflected
+    // in changes to the form_state array...
+    $expected = array(
+      'values' => array(
+        'iconomist_icons' => array(),
+      ),
+      'storage' => array(
+        'iconomist_num_icons' => 0,
+      ),
+    );
+    $this->assertEquals($expected, $form_state);
+
+    // ... and in the form's render array.
+    // @TODO Move this below where we test the elements are set.
+    $toggle = $form['theme_settings']['toggle_iconomist'];
+    $this->assertEquals(FALSE, $toggle['#default_value']);
+  }
+
+  /**
+   * Iconomist_form_system_theme_settings_alter implements settings per theme.
+   *
+   * @test
+   */
+  public function implementsSettingsPerTheme() {
+    $form = array();
+    $form_state = array(
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(
+            'usage_id' => 2,
+            'path' => 'public://iconomist/test1.jpg',
+            'width' => '',
+            'height' => '',
+            'rel' => 'icon',
+            'fid' => '21',
+          ),
+          1 => array(
+            'usage_id' => 3,
+            'path' => 'public://iconomist/test2.jpg',
+            'width' => '64',
+            'height' => '64',
+            'rel' => 'icon',
+            'fid' => '22',
+          ),
+        ),
+      ),
+    );
+
+    // Set the name of the 'theme' we're using.
     $form_state['build_info']['args'] = array('foo');
 
     IconomistTest::themeSettingsAlter($form, $form_state);
 
     $expected = array(
-      '#type' => 'checkbox',
-      '#title' => t('Iconomist Icons'),
-      '#default_value' => TRUE,
+      0 => array(
+        'path' => 'public://iconomist/test1.jpg',
+        'usage_id' => '2',
+      ),
+      1 => array(
+        'path' => 'public://iconomist/test2.jpg',
+        'usage_id' => '3',
+      ),
     );
-    $this->assertEquals($expected, $form['theme_settings']['toggle_iconomist']);
+    $this->assertEquals($expected, $form_state['storage']['iconomist_icons']);
+
+    $toggle = $form['theme_settings']['toggle_iconomist'];
+    $this->assertEquals(TRUE, $toggle['#default_value']);
+  }
+
+  /**
+   * Iconomist_form_system_theme_settings_alter loads the form state correctly.
+   *
+   * @test
+   */
+  public function loadsStateWhenNoTriggeringElement() {
+    $form = array();
+    $form_state = array(
+      'build_info' => array(
+        'args' => array(
+          'foo',
+        ),
+      ),
+    );
+
+    IconomistTest::themeSettingsAlter($form, $form_state);
+
+    $expected = array(
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(
+            'usage_id' => 2,
+            'path' => 'public://iconomist/test1.jpg',
+            'width' => '',
+            'height' => '',
+            'rel' => 'icon',
+            'fid' => '21',
+          ),
+          1 => array(
+            'usage_id' => 3,
+            'path' => 'public://iconomist/test2.jpg',
+            'width' => '64',
+            'height' => '64',
+            'rel' => 'icon',
+            'fid' => '22',
+          ),
+        ),
+      ),
+      'build_info' => array(
+        'args' => array(
+          'foo'
+        ),
+      ),
+      'storage' => array(
+        'iconomist_num_icons' => 2,
+        'iconomist_icons' => array(
+          0 => array(
+            'usage_id' => 2,
+            'path' => 'public://iconomist/test1.jpg',
+          ),
+          1 => array(
+            'usage_id' => 3,
+            'path' => 'public://iconomist/test2.jpg',
+          ),
+        )
+      )
+    );
+    $this->assertEquals($expected, $form_state);
+  }
+
+  /**
+   * form_system_theme_settings_alter doesn't reload state if Ajax call.
+   *
+   * @test
+   */
+  public function noStateLoadWhenTriggeringElementSet() {
+    $form = array();
+    $form_state = array(
+      'build_info' => array(
+        'args' => array(
+          'foo',
+        ),
+      ),
+      'triggering_element' => 'foo',
+    );
+
+    IconomistTest::themeSettingsAlter($form, $form_state);
+
+    $expected = array(
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(
+            'usage_id' => 2,
+            'path' => 'public://iconomist/test1.jpg',
+            'width' => '',
+            'height' => '',
+            'rel' => 'icon',
+            'fid' => '21',
+          ),
+          1 => array(
+            'usage_id' => 3,
+            'path' => 'public://iconomist/test2.jpg',
+            'width' => '64',
+            'height' => '64',
+            'rel' => 'icon',
+            'fid' => '22',
+          ),
+        ),
+      ),
+      'build_info' => array(
+        'args' => array(
+          'foo'
+        ),
+      ),
+      'storage' => array(
+        'iconomist_num_icons' => 2,
+        'iconomist_icons' => array(
+          0 => array(
+            'usage_id' => 2,
+            'path' => 'public://iconomist/test1.jpg',
+          ),
+          1 => array(
+            'usage_id' => 3,
+            'path' => 'public://iconomist/test2.jpg',
+          ),
+        )
+      )
+    );
+    $this->assertEquals($expected, $form_state);
   }
 
   /**
@@ -156,7 +326,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function addsFieldsForEachIcon() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -165,7 +335,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function alwaysDisplaysAddIconButton() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -174,7 +344,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function ajaxCallbackIncreasesNumberOfIconsAndTriggersFormRebuild() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -183,7 +353,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function ajaxRemoveIconCallbackRemovesIconFromFormState() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -192,7 +362,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function ajaxCallbackReturnsRenderArray() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -201,7 +371,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function getManagedFileReturnsAppropriateFileObject() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -210,7 +380,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function getManagedFileReturnsFalseForInvalidUri() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -219,7 +389,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function getUsageIdDoesNotReturnSameUsageIdTwice() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -228,7 +398,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function getUsageIdReturnsInteger() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -237,7 +407,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function validateHonoursTheLimitValidationErrorsElement() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -246,7 +416,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function validateSetsPathIsInvalidErrorForInvalidPaths() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -255,7 +425,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function validateSetsFileIdForValidPaths() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -264,7 +434,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function validateSetsUploadFailedErrorForInvalidFilePath() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -273,7 +443,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function validateSetsFileIdForValidFileUploadPath() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -282,7 +452,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function validateRemovesFileUploadAndGivesNoErrorWhenNoFileChosen() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -291,7 +461,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function validateRemovesFileUsageWhenFileChanged() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -300,7 +470,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function submitRemovesFileUsageForFilesNoLongerInUse() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -309,7 +479,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function submitPersistsFileUsageForFilesNewlyInUse() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -318,7 +488,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function preprocessHmlAddsChosenIconsToHtmlHead() {
-
+    $this->assertEquals(true, false);
   }
 
   /**
@@ -327,7 +497,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function preprocessHtmlAppliesAllApplicableAttributesToChosenIcons() {
-
+    $this->assertEquals(true, false);
   }
 
 }
