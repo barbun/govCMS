@@ -6,7 +6,7 @@
  *
  * Extends the real class, just overriding the helpers so we can test.
  */
-require_once '../iconomist.class.php';
+require_once __DIR__ . '/../iconomist.class.php';
 
 /**
  * Iconomist test class.
@@ -45,9 +45,9 @@ class IconomistTest extends Iconomist {
    * @return array
    *   The render array for the theme settings.
    */
-  public static function themeGetSetting($settingName, $theme = NULL) {
-    if (isset($themeSettings[$settingName])) {
-      return $themeSettings[$settingName];
+  public static function themeGetSetting($settingName, $theme = '') {
+    if (isset(self::$themeSettings[$theme][$settingName])) {
+      return self::$themeSettings[$theme][$settingName];
     }
 
     return NULL;

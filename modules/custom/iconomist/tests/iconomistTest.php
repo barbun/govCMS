@@ -7,7 +7,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once './iconomist.test.class.php';
+require_once 'iconomist.test.class.php';
 
 /**
  * Test cases for Iconomist module.
@@ -19,7 +19,15 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    */
   public function setUp()
   {
-
+    $settings = array(
+      '' => array(
+        'toggle_iconomist' => FALSE,
+      ),
+      'foo' => array(
+        'toggle_iconomist' => TRUE,
+      ),
+    );
+    IconomistTest::themeSetSettings($settings);
   }
 
   /**
@@ -39,8 +47,17 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     $form = array();
     $form_state = array();
 
-    $content = IconomistTest::themeSettingsAlter($form, $form_state);
-    $this->assertIsSet($content['theme_settings']['toggle_iconomist']);
+    // The theme argument should be used too.
+    $form_state['build_info']['args'] = array('foo');
+
+    IconomistTest::themeSettingsAlter($form, $form_state);
+
+    $expected = array(
+      '#type' => 'checkbox',
+      '#title' => t('Iconomist Icons'),
+      '#default_value' => TRUE,
+    );
+    $this->assertEquals($expected, $form['theme_settings']['toggle_iconomist']);
   }
 
   /**
@@ -49,11 +66,28 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function addsIconomistSettingsFieldset() {
+    $form = [];
+    $form_state = [];
 
+    // The theme argument should be used too.
+    $form_state['build_info']['args'] = ['foo'];
+
+    IconomistTest::themeSettingsAlter($form, $form_state);
+
+    $expected = array(
+      '#type' => 'fieldset',
+      '#title' => t('Iconomist settings'),
+      '#description' => t('Additional icons to link to in HTML head.'),
+    );
+
+    // Remove the extra parts we also expect and will test for below.
+    unset($form['iconomist']['iconomist_icons']);
+    unset($form['iconomist']['add_icon']);
+    $this->assertEquals($expected, $form['iconomist']);
   }
 
-  /**
-   * iconomist_form_system_theme_settings_alter adds a fieldset for each icon to the Iconomist Settings fieldset.
+/**
+ * iconomist_form_system_theme_settings_alter adds a fieldset for each icon to the Iconomist Settings fieldset.
    *
    * @test
    */
