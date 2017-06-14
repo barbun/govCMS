@@ -25,6 +25,8 @@ class Iconomist {
    *
    * @return array
    *   The render array for the theme settings.
+   *
+   * @codeCoverageIgnore
    */
   public static function themeGetSetting($settingName, $theme = NULL) {
     return theme_get_setting($settingName, $theme);
@@ -37,6 +39,8 @@ class Iconomist {
    *   The name of the variable to set.
    * @param mixed $value
    *   The value to assign to the variables.
+   *
+   * @codeCoverageIgnore
    */
   public static function variableSet($variable, $value) {
     variable_set($variable, $value);
@@ -52,6 +56,8 @@ class Iconomist {
    *
    * @return mixed
    *   The value of the variable (or the default value)
+   *
+   * @codeCoverageIgnore
    */
   public static function variableGet($variable, $default) {
     return variable_get($variable, $default);
@@ -62,6 +68,8 @@ class Iconomist {
    *
    * @param array $attributes
    *   The attributes being added to the page.
+   *
+   * @codeCoverageIgnore
    */
   public static function drupalAddHtmlHeadLink(array $attributes) {
     drupal_add_html_head_link($attributes);
@@ -74,6 +82,8 @@ class Iconomist {
    *   The name of the element against which the error is being flagged.
    * @param string $error
    *   The error message to be displayed.
+   *
+   * @codeCoverageIgnore
    */
   public static function formError($element, $error) {
     form_error($element, $error);
