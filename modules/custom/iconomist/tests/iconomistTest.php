@@ -14,20 +14,40 @@ require_once 'iconomist.test.class.php';
  */
 class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
 
+  static public $settings = array(
+    '' => array(
+      'toggle_iconomist' => FALSE,
+    ),
+    'foo' => array(
+      'toggle_iconomist' => TRUE,
+      'iconomist_icons' => array(
+        0 => array(
+          'usage_id' => 2,
+          'path' => 'public://iconomist/test1.jpg',
+          'width' => '',
+          'height' => '',
+          'rel' => 'icon',
+          'fid' => '2',
+        ),
+        1 => array(
+          'usage_id' => 3,
+          'path' => 'public://iconomist/test2.jpg',
+          'width' => '64',
+          'height' => '64',
+          'rel' => 'icon',
+          'fid' => '3',
+        ),
+      ),
+    ),
+  );
+
   /**
    * Setup function for tests.
    */
   public function setUp()
   {
-    $settings = array(
-      '' => array(
-        'toggle_iconomist' => FALSE,
-      ),
-      'foo' => array(
-        'toggle_iconomist' => TRUE,
-      ),
-    );
-    IconomistTest::themeSetSettings($settings);
+
+    IconomistTest::themeSetSettings(self::$settings);
   }
 
   /**
@@ -36,6 +56,28 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   public function tearDown()
   {
 
+  }
+
+  /**
+   * Iconomist_form_system_theme_settings_alter saves state in the storage array.
+   *
+   * @test
+   */
+  public function savesState() {
+    $form = array();
+    $form_state = array();
+
+    // The theme argument should be used too.
+    $form_state['build_info']['args'] = array('foo');
+
+    IconomistTest::themeSettingsAlter($form, $form_state);
+
+    $expected = array(
+      '#type' => 'checkbox',
+      '#title' => t('Iconomist Icons'),
+      '#default_value' => TRUE,
+    );
+    $this->assertEquals($expected, $form['theme_settings']['toggle_iconomist']);
   }
 
   /**
@@ -92,7 +134,17 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function addsFieldsetForEachIcon() {
+    $form = [];
+    $form_state = [];
 
+    // The theme argument should be used too.
+    $form_state['build_info']['args'] = ['foo'];
+
+    IconomistTest::themeSettingsAlter($form, $form_state);
+
+    $expected = count(self::$settings['foo']['iconomist_icons']);
+
+    $this->assertEquals($expected, $form_state['storage']['iconomist_num_icons']);
   }
 
   /**
