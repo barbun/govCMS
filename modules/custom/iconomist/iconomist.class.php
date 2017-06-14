@@ -293,13 +293,11 @@ class Iconomist {
    *
    * @param array $form
    *   Render array for the whole form.
-   * @param array $form_state
-   *   Form state array.
    *
    * @return array
    *   Render array for the portion of the form to be replaced.
    */
-  public static function ajaxCallback($form, $form_state) {
+  public static function ajaxCallback(array $form) {
     return $form['iconomist']['iconomist_icons'];
   }
 

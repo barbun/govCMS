@@ -190,7 +190,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * form_system_theme_settings_alter doesn't reload state if Ajax call.
+   * Form_system_theme_settings_alter doesn't reload state if Ajax call.
    *
    * @test
    */
@@ -218,7 +218,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Iconomist_form_system_theme_settings_alter adds the toggle_iconomist checkbox to the 'Toggle display' frameset.
+   * Form_system_theme_settings_alter adds the toggle_iconomist checkbox.
    *
    * @test
    */
@@ -240,7 +240,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Iconomist_form_system_theme_settings_alter adds the Iconomist Settings fieldset to the form.
+   * Form_system_theme_settings_alter adds Iconomist Settings fieldset.
    *
    * @test
    */
@@ -266,7 +266,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * iconomist_form_system_theme_settings_alter adds container for Ajax commands.
+   * Form_system_theme_settings_alter adds container for Ajax commands.
    *
    * @test
    */
@@ -285,8 +285,8 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     );
   }
 
-/**
- * iconomist_form_system_theme_settings_alter adds a fieldset for each icon to the Iconomist Settings fieldset.
+  /**
+   * Form_system_theme_settings_alter adds a fieldset for each icon.
    *
    * @test
    */
@@ -367,14 +367,14 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
             'wrapper' => 'iconomist-icons',
           ),
           '#limit_validation_errors' => array(),
-        )
+        ),
       );
       $this->assertEquals($expectedFieldset, $actual);
     }
   }
 
   /**
-   * iconomist_form_system_theme_settings_alter always displays the 'Add icon' button and associated label in the Iconomist Settings fieldset, configured to invoke the Ajax callback.
+   * Form_system_theme_settings_alter always displays the 'Add icon' button.
    *
    * @test
    */
@@ -408,7 +408,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * iconomist_form_system_theme_settings_alter always displays the 'Add icon' button and associated label in the Iconomist Settings fieldset, configured to invoke the Ajax callback.
+   * Form_system_theme_settings_alter adds submit handler to head of list.
    *
    * @test
    */
@@ -432,7 +432,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * iconomist_add_icon (the Ajax callback) increases the number of icons and triggers a form rebuild.
+   * Add_icon ajax callback increases no. of icons and triggers form rebuild.
    *
    * @test
    */
@@ -441,7 +441,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * _iconomist_remove_icon removes the appropriate icon from the form state.
+   * Remove_icon removes the appropriate icon from the form state.
    *
    * @test
    */
@@ -450,7 +450,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * _iconomist_ajax_callback returns the portion of the render array needed for the ajax callback.
+   * Ajax_callback returns the portion of the render array needed.
    *
    * @test
    */
