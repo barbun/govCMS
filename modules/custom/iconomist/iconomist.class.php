@@ -7,6 +7,8 @@
  * Implements the Iconomist functionality in a way that allows for unit testing.
  */
 
+require_once DRUPAL_ROOT . '/modules/system/system.admin.inc';
+
 /**
  * Iconomist class.
  *
@@ -87,6 +89,36 @@ class Iconomist {
    */
   public static function formError($element, $error) {
     form_error($element, $error);
+  }
+
+  /**
+   * Perform a database query for a URI in the file_managed table.
+   *
+   * @param string $uri
+   *   The URI being sought.
+   *
+   * @return mixed
+   *   The matching URI (an integer) or FALSE.
+   *
+   * @codeCoverageIgnore
+   */
+  public static function managedFileQuery($uri) {
+    return db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', [':uri' => $uri])->fetchField();
+  }
+
+  /**
+   * Perform a file load for a file ID.
+   *
+   * @param integer $fid
+   *   A file ID.
+   *
+   * @return mixed
+   *  An object representing the file, or FALSE if the file was not found.
+   *
+   * @codeCoverageIgnore
+   */
+  public static function fileLoad($fid) {
+    return file_load($fid);
   }
 
   /**
@@ -311,9 +343,9 @@ class Iconomist {
    *   File object if managed otherwise FALSE.
    */
   public static function getManagedFile($uri) {
-    $fid = db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', [':uri' => $uri])->fetchField();
+    $fid = static::managedFileQuery($uri);
     if (!empty($fid)) {
-      $file_object = file_load($fid);
+      $file_object = static::fileLoad($fid);
       return $file_object;
     }
     return FALSE;

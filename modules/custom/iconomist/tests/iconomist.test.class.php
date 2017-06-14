@@ -3,14 +3,12 @@
 /**
  * @file
  * Iconomist Test Class.
- *
  * Extends the real class, just overriding the helpers so we can test.
  */
 require_once __DIR__ . '/../iconomist.class.php';
 
 /**
  * Iconomist test class.
- *
  * Test extension class for Iconomist. Overrides methods to make values
  * predictable).
  */
@@ -23,6 +21,10 @@ class IconomistTest extends Iconomist {
   private static $headLinks = [];
 
   private static $formErrors = [];
+
+  private static $managedFiles = array();
+
+  private static $managedFileObjects = array();
 
   /**
    * Set the theme settings.
@@ -119,10 +121,51 @@ class IconomistTest extends Iconomist {
    *   The error message to be displayed.
    */
   public static function formError($element, $error) {
-    self::$formErrors = array(
+    array_push(self::$formErrors, array(
       'element' => $element,
       'error' => $error,
+    )
     );
+  }
+
+  /**
+   * Set results for mock managed file query.
+   *
+   * @param array $results
+   *   An array of key/value pairs for the mock query.
+   */
+  public static function setManagedFileQuery($results) {
+    self::$managedFiles = $results;
+  }
+
+  /**
+   * Mock version of managed file query.
+   *
+   * @param string $uri
+   *   The URI being sought.
+   */
+  public static function managedFileQuery($uri) {
+    return self::$managedFiles[$uri];
+  }
+
+  /**
+   * Set results for mock file load.
+   *
+   * @param array $results
+   *   An array of key/object pairs for the mock file load.
+   */
+  public static function setManagedFileLoadResults($results) {
+    self::$managedFileObjects = $results;
+  }
+
+  /**
+   * Mock version of file_load.
+   *
+   * @param integer $fid
+   *   The fie ID being sought.
+   */
+  public static function fileLoad($fid) {
+    return self::$managedFileObjects[$fid];
   }
 
 }
