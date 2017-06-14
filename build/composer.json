@@ -35,5 +35,8 @@
       "post-update-cmd": [
         "PhantomInstaller\\Installer::installPhantomJS"
       ]
+    },
+    "require": {
+        "phpunit/phpunit": "^5.7"
     }
 }
