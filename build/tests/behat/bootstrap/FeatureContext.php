@@ -599,7 +599,7 @@ JS;
   }
 
   /**
-   * Queues a user to be deleted at the end of the scenario.
+   * Clean up bean entities that were created during the tests.
    *
    * @AfterScenario @beans
    */
@@ -612,6 +612,7 @@ JS;
       $result = $query->entityCondition('entity_type', 'bean')
         ->propertyCondition('uid', $uids, 'IN')
         ->execute();
+      // Loop through all beans that were found and delete them.
       if (isset($result['bean'])) {
         $bids = array_keys($result['bean']);
         foreach ($bids as $bid) {
