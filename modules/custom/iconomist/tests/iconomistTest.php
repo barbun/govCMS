@@ -437,7 +437,27 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function ajaxCallbackIncreasesNumberOfIconsAndTriggersFormRebuild() {
-    $this->assertEquals(true, false);
+    $form = array();
+    $form_state = array();
+
+    $expected = array(
+      'rebuild' => TRUE,
+      'storage' => array(
+        'iconomist_num_icons' => 1,
+      ),
+    );
+
+    // From empty to one.
+    IconomistTest::addIcon($form, $form_state);
+    $this->assertEquals($expected, $form_state);
+
+    // From 2 to 3.
+    $form_state['build_info']['args'] = ['foo'];
+    IconomistTest::themeSettingsAlter($form, $form_state);
+    IconomistTest::addIcon($form, $form_state);
+
+    $actual = $form_state['storage']['iconomist_num_icons'];
+    $this->assertEquals(3, $actual);
   }
 
   /**
@@ -446,7 +466,52 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function ajaxRemoveIconCallbackRemovesIconFromFormState() {
-    $this->assertEquals(true, false);
+    // Get the initial form.
+    $form = array();
+    $form_state['build_info']['args'] = ['foo'];
+    IconomistTest::themeSettingsAlter($form, $form_state);
+
+    // Adjust the form state to emulate having the remove button pressed.
+    $form_state['triggering_element']['#name'] = 'remove_icon_0';
+    IconomistTest::removeIcon($form, $form_state);
+
+    $expected = array(
+      'build_info' => array(
+        'args' => array(
+          0 => 'foo',
+        ),
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(
+            'usage_id' => 3,
+            'path' => 'public://iconomist/test2.jpg',
+            'width' => '64',
+            'height' => '64',
+            'rel' => 'icon',
+            'fid' => '22',
+          ),
+        ),
+      ),
+      'storage' => array(
+        'iconomist_num_icons' => 1,
+        'iconomist_icons' => array(
+          0 => array(
+            'path' => 'public://iconomist/test2.jpg',
+            'usage_id' => 3,
+          ),
+        ),
+      ),
+      'triggering_element' => array(
+        '#name' => 'remove_icon_0',
+      ),
+      'rebuild' => TRUE,
+      'input' => array(
+        'iconomist_icons' => NULL,
+      ),
+    );
+
+    $this->assertEquals($expected, $form_state);
   }
 
   /**
@@ -455,7 +520,19 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function ajaxCallbackReturnsRenderArray() {
-    $this->assertEquals(true, false);
+    $form = array(
+      'iconomist' => array(
+        'iconomist_icons' => array(
+          'test' => TRUE,
+        ),
+      ),
+    );
+    $form_state = array();
+
+    $result = IconomistTest::ajaxCallback($form, $form_state);
+
+    $expected = array('test' => TRUE);
+    $this->assertEquals($expected, $result);
   }
 
   /**
