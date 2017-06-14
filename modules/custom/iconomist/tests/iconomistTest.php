@@ -202,51 +202,18 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
           'foo',
         ),
       ),
-      'triggering_element' => 'foo',
+      'triggering_element' => 'bar',
+    );
+
+    $expected = $form_state;
+    $expected += array(
+      'storage' => array(
+        'iconomist_num_icons' => 0,
+      )
     );
 
     IconomistTest::themeSettingsAlter($form, $form_state);
 
-    $expected = array(
-      'values' => array(
-        'iconomist_icons' => array(
-          0 => array(
-            'usage_id' => 2,
-            'path' => 'public://iconomist/test1.jpg',
-            'width' => '',
-            'height' => '',
-            'rel' => 'icon',
-            'fid' => '21',
-          ),
-          1 => array(
-            'usage_id' => 3,
-            'path' => 'public://iconomist/test2.jpg',
-            'width' => '64',
-            'height' => '64',
-            'rel' => 'icon',
-            'fid' => '22',
-          ),
-        ),
-      ),
-      'build_info' => array(
-        'args' => array(
-          'foo'
-        ),
-      ),
-      'storage' => array(
-        'iconomist_num_icons' => 2,
-        'iconomist_icons' => array(
-          0 => array(
-            'usage_id' => 2,
-            'path' => 'public://iconomist/test1.jpg',
-          ),
-          1 => array(
-            'usage_id' => 3,
-            'path' => 'public://iconomist/test2.jpg',
-          ),
-        )
-      )
-    );
     $this->assertEquals($expected, $form_state);
   }
 
@@ -307,6 +274,13 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     $form = [];
     $form_state = [];
 
+    // The link rel types.
+    $relationships = array(
+      'apple-touch-icon' => t('Apple Touch'),
+      'apple-touch-icon-precomposed' => t('Apple Touch (Precomposed)'),
+      'icon' => t('Icon'),
+    );
+
     // The theme argument should be used too.
     $form_state['build_info']['args'] = ['foo'];
 
@@ -314,7 +288,69 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
 
     $expected = count(self::$settings['foo']['iconomist_icons']);
 
-    $this->assertEquals($expected, $form_state['storage']['iconomist_num_icons']);
+    for ($i = 0; $i < $expected; $i++) {
+      $this->assertArrayHasKey($i, $form['iconomist']['iconomist_icons']);
+      $actual = $form['iconomist']['iconomist_icons'][$i];
+
+      $expectedIcon = self::$settings['foo']['iconomist_icons'][$i];
+      $expectedFieldset = array(
+        '#type' => 'fieldset',
+        '#title' => t('Icon'),
+        '#element_validate' => ['_iconomist_icons_validate'],
+        'usage_id' => array(
+          '#type' => 'value',
+          '#value' => $expectedIcon['usage_id'],
+        ),
+        'upload' => array(
+          '#type' => 'managed_file',
+          '#title' => t('Upload icon image'),
+          '#description' => t("If you don't have direct file access to the server, use this field to upload your touch icon."),
+          '#upload_validators' => ['file_validate_is_image'],
+          '#upload_location' => 'public://iconomist',
+        ),
+        'path' => array(
+          '#type' => 'textfield',
+          '#default_value' => $expectedIcon['path'],
+          '#title' => t('Path to custom icon'),
+          '#description' => t('The path to the file you would like to use as your icon.'),
+        ),
+        'width' => array(
+          '#type' => 'textfield',
+          '#default_value' => $expectedIcon['width'],
+          '#title' => t('Icon width'),
+          '#description' => t('Width of icon in pixels.'),
+          '#element_validate' => ['element_validate_integer_positive'],
+          '#size' => 10,
+        ),
+        'height' => array(
+          '#type' => 'textfield',
+          '#default_value' => $expectedIcon['height'],
+          '#title' => t('Icon height'),
+          '#description' => t('Height of icon in pixels.'),
+          '#element_validate' => ['element_validate_integer_positive'],
+          '#size' => 10,
+        ),
+        'rel' => array(
+          '#type' => 'radios',
+          '#options' => $relationships,
+          '#default_value' => $expectedIcon['rel'],
+          '#title' => t('Icon relationship'),
+          '#description' => t('Relationship type of icon.'),
+        ),
+        'remove_icon' => array(
+          '#type' => 'submit',
+          '#name' => 'remove_icon_' . $i,
+          '#submit' => ['_iconomist_remove_icon'],
+          '#value' => t('Remove icon'),
+          '#ajax' => array(
+            'callback' => '_iconomist_ajax_callback',
+            'wrapper' => 'iconomist-icons',
+          ),
+          '#limit_validation_errors' => array(),
+        )
+      );
+      $this->assertEquals($expectedFieldset, $actual);
+    }
   }
 
   /**
