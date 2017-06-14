@@ -25,6 +25,13 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * The Mink context.
+   *
+   * @var \Drupal\DrupalExtension\Context\MinkContext
+   */
+  protected $minkContext;
+
+  /**
    * Set default browser window size to maximum.
    *
    * @BeforeScenario @drupal
@@ -121,7 +128,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @Given /^I am logged in as a user (?:|named )(?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
    * @Given /^I am logged in as a user with the password "(?P<password>[^"]*)" and the "(?P<permissions>[^"]*)" permission$/
    */
-  public function assertAuthenticatedWithPermission($username = '', $password = '', $permissions) {
+  public function assertAuthenticatedWithPermission($permissions, $username = '', $password = '') {
     // Create user.
     $user = (object) array(
       'name' => !empty($username) ? $username : $this->getRandom()->name(8),
@@ -390,7 +397,7 @@ JS;
    *   The role ID or name.
    *
    * @return int
-   *  The role ID
+   *   The role ID
    */
   private function roleToRid($rid) {
     if (is_numeric($rid)) {
@@ -443,7 +450,7 @@ JS;
    *   The role ID.
    * @param string $permission
    *   The permission to check for.
-   * @param boolean $assertPath
+   * @param bool $assertPath
    *   Whether we should check the path.
    *
    * @Given the :role role has the :permission permission
@@ -469,7 +476,7 @@ JS;
    *   The role ID.
    * @param string $permission
    *   The permission to check for.
-   * @param boolean $assertPath
+   * @param bool $assertPath
    *   Whether we should check the path.
    *
    * @Given the :role role does not have the :permission permission
@@ -499,7 +506,7 @@ JS;
    *
    * @AfterStep
    */
-  public function takeScreenShotAfterFailedStep(afterStepScope $scope) {
+  public function takeScreenShotAfterFailedStep(AfterStepScope $scope) {
     if (99 === $scope->getTestResult()->getResultCode()) {
       $driver = $this->getSession()->getDriver();
       if (!($driver instanceof Selenium2Driver)) {
@@ -561,6 +568,58 @@ JS;
       }
     }
     throw new \Exception(sprintf('Failed to find a row with the element "%s" that also contains "%s" on the page %s', $rowElement, $findText, $this->getSession()->getCurrentUrl()));
+  }
+
+  /**
+   * Switch browser focus to an iFrame.
+   *
+   * @param string $name
+   *   An iframe name (null for switching back).
+   *
+   * @Given /^(?:|I )switch to an iframe "([^"]*)"$/
+   * @Then /^(?:|I )switch back from an iframe$/
+   */
+  public function iSwitchToAnIframe($name = NULL) {
+    $this->getSession()->switchToIFrame($name);
+  }
+
+  /**
+   * Get a list of UIDs.
+   *
+   * @return array
+   *   An array of numeric UIDs of users created by steps during a scenario.
+   */
+  public function getUsers() {
+    $uids = array();
+    foreach ($this->users as $user) {
+      $uids[] = $user->uid;
+    }
+
+    return $uids;
+  }
+
+  /**
+   * Queues a user to be deleted at the end of the scenario.
+   *
+   * @AfterScenario @beans
+   */
+  public function cleanUpBeans() {
+    // Get UIDs of users created during this scenario.
+    $uids = $this->getUsers();
+    if (!empty($uids)) {
+      // Select all beans created by the scenario users.
+      $query = new EntityFieldQuery();
+      $result = $query->entityCondition('entity_type', 'bean')
+        ->propertyCondition('uid', $uids, 'IN')
+        ->execute();
+      if (isset($result['bean'])) {
+        $bids = array_keys($result['bean']);
+        foreach ($bids as $bid) {
+          $bean = bean_load($bid);
+          bean_delete($bean);
+        }
+      }
+    }
   }
 
 }
