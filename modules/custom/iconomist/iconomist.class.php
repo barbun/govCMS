@@ -289,6 +289,21 @@ class Iconomist {
   }
 
   /**
+   * Ajax callback.
+   *
+   * @param array $form
+   *   Render array for the whole form.
+   * @param array $form_state
+   *   Form state array.
+   *
+   * @return array
+   *   Render array for the portion of the form to be replaced.
+   */
+  public static function ajaxCallback($form, $form_state) {
+    return $form['iconomist']['iconomist_icons'];
+  }
+
+  /**
    * Helper function to get managed file object.
    *
    * @param string $uri
