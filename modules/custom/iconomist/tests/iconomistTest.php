@@ -27,7 +27,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
           'rel' => 'icon',
           'fid' => '21',
         ),
-        1 => array(
+        2 => array(
           'usage_id' => 3,
           'path' => 'public://iconomist/test2.jpg',
           'width' => '64',
@@ -118,7 +118,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         'path' => 'public://iconomist/test1.jpg',
         'usage_id' => '2',
       ),
-      1 => array(
+      2 => array(
         'path' => 'public://iconomist/test2.jpg',
         'usage_id' => '3',
       ),
@@ -157,7 +157,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
             'rel' => 'icon',
             'fid' => '21',
           ),
-          1 => array(
+          2 => array(
             'usage_id' => 3,
             'path' => 'public://iconomist/test2.jpg',
             'width' => '64',
@@ -169,7 +169,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       ),
       'build_info' => array(
         'args' => array(
-          'foo'
+          'foo',
         ),
       ),
       'storage' => array(
@@ -179,12 +179,12 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
             'usage_id' => 2,
             'path' => 'public://iconomist/test1.jpg',
           ),
-          1 => array(
+          2 => array(
             'usage_id' => 3,
             'path' => 'public://iconomist/test2.jpg',
           ),
-        )
-      )
+        ),
+      ),
     );
     $this->assertEquals($expected, $form_state);
   }
@@ -209,7 +209,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     $expected += array(
       'storage' => array(
         'iconomist_num_icons' => 0,
-      )
+      ),
     );
 
     IconomistTest::themeSettingsAlter($form, $form_state);
@@ -265,6 +265,26 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($expected, $form['iconomist']);
   }
 
+  /**
+   * iconomist_form_system_theme_settings_alter adds container for Ajax commands.
+   *
+   * @test
+   */
+  public function addsAjaxContainer() {
+    $form = [];
+    $form_state = [];
+
+    IconomistTest::themeSettingsAlter($form, $form_state);
+
+    $this->assertArrayHasKey('iconomist_icons', $form['iconomist']);
+    $form['iconomist']['iconomist_icons'] = array(
+      '#type' => 'container',
+      '#tree' => TRUE,
+      '#prefix' => '<div id="iconomist-icons">',
+      '#suffix' => '</div>',
+    );
+  }
+
 /**
  * iconomist_form_system_theme_settings_alter adds a fieldset for each icon to the Iconomist Settings fieldset.
    *
@@ -299,7 +319,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         '#element_validate' => ['_iconomist_icons_validate'],
         'usage_id' => array(
           '#type' => 'value',
-          '#value' => $expectedIcon['usage_id'],
+          '#value' => $expectedIcon['usage_id'] ?: "",
         ),
         'upload' => array(
           '#type' => 'managed_file',
@@ -310,13 +330,13 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         ),
         'path' => array(
           '#type' => 'textfield',
-          '#default_value' => $expectedIcon['path'],
+          '#default_value' => $expectedIcon['path'] ?: "",
           '#title' => t('Path to custom icon'),
           '#description' => t('The path to the file you would like to use as your icon.'),
         ),
         'width' => array(
           '#type' => 'textfield',
-          '#default_value' => $expectedIcon['width'],
+          '#default_value' => $expectedIcon['width'] ?: "",
           '#title' => t('Icon width'),
           '#description' => t('Width of icon in pixels.'),
           '#element_validate' => ['element_validate_integer_positive'],
@@ -324,7 +344,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         ),
         'height' => array(
           '#type' => 'textfield',
-          '#default_value' => $expectedIcon['height'],
+          '#default_value' => $expectedIcon['height'] ?: "",
           '#title' => t('Icon height'),
           '#description' => t('Height of icon in pixels.'),
           '#element_validate' => ['element_validate_integer_positive'],
@@ -333,7 +353,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         'rel' => array(
           '#type' => 'radios',
           '#options' => $relationships,
-          '#default_value' => $expectedIcon['rel'],
+          '#default_value' => $expectedIcon['rel'] ?: "icon",
           '#title' => t('Icon relationship'),
           '#description' => t('Relationship type of icon.'),
         ),
@@ -354,15 +374,37 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * For each icon, iconomist_form_system_theme_settings_alter:
-   * - adds fields for the icon type, icon path / upload, dimensions and relationship
-   * - populates the field defaults on the previous line with any currently saved values
-   * - adds a 'Remove' button configured to invoke an Ajax callback and pass which delta is being removed
+   * iconomist_form_system_theme_settings_alter always displays the 'Add icon' button and associated label in the Iconomist Settings fieldset, configured to invoke the Ajax callback.
    *
    * @test
    */
-  public function addsFieldsForEachIcon() {
-    $this->assertEquals(true, false);
+  public function alwaysDisplaysAddIconButton() {
+    $form = [];
+    $form_state = [];
+
+    $expected = array(
+      '#type' => 'submit',
+      '#name' => 'add_icon',
+      '#submit' => ['_iconomist_add_icon'],
+      '#value' => t('Add icon'),
+      '#ajax' => array(
+        'callback' => '_iconomist_ajax_callback',
+        'wrapper' => 'iconomist-icons',
+      ),
+      '#limit_validation_errors' => array(),
+    );
+
+    IconomistTest::themeSettingsAlter($form, $form_state);
+
+    // Sitewide (empty) form should have it.
+    $this->assertEquals($expected, $form['iconomist']['add_icon']);
+
+    // A form with a couple of icons already existing should also still have the
+    // icon.
+    $form_state = array();
+    $form_state['build_info']['args'] = ['foo'];
+    IconomistTest::themeSettingsAlter($form, $form_state);
+    $this->assertEquals($expected, $form['iconomist']['add_icon']);
   }
 
   /**
@@ -370,8 +412,23 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    *
    * @test
    */
-  public function alwaysDisplaysAddIconButton() {
-    $this->assertEquals(true, false);
+  public function addsSubmitHandlerAtHeadOfList() {
+    $form = array(
+      '#submit' => array(
+        'iwasfirst',
+        'iwaslast',
+      ),
+    );
+    $form_state = [];
+
+    $expected = array(
+      '_iconomist_settings_submit',
+      'iwasfirst',
+      'iwaslast',
+    );
+
+    IconomistTest::themeSettingsAlter($form, $form_state);
+    $this->assertEquals($expected, $form['#submit']);
   }
 
   /**
