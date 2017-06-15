@@ -78,7 +78,7 @@ function get_form_errors() {
  * Clear the errors on a form.
  */
 function form_clear_error() {
-  return MockDrupalFunctions::form_clear_error();
+  MockDrupalFunctions::form_clear_error();
 }
 
 /**
@@ -93,11 +93,16 @@ function form_error($element, $error) {
   MockDrupalFunctions::form_set_error($element, $error);
 }
 
-class Mock_db_query_result {
+/**
+ * Class MockDbQueryResult.
+ *
+ * @package Drupal\Iconomist
+ */
+class MockDbQueryResult {
   private $result;
 
   /**
-   * Mock_db_query_result constructor.
+   * MockDbQueryResult constructor.
    *
    * @param mixed $result
    *   The result that fetchField() should return.
@@ -130,14 +135,14 @@ class Mock_db_query_result {
  * @param array $params
  *   An array of parameters to the query.
  *
- * @returns \Drupal\Iconomist\Mock_db_query_result
+ * @returns \Drupal\Iconomist\MockDbQueryResult
  *   Mock db_query result instance.
  */
-function db_query($query, $params) {
+function db_query($query, array $params) {
   $uri = $params[':uri'];
   $result = array_key_exists($uri, IconomistPHPUnitTests::$fileUriMappings) ?
     IconomistPHPUnitTests::$fileUriMappings[$uri] : FALSE;
-  return new Mock_db_query_result($result);
+  return new MockDbQueryResult($result);
 }
 
 /**
@@ -145,19 +150,25 @@ function db_query($query, $params) {
  *
  * @param int $fid
  *   The fie ID being sought.
+ *
+ * @return object
+ *   The file object matching the ID or FALSE.
  */
 function file_load($fid) {
   return MockDrupalFunctions::file_load($fid);
 }
 
 /**
- * Mock version of _system_theme_settings_validate_path
+ * Mock version of _system_theme_settings_validate_path.
  *
  * @param string $path
  *   The file path being checked.
+ *
+ * @return mixed
+ *   The matching path, or FALSE.
  */
 function _system_theme_settings_validate_path($path) {
-
+  return $path == 'invalid' ? FALSE : $path;
 }
 
 /**
@@ -704,16 +715,15 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         ),
       ),
     );
-    $form_state = array();
 
-    $result = Iconomist::ajaxCallback($form, $form_state);
+    $result = Iconomist::ajaxCallback($form);
 
     $expected = array('test' => TRUE);
     $this->assertEquals($expected, $result);
   }
 
   /**
-   * _iconomist_get_managed_file returns the appropriate file object when given a valid URI.
+   * Get managed file returns the file object when given a valid URI.
    *
    * @test
    */
@@ -725,7 +735,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * _iconomist_get_managed_file returns FALSE when given an invalid URI.
+   * Get managed file returns FALSE when given an invalid URI.
    *
    * @test
    */
@@ -756,7 +766,6 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    */
   public function getUsageIdReturnsInteger() {
     variable_set('iconomist_counter', 4);
-    $result = Iconomist::getUseId();
 
     // Check the updated value, not the one we set.
     $result = Iconomist::getUseId();
@@ -779,6 +788,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
           0 => array(),
           1 => array(
             'upload' => 'foo',
+            'file' => FALSE,
           ),
         ),
       ),
@@ -812,7 +822,8 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         'iconomist_icons' => array(
           0 => array(),
           1 => array(
-            'path' => '/non-existent/path',
+            'path' => 'invalid',
+            'upload' => FALSE,
           ),
         ),
       ),
@@ -827,14 +838,14 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * _iconomist_icons_validate sets the file ID when a valid file path is provided.
+   * Validate sets the file ID when a valid file path is provided.
    *
    * @test
    */
   public function validateSetsFileIdForValidPaths() {
     $element = array(
       '#parents' => array(1 => 1),
-      'path' => 'public://themes/stark/screenshot.png',
+      'path' => 'public://iconomist/test2.jpg',
     );
     $form_state = array(
       'triggering_element' => array(
@@ -844,7 +855,8 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         'iconomist_icons' => array(
           0 => array(),
           1 => array(
-            'path' => 'public://themes/stark/screenshot.png',
+            'path' => 'public://iconomist/test2.jpg',
+            'upload' => FALSE,
           ),
         ),
       ),
@@ -853,13 +865,24 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     Iconomist::validate($element, $form_state);
 
     $expected = array(
-      'public://themes/stark/screenshot.png' => t('Path is invalid'),
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(),
+          1 => array(
+            'path' => 'public://iconomist/test2.jpg',
+            'fid' => 22,
+          ),
+        ),
+      ),
     );
-    $this->assertEquals($expected, get_form_errors());
+    $this->assertEquals($expected, $form_state);
   }
 
   /**
-   * _iconomist_icons_validate sets a 'Upload failed' form error on the upload field when given an invalid file path.
+   * Validate sets a 'Upload failed' form error when given an invalid file path.
    *
    * @test
    */
@@ -892,7 +915,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * _iconomist_icons_validate sets the file ID when a valid file upload is provided.
+   * Validate sets the file ID when a valid file upload is provided.
    *
    * @test
    */
@@ -909,7 +932,8 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         'iconomist_icons' => array(
           0 => array(),
           1 => array(
-            'upload' => 'foo',
+            'upload' => 21,
+            'path' => '',
           ),
         ),
       ),
@@ -918,66 +942,159 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     Iconomist::validate($element, $form_state);
 
     $expected = array(
-      0 => array(
-        'element' => 'upload_contents',
-        'error' => t('Upload failed'),
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(),
+          1 => array(
+            'fid' => 21,
+            'path' => '/path/to/test1.jpg',
+          ),
+        ),
       ),
     );
-    $this->assertEquals($expected, get_form_errors());
+    $this->assertEquals($expected, $form_state);
   }
 
   /**
-   * _iconomist_icons_validate removes a file upload without flagging an error when no file is specified.
+   * Validate removes a file upload when no file is specified.
    *
    * @test
    */
   public function validateRemovesFileUploadAndGivesNoErrorWhenNoFileChosen() {
-    $this->assertEquals(true, false);
+    $element = array(
+      '#parents' => array(1 => 1),
+      'upload' => 'upload_contents',
+    );
+    $form_state = array(
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(),
+          1 => array(
+            'upload' => FALSE,
+            'path' => FALSE,
+          ),
+        ),
+      ),
+    );
+
+    Iconomist::validate($element, $form_state);
+
+    $expected = array(
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(),
+        ),
+      ),
+    );
+    $this->assertEquals($expected, $form_state);
   }
 
   /**
-   *  _iconomist_icons_validate removes file usage when the file is changed.
+   * Validate removes file usage when the file is changed.
    *
    * @test
    */
   public function validateRemovesFileUsageWhenFileChanged() {
-    $this->assertEquals(true, false);
+    $element = array(
+      '#parents' => array(1 => 1),
+      'upload' => 'upload_contents',
+    );
+    $form_state = array(
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(),
+          1 => array(
+            'upload' => FALSE,
+            'path' => 'public://iconomist/test3.jpg',
+          ),
+        ),
+      ),
+      'storage' => array(
+        'iconomist_num_icons' => 1,
+        'iconomist_icons' => array(
+          0 => array(),
+          1 => array(
+            'path' => 'public://iconomist/test2.jpg',
+            'usage_id' => 3,
+          ),
+        ),
+      ),
+    );
+
+    Iconomist::validate($element, $form_state);
+
+    $expected = array(
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(),
+          1 => array(
+            'path' => 'public://iconomist/test3.jpg',
+          ),
+        ),
+      ),
+      'storage' => array(
+        'iconomist_num_icons' => 1,
+        'iconomist_icons' => array(
+          0 => array(),
+          1 => array(
+            'path' => 'public://iconomist/test2.jpg',
+            'usage_id' => NULL,
+          ),
+        ),
+      ),
+    );
+    $this->assertEquals($expected, $form_state);
   }
 
   /**
-   * _iconomist_settings_submit correctly removes file usage for files that are no longer in use by iconomist.
+   * Settings_submit correctly removes file usage for now unused files.
    *
    * @test
    */
   public function submitRemovesFileUsageForFilesNoLongerInUse() {
-    $this->assertEquals(true, false);
+    $this->assertEquals(TRUE, FALSE);
   }
 
   /**
-   * _iconomist_settings_submit correctly persists file usage for files that are newly in use by iconomist.
+   * Settings_submit correctly persists file usage for newly used files.
    *
    * @test
    */
   public function submitPersistsFileUsageForFilesNewlyInUse() {
-    $this->assertEquals(true, false);
+    $this->assertEquals(TRUE, FALSE);
   }
 
   /**
-   * iconomist_preprocess_html adds all chosen icons to the html head.
+   * Preprocess_html adds all chosen icons to the html head.
    *
    * @test
    */
   public function preprocessHmlAddsChosenIconsToHtmlHead() {
-    $this->assertEquals(true, false);
+    $this->assertEquals(TRUE, FALSE);
   }
 
   /**
-   * iconomist_preprocess_html applies all applicable attributes of the chosen icons.
+   * Preprocess_html applies all applicable attributes of the chosen icons.
    *
    * @test
    */
   public function preprocessHtmlAppliesAllApplicableAttributesToChosenIcons() {
-    $this->assertEquals(true, false);
+    $this->assertEquals(TRUE, FALSE);
   }
 
 }
