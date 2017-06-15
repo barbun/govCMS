@@ -55,23 +55,13 @@ function variable_get($variable, $default) {
 }
 
 /**
- * Get Html Head values that were set.
- *
- * @return array
- *   The attributes that were added to the page.
- */
-function htmlHeadLinks() {
-  return $headLinks;
-}
-
-/**
  * Mockable interface to drupal_add_html_head_link.
  *
  * @param array $attributes
  *   The attributes being added to the page.
  */
 function drupal_add_html_head_link(array $attributes) {
-  $headLinks[] = $attributes;
+  return MockDrupalFunctions::drupal_add_html_head_link($attributes);
 }
 
 /**
@@ -138,7 +128,7 @@ function setManagedFileLoadResults($results) {
  *   The fie ID being sought.
  */
 function file_load($fid) {
-  return $managedFileObjects[$fid];
+  return MockDrupalFunctions::file_load($fid);
 }
 
 /**

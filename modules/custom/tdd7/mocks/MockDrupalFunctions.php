@@ -13,6 +13,9 @@ namespace tdd7\testframework\mocks {
     private static $last_drupal_goto = null;
     private static $last_drupal_json_output = null;
     private static $theme_settings = array();
+    private static $htmlHeadLinks = array();
+    private static $managedFiles = array();
+
     /**
      * Mock version of variable_set()
      * Original documentation: https://api.drupal.org/api/drupal/includes!bootstrap.inc/function/variable_set/7
@@ -147,9 +150,63 @@ namespace tdd7\testframework\mocks {
       }
       if (array_key_exists($name, $focus)) {
         return $focus[$name];
-      } else {
+      }
+      else {
         return \theme_get_setting($name, $theme);
       }
     }
+
+    /**
+     * Mock version of drupal_add_html_head_link()
+     * Original documentation: https://api.drupal.org/api/drupal/includes%21common.inc/function/drupal_add_html_head_link/7.x
+     *
+     * @param array $attributes
+     *   The attributes of the link to be added.
+     * @param bool $header
+     *   Whether a 'Link:' HTTP header should also be added.
+     */
+    public static function drupal_add_html_head_link($attributes, $header = FALSE) {
+      if ($header) {
+        self::$htmlHeadLinks['headers'][] = $attributes;
+      }
+
+      self::$htmlHeadLinks['head'][] = $attributes;
+    }
+
+    /**
+     * Return any data used to invoke drupal_add_html_head_link, above.
+     *
+     * @return array
+     *   The values passed to drupal_add_html_head_link.
+     */
+    public static function get_html_head_links() {
+      return self::$htmlHeadLinks;
+    }
+
+    /**
+     * Mock version of file_load()
+     * Original documentation: https://api.drupal.org/api/drupal/includes%21file.inc/function/file_load/7.x
+     *
+     * @param integer $fid
+     *   The file ID to load.
+     *
+     * @return mixed
+     *   An object representing the file, or FALSE if the file was not found.
+     */
+    public static function file_load($fid) {
+      return key_exists(self::$managedFiles, $fid) ? self::$managedFiles[$fid] : FALSE;
+    }
+
+    /**
+     * Mock version of file_save()
+     * Original documentation: https://api.drupal.org/api/drupal/includes%21file.inc/function/file_save/7.x
+     *
+     * @param stdClass $file
+     *   The file object to be saved.
+     */
+    public static function file_save(stdClass $file) {
+      self::$managedFiles[$file->fid] = $file;
+    }
+
   }
 }
