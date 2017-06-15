@@ -194,7 +194,7 @@ namespace tdd7\testframework\mocks {
      *   An object representing the file, or FALSE if the file was not found.
      */
     public static function file_load($fid) {
-      return key_exists(self::$managedFiles, $fid) ? self::$managedFiles[$fid] : FALSE;
+      return key_exists($fid, self::$managedFiles) ? self::$managedFiles[$fid] : FALSE;
     }
 
     /**
@@ -204,7 +204,7 @@ namespace tdd7\testframework\mocks {
      * @param stdClass $file
      *   The file object to be saved.
      */
-    public static function file_save(stdClass $file) {
+    public static function file_save(\stdClass $file) {
       self::$managedFiles[$file->fid] = $file;
     }
 

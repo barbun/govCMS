@@ -10,7 +10,7 @@ namespace Drupal\Iconomist;
 require_once __DIR__ . '/../iconomist.class.php';
 require_once DRUPAL_ROOT . '/../modules/custom/tdd7/mocks/MockDrupalFunctions.php';
 
-use \tdd7\testframework\mocks\MockDrupalFunctions as MockDrupalFunctions;
+use tdd7\testframework\mocks\MockDrupalFunctions as MockDrupalFunctions;
 
 /**
  * Get the theme settings.
@@ -61,7 +61,7 @@ function variable_get($variable, $default) {
  *   The attributes being added to the page.
  */
 function drupal_add_html_head_link(array $attributes) {
-  return MockDrupalFunctions::drupal_add_html_head_link($attributes);
+  MockDrupalFunctions::drupal_add_html_head_link($attributes);
 }
 
 /**
@@ -72,6 +72,13 @@ function drupal_add_html_head_link(array $attributes) {
  */
 function get_form_errors() {
   return MockDrupalFunctions::form_get_errors();
+}
+
+/**
+ * Clear the errors on a form.
+ */
+function form_clear_error() {
+  return MockDrupalFunctions::form_clear_error();
 }
 
 /**
@@ -86,49 +93,71 @@ function form_error($element, $error) {
   MockDrupalFunctions::form_set_error($element, $error);
 }
 
-/**
- * Set results for mock managed file query.
- *
- * @param array $results
- *   An array of key/value pairs for the mock query.
- */
-function setManagedFileQuery($results) {
-  $managedFiles = $results;
+class Mock_db_query_result {
+  private $result;
+
+  /**
+   * Mock_db_query_result constructor.
+   *
+   * @param mixed $result
+   *   The result that fetchField() should return.
+   */
+  public function __construct($result) {
+    $this->result = $result;
+  }
+
+  /**
+   * Returns the result that's been set.
+   *
+   * @return mixed
+   *   The result.
+   */
+  public function fetchField() {
+    return $this->result;
+  }
+
 }
 
 /**
  * Mock version of db_query.
  *
  * TTD7 doesn't yet include a db_query mock. Since I'm guessing that would take
- * a fair while to implement, do a simple implementation for the moment.
+ * a fair while to implement, I'll do a very simple implementation for the
+ * moment that just hardcodes the fid the query would produce.
  *
  * @param string $query
  *   The fie ID being sought.
  * @param array $params
  *   An array of parameters to the query.
- */
-function disabled_db_query($query, $params) {
-  return mocks\MockQuery($query, $params);
-}
-
-/**
- * Set results for mock file load.
  *
- * @param array $results
- *   An array of key/object pairs for the mock file load.
+ * @returns \Drupal\Iconomist\Mock_db_query_result
+ *   Mock db_query result instance.
  */
-function setManagedFileLoadResults($results) {
-  $managedFileObjects = $results;
+function db_query($query, $params) {
+  $uri = $params[':uri'];
+  $result = array_key_exists($uri, IconomistPHPUnitTests::$fileUriMappings) ?
+    IconomistPHPUnitTests::$fileUriMappings[$uri] : FALSE;
+  return new Mock_db_query_result($result);
 }
 
 /**
  * Mock version of file_load.
  *
- * @param integer $fid
+ * @param int $fid
  *   The fie ID being sought.
  */
 function file_load($fid) {
   return MockDrupalFunctions::file_load($fid);
+}
+
+/**
+ * Mock version of _system_theme_settings_validate_path
+ *
+ * @param string $path
+ *   The file path being checked.
+ */
+function _system_theme_settings_validate_path($path) {
+
 }
 
 /**
@@ -151,6 +180,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
           'height' => '',
           'rel' => 'icon',
           'fid' => '21',
+          'uri' => '/path/to/test1.jpg',
         ),
         2 => array(
           'usage_id' => 3,
@@ -159,9 +189,15 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
           'height' => '64',
           'rel' => 'icon',
           'fid' => '22',
+          'uri' => '/path/to/test2.jpg',
         ),
       ),
     ),
+  );
+
+  static public $fileUriMappings = array(
+    'public://iconomist/test1.jpg' => 21,
+    'public://iconomist/test2.jpg' => 22,
   );
 
   /**
@@ -169,11 +205,18 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    */
   public function setUp() {
 
+    // Set mock theme settings from the array above.
     foreach (self::$settings as $theme => $settings) {
       foreach ($settings as $name => $value) {
         MockDrupalFunctions::theme_set_setting($name, $value, $theme);
       }
     }
+
+    foreach (self::$settings['foo']['iconomist_icons'] as $file) {
+      MockDrupalFunctions::file_save((object) $file);
+    }
+
+    form_clear_error();
   }
 
   /**
@@ -224,6 +267,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
             'height' => '',
             'rel' => 'icon',
             'fid' => '21',
+            'uri' => '/path/to/test1.jpg',
           ),
           1 => array(
             'usage_id' => 3,
@@ -232,6 +276,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
             'height' => '64',
             'rel' => 'icon',
             'fid' => '22',
+            'uri' => '/path/to/test2.jpg',
           ),
         ),
       ),
@@ -285,6 +330,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
             'height' => '',
             'rel' => 'icon',
             'fid' => '21',
+            'uri' => '/path/to/test1.jpg',
           ),
           2 => array(
             'usage_id' => 3,
@@ -293,6 +339,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
             'height' => '64',
             'rel' => 'icon',
             'fid' => '22',
+            'uri' => '/path/to/test2.jpg',
           ),
         ),
       ),
@@ -619,6 +666,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
             'height' => '64',
             'rel' => 'icon',
             'fid' => '22',
+            'uri' => '/path/to/test2.jpg',
           ),
         ),
       ),
@@ -670,19 +718,10 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function getManagedFileReturnsAppropriateFileObject() {
-    $mockTable = array(
-      'public://hello.png' => 10,
-    );
-    setManagedFileQuery($mockTable);
+    $expected = (object) self::$settings['foo']['iconomist_icons'][0];
 
-    $mockObject = new \stdClass();
-    $mockFiles = array(
-      10 => $mockObject,
-    );
-    setManagedFileLoadResults($mockFiles);
-
-    $result = Iconomist::getManagedFile('public://hello.png');
-    $this->assertEquals($mockObject, $result);
+    $result = Iconomist::getManagedFile('public://iconomist/test1.jpg');
+    $this->assertEquals($expected, $result);
   }
 
   /**
@@ -691,13 +730,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function getManagedFileReturnsFalseForInvalidUri() {
-    $mockTable = array(
-      'public://hello.png' => 1,
-    );
-
-    setManagedFileQuery($mockTable);
-
-    $result = Iconomist::getManagedFile('pubic://nonexistent');
+    $result = Iconomist::getManagedFile('public://iconomist/test99.jpg');
     $this->assertEquals(FALSE, $result);
   }
 
@@ -772,7 +805,9 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       'path' => 'non_existent_path',
     );
     $form_state = array(
-      'triggering_element' => array(),
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
       'values' => array(
         'iconomist_icons' => array(
           0 => array(),
@@ -786,10 +821,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     Iconomist::validate($element, $form_state);
 
     $expected = array(
-      0 => array(
-        'element' => 'non_existent_path',
-        'error' => t('Path is invalid'),
-      ),
+      'non_existent_path' => t('Path is invalid'),
     );
     $this->assertEquals($expected, get_form_errors());
   }
@@ -805,7 +837,9 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       'path' => 'public://themes/stark/screenshot.png',
     );
     $form_state = array(
-      'triggering_element' => array(),
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
       'values' => array(
         'iconomist_icons' => array(
           0 => array(),
@@ -819,10 +853,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     Iconomist::validate($element, $form_state);
 
     $expected = array(
-      0 => array(
-        'element' => 'non_existent_path',
-        'error' => t('Path is invalid'),
-      ),
+      'public://themes/stark/screenshot.png' => t('Path is invalid'),
     );
     $this->assertEquals($expected, get_form_errors());
   }
@@ -838,7 +869,42 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       'upload' => 'upload_contents',
     );
     $form_state = array(
-      'triggering_element' => array(),
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(),
+          1 => array(
+            'upload' => 29,
+            'path' => '',
+          ),
+        ),
+      ),
+    );
+
+    Iconomist::validate($element, $form_state);
+
+    $expected = array(
+      'upload_contents' => t('Upload failed'),
+    );
+    $this->assertEquals($expected, get_form_errors());
+  }
+
+  /**
+   * _iconomist_icons_validate sets the file ID when a valid file upload is provided.
+   *
+   * @test
+   */
+  public function validateSetsFileIdForValidFileUploadPath() {
+    $element = array(
+      '#parents' => array(1 => 1),
+      'upload' => 'upload_contents',
+    );
+    $form_state = array(
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
       'values' => array(
         'iconomist_icons' => array(
           0 => array(),
@@ -858,15 +924,6 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       ),
     );
     $this->assertEquals($expected, get_form_errors());
-  }
-
-  /**
-   * _iconomist_icons_validate sets the file ID when a valid file upload is provided.
-   *
-   * @test
-   */
-  public function validateSetsFileIdForValidFileUploadPath() {
-    $this->assertEquals(true, false);
   }
 
   /**
