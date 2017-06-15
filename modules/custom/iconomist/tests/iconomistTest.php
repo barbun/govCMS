@@ -5,7 +5,141 @@
  * PHP unit tests for Iconomist.
  */
 
-require_once 'iconomist.test.class.php';
+namespace Drupal\Iconomist;
+
+require_once __DIR__ . '/../iconomist.class.php';
+require_once DRUPAL_ROOT . '/../modules/custom/tdd7/mocks/MockDrupalFunctions.php';
+
+use \tdd7\testframework\mocks\MockDrupalFunctions as MockDrupalFunctions;
+
+/**
+ * Get the theme settings.
+ *
+ * @param string $settingName
+ *   The name of the setting being sought.
+ * @param string $theme
+ *   The name of the theme for which settings should be retrieved.
+ *
+ * @return array
+ *   The render array for the theme settings.
+ */
+function theme_get_setting($settingName, $theme = NULL) {
+  return MockDrupalFunctions::theme_get_setting($settingName, $theme);
+}
+
+/**
+ * Mock version of setting a variable.
+ *
+ * @param string $variable
+ *   The name of the variable to set.
+ * @param mixed $value
+ *   The value to assign to the variables.
+ */
+function variable_set($variable, $value) {
+  MockDrupalFunctions::variable_set($variable, $value);
+}
+
+/**
+ * Mock version of variable_get.
+ *
+ * @param string $variable
+ *   The name of the variable to get.
+ * @param mixed $default
+ *   The value to use if the variable isn't set.
+ *
+ * @return mixed
+ *   The value of the variable (or the default value)
+ */
+function variable_get($variable, $default) {
+  return MockDrupalFunctions::variable_get($variable, $default);
+}
+
+/**
+ * Get Html Head values that were set.
+ *
+ * @return array
+ *   The attributes that were added to the page.
+ */
+function htmlHeadLinks() {
+  return $headLinks;
+}
+
+/**
+ * Mockable interface to drupal_add_html_head_link.
+ *
+ * @param array $attributes
+ *   The attributes being added to the page.
+ */
+function drupal_add_html_head_link(array $attributes) {
+  $headLinks[] = $attributes;
+}
+
+/**
+ * Retrieve form errors.
+ *
+ * @return array
+ *   The list of form errors that were set.
+ */
+function get_form_errors() {
+  return MockDrupalFunctions::form_get_errors();
+}
+
+/**
+ * Mocked version of form_error.
+ *
+ * @param string $element
+ *   The name of the element against which the error is being flagged.
+ * @param string $error
+ *   The error message to be displayed.
+ */
+function form_error($element, $error) {
+  MockDrupalFunctions::form_set_error($element, $error);
+}
+
+/**
+ * Set results for mock managed file query.
+ *
+ * @param array $results
+ *   An array of key/value pairs for the mock query.
+ */
+function setManagedFileQuery($results) {
+  $managedFiles = $results;
+}
+
+/**
+ * Mock version of db_query.
+ *
+ * TTD7 doesn't yet include a db_query mock. Since I'm guessing that would take
+ * a fair while to implement, do a simple implementation for the moment.
+ *
+ * @param string $query
+ *   The fie ID being sought.
+ * @param array $params
+ *   An array of parameters to the query.
+ */
+function disabled_db_query($query, $params) {
+  return mocks\MockQuery($query, $params);
+}
+
+/**
+ * Set results for mock file load.
+ *
+ * @param array $results
+ *   An array of key/object pairs for the mock file load.
+ */
+function setManagedFileLoadResults($results) {
+  $managedFileObjects = $results;
+}
+
+/**
+ * Mock version of file_load.
+ *
+ * @param integer $fid
+ *   The fie ID being sought.
+ */
+function file_load($fid) {
+  return $managedFileObjects[$fid];
+}
 
 /**
  * Test cases for Iconomist module.
@@ -15,6 +149,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
   static public $settings = array(
     '' => array(
       'toggle_iconomist' => FALSE,
+      'iconomist_icons' => array(),
     ),
     'foo' => array(
       'toggle_iconomist' => TRUE,
@@ -44,7 +179,11 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    */
   public function setUp() {
 
-    IconomistTest::themeSetSettings(self::$settings);
+    foreach (self::$settings as $theme => $settings) {
+      foreach ($settings as $name => $value) {
+        MockDrupalFunctions::theme_set_setting($name, $value, $theme);
+      }
+    }
   }
 
   /**
@@ -56,7 +195,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     $form = array();
     $form_state = array();
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
     unset($form_state['add_icon']);
     unset($form_state['iconomist_icons']);
 
@@ -111,7 +250,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     // Set the name of the 'theme' we're using.
     $form_state['build_info']['args'] = array('foo');
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
 
     $expected = array(
       0 => array(
@@ -144,7 +283,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       ),
     );
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
 
     $expected = array(
       'values' => array(
@@ -212,7 +351,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       ),
     );
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
 
     $this->assertEquals($expected, $form_state);
   }
@@ -229,7 +368,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     // The theme argument should be used too.
     $form_state['build_info']['args'] = array('foo');
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
 
     $expected = array(
       '#type' => 'checkbox',
@@ -251,7 +390,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     // The theme argument should be used too.
     $form_state['build_info']['args'] = ['foo'];
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
 
     $expected = array(
       '#type' => 'fieldset',
@@ -274,7 +413,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     $form = [];
     $form_state = [];
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
 
     $this->assertArrayHasKey('iconomist_icons', $form['iconomist']);
     $form['iconomist']['iconomist_icons'] = array(
@@ -304,7 +443,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     // The theme argument should be used too.
     $form_state['build_info']['args'] = ['foo'];
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
 
     $expected = count(self::$settings['foo']['iconomist_icons']);
 
@@ -394,7 +533,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       '#limit_validation_errors' => array(),
     );
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
 
     // Sitewide (empty) form should have it.
     $this->assertEquals($expected, $form['iconomist']['add_icon']);
@@ -403,7 +542,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     // icon.
     $form_state = array();
     $form_state['build_info']['args'] = ['foo'];
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
     $this->assertEquals($expected, $form['iconomist']['add_icon']);
   }
 
@@ -427,7 +566,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       'iwaslast',
     );
 
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
     $this->assertEquals($expected, $form['#submit']);
   }
 
@@ -448,13 +587,13 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     );
 
     // From empty to one.
-    IconomistTest::addIcon($form, $form_state);
+    Iconomist::addIcon($form, $form_state);
     $this->assertEquals($expected, $form_state);
 
     // From 2 to 3.
     $form_state['build_info']['args'] = ['foo'];
-    IconomistTest::themeSettingsAlter($form, $form_state);
-    IconomistTest::addIcon($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
+    Iconomist::addIcon($form, $form_state);
 
     $actual = $form_state['storage']['iconomist_num_icons'];
     $this->assertEquals(3, $actual);
@@ -469,11 +608,11 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     // Get the initial form.
     $form = array();
     $form_state['build_info']['args'] = ['foo'];
-    IconomistTest::themeSettingsAlter($form, $form_state);
+    Iconomist::themeSettingsAlter($form, $form_state);
 
     // Adjust the form state to emulate having the remove button pressed.
     $form_state['triggering_element']['#name'] = 'remove_icon_0';
-    IconomistTest::removeIcon($form, $form_state);
+    Iconomist::removeIcon($form, $form_state);
 
     $expected = array(
       'build_info' => array(
@@ -529,7 +668,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     );
     $form_state = array();
 
-    $result = IconomistTest::ajaxCallback($form, $form_state);
+    $result = Iconomist::ajaxCallback($form, $form_state);
 
     $expected = array('test' => TRUE);
     $this->assertEquals($expected, $result);
@@ -544,15 +683,15 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     $mockTable = array(
       'public://hello.png' => 10,
     );
-    IconomistTest::setManagedFileQuery($mockTable);
+    setManagedFileQuery($mockTable);
 
-    $mockObject = new stdClass();
+    $mockObject = new \stdClass();
     $mockFiles = array(
       10 => $mockObject,
     );
-    IconomistTest::setManagedFileLoadResults($mockFiles);
+    setManagedFileLoadResults($mockFiles);
 
-    $result = IconomistTest::getManagedFile('public://hello.png');
+    $result = Iconomist::getManagedFile('public://hello.png');
     $this->assertEquals($mockObject, $result);
   }
 
@@ -566,9 +705,9 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       'public://hello.png' => 1,
     );
 
-    IconomistTest::setManagedFileQuery($mockTable);
+    setManagedFileQuery($mockTable);
 
-    $result = IconomistTest::getManagedFile('pubic://nonexistent');
+    $result = Iconomist::getManagedFile('pubic://nonexistent');
     $this->assertEquals(FALSE, $result);
   }
 
@@ -578,9 +717,9 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function getUsageIdDoesNotReturnSameUsageIdTwice() {
-    IconomistTest::variableSet('iconomist_counter', 4);
-    $first = IconomistTest::getUseId();
-    $second = IconomistTest::getUseId();
+    variable_set('iconomist_counter', 4);
+    $first = Iconomist::getUseId();
+    $second = Iconomist::getUseId();
 
     // The value we set will be returned from the first call.
     $this->assertEquals(4, $first);
@@ -593,11 +732,11 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function getUsageIdReturnsInteger() {
-    IconomistTest::variableSet('iconomist_counter', 4);
-    $result = IconomistTest::getUseId();
+    variable_set('iconomist_counter', 4);
+    $result = Iconomist::getUseId();
 
     // Check the updated value, not the one we set.
-    $result = IconomistTest::getUseId();
+    $result = Iconomist::getUseId();
     $this->assertEquals(TRUE, is_int($result));
   }
 
@@ -622,11 +761,11 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       ),
     );
 
-    IconomistTest::validate($element, $form_state);
+    Iconomist::validate($element, $form_state);
 
     // If it performs validation, the call will either set form errors or unset
     // $icon['upload']. Check for either having happened.
-    $this->assertEmpty(IconomistTest::getFormErrors());
+    $this->assertEmpty(get_form_errors());
 
     $parent = $form_state['values']['iconomist_icons'][1];
     $this->assertArrayHasKey('upload', $parent);
@@ -654,7 +793,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       ),
     );
 
-    IconomistTest::validate($element, $form_state);
+    Iconomist::validate($element, $form_state);
 
     $expected = array(
       0 => array(
@@ -662,7 +801,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         'error' => t('Path is invalid'),
       ),
     );
-    $this->assertEquals($expected, IconomistTest::getFormErrors());
+    $this->assertEquals($expected, get_form_errors());
   }
 
   /**
@@ -687,7 +826,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       ),
     );
 
-    IconomistTest::validate($element, $form_state);
+    Iconomist::validate($element, $form_state);
 
     $expected = array(
       0 => array(
@@ -695,7 +834,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         'error' => t('Path is invalid'),
       ),
     );
-    $this->assertEquals($expected, IconomistTest::getFormErrors());
+    $this->assertEquals($expected, get_form_errors());
   }
 
   /**
@@ -720,7 +859,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       ),
     );
 
-    IconomistTest::validate($element, $form_state);
+    Iconomist::validate($element, $form_state);
 
     $expected = array(
       0 => array(
@@ -728,7 +867,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
         'error' => t('Upload failed'),
       ),
     );
-    $this->assertEquals($expected, IconomistTest::getFormErrors());
+    $this->assertEquals($expected, get_form_errors());
   }
 
   /**

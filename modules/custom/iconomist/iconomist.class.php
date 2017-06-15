@@ -6,7 +6,9 @@
  *
  * Implements the Iconomist functionality in a way that allows for unit testing.
  */
+namespace Drupal\Iconomist;
 
+// For _system_theme_settings_validate_path, which isn't otherwise defined.
 require_once DRUPAL_ROOT . '/modules/system/system.admin.inc';
 
 /**
@@ -16,110 +18,6 @@ require_once DRUPAL_ROOT . '/modules/system/system.admin.inc';
  * be nice and testable.
  */
 class Iconomist {
-
-  /**
-   * Get the theme settings.
-   *
-   * @param string $settingName
-   *   The name of the setting being sought.
-   * @param string $theme
-   *   The name of the theme for which settings should be retrieved.
-   *
-   * @return array
-   *   The render array for the theme settings.
-   *
-   * @codeCoverageIgnore
-   */
-  public static function themeGetSetting($settingName, $theme = NULL) {
-    return theme_get_setting($settingName, $theme);
-  }
-
-  /**
-   * Mockable interface to variable get.
-   *
-   * @param string $variable
-   *   The name of the variable to set.
-   * @param mixed $value
-   *   The value to assign to the variables.
-   *
-   * @codeCoverageIgnore
-   */
-  public static function variableSet($variable, $value) {
-    variable_set($variable, $value);
-  }
-
-  /**
-   * Mockable interface to variable get.
-   *
-   * @param string $variable
-   *   The name of the variable to set.
-   * @param mixed $default
-   *   The value to assign to the variables.
-   *
-   * @return mixed
-   *   The value of the variable (or the default value)
-   *
-   * @codeCoverageIgnore
-   */
-  public static function variableGet($variable, $default) {
-    return variable_get($variable, $default);
-  }
-
-  /**
-   * Mockable interface to drupal_add_html_head_link.
-   *
-   * @param array $attributes
-   *   The attributes being added to the page.
-   *
-   * @codeCoverageIgnore
-   */
-  public static function drupalAddHtmlHeadLink(array $attributes) {
-    drupal_add_html_head_link($attributes);
-  }
-
-  /**
-   * Mockable interface to form_error.
-   *
-   * @param string $element
-   *   The name of the element against which the error is being flagged.
-   * @param string $error
-   *   The error message to be displayed.
-   *
-   * @codeCoverageIgnore
-   */
-  public static function formError($element, $error) {
-    form_error($element, $error);
-  }
-
-  /**
-   * Perform a database query for a URI in the file_managed table.
-   *
-   * @param string $uri
-   *   The URI being sought.
-   *
-   * @return mixed
-   *   The matching URI (an integer) or FALSE.
-   *
-   * @codeCoverageIgnore
-   */
-  public static function managedFileQuery($uri) {
-    return db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', [':uri' => $uri])->fetchField();
-  }
-
-  /**
-   * Perform a file load for a file ID.
-   *
-   * @param integer $fid
-   *   A file ID.
-   *
-   * @return mixed
-   *  An object representing the file, or FALSE if the file was not found.
-   *
-   * @codeCoverageIgnore
-   */
-  public static function fileLoad($fid) {
-    return file_load($fid);
-  }
 
   /**
    * Body of the theme_settings_alter hook.
@@ -133,7 +31,7 @@ class Iconomist {
     $theme = empty($form_state['build_info']['args']) ? NULL : $form_state['build_info']['args'][0];
     if (!isset($form_state['triggering_element'])) {
       // Load existing settings.
-      $form_state['values']['iconomist_icons'] = static::themeGetSetting('iconomist_icons', $theme) ?: array();
+      $form_state['values']['iconomist_icons'] = theme_get_setting('iconomist_icons', $theme) ?: array();
       // Set the number of icons.
       $form_state['storage']['iconomist_num_icons'] = count($form_state['values']['iconomist_icons']);
       // Store path/usage_id in storage.
@@ -157,7 +55,7 @@ class Iconomist {
     $form['theme_settings']['toggle_iconomist'] = array(
       '#type' => 'checkbox',
       '#title' => t('Iconomist Icons'),
-      '#default_value' => static::themeGetSetting('toggle_iconomist', $theme),
+      '#default_value' => theme_get_setting('toggle_iconomist', $theme),
     );
 
     // Iconomist fieldset.
@@ -343,9 +241,9 @@ class Iconomist {
    *   File object if managed otherwise FALSE.
    */
   public static function getManagedFile($uri) {
-    $fid = static::managedFileQuery($uri);
+    $fid = db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', [':uri' => $uri])->fetchField();
     if (!empty($fid)) {
-      $file_object = static::fileLoad($fid);
+      $file_object = file_load($fid);
       return $file_object;
     }
     return FALSE;
@@ -358,8 +256,8 @@ class Iconomist {
    *   Available usage id.
    */
   public static function getUseId() {
-    $usage_id = static::variableGet('iconomist_counter', 1);
-    static::variableSet('iconomist_counter', $usage_id + 1);
+    $usage_id = variable_get('iconomist_counter', 1);
+    variable_set('iconomist_counter', $usage_id + 1);
     return $usage_id;
   }
 
@@ -391,7 +289,7 @@ class Iconomist {
     if ($icon['path']) {
       $path = _system_theme_settings_validate_path($icon['path']);
       if (!$path) {
-        static::formError($element['path'], t('Path is invalid'));
+        form_error($element['path'], t('Path is invalid'));
         return;
       }
       $file = static::getManagedFile($path);
@@ -407,7 +305,7 @@ class Iconomist {
         $icon['fid'] = $file->fid;
       }
       else {
-        static::formError($element['upload'], t('Upload failed'));
+        form_error($element['upload'], t('Upload failed'));
         return;
       }
     }
@@ -441,7 +339,7 @@ class Iconomist {
    */
   public static function settingsSubmit(array $form, array &$form_state) {
     $theme = empty($form_state['build_info']['args']) ? NULL : $form_state['build_info']['args'][0];
-    $existing_icons = static::themeGetSetting('iconomist_icons', $theme) ?: array();
+    $existing_icons = theme_get_setting('iconomist_icons', $theme) ?: array();
     $existing_file_usages = array();
     foreach ($existing_icons as $icon) {
       if (!empty($icon['usage_id'])) {
@@ -486,8 +384,8 @@ class Iconomist {
    * Implements hook_preprocess_html().
    */
   public static function preprocessHtml(&$vars) {
-    $toggle = static::themeGetSetting('iconomist_toggle');
-    $icons = static::themeGetSetting('iconomist_icons') ?: array();
+    $toggle = theme_get_setting('iconomist_toggle');
+    $icons = theme_get_setting('iconomist_icons') ?: array();
     if ($toggle || empty($icons)) {
       // Do nothing if iconomist is toggled off or no icons.
       return;
