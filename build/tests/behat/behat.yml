@@ -19,6 +19,7 @@ default:
       selenium2:
         wd_host: "http://localhost:4444/wd/hub"
       javascript_session: selenium2
+      files_path: %paths.base%/files
     Drupal\DrupalExtension:
       blackbox: ~
       drupal:
@@ -50,6 +51,7 @@ drupal:
         selenium2:
           wd_host: "http://localhost:4444/wd/hub"
         javascript_session: selenium2
+        files_path: %paths.base%/files
       Drupal\DrupalExtension:
         blackbox: ~
         api_driver: "drupal"
