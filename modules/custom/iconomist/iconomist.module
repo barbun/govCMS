@@ -10,13 +10,15 @@
  * icons and set the dimension for that icon.
  */
 
+use Drupal\Iconomist\Iconomist as Iconomist;
+
 require_once drupal_get_path('module', 'iconomist') . '/iconomist.class.php';
 
 /**
  * Implements hook_form_system_theme_settings_alter().
  */
 function iconomist_form_system_theme_settings_alter(&$form, &$form_state) {
-  Drupal\Iconomist\Iconomist::themeSettingsAlter($form, $form_state);
+  Iconomist::themeSettingsAlter($form, $form_state);
 }
 
 /**
@@ -28,7 +30,7 @@ function iconomist_form_system_theme_settings_alter(&$form, &$form_state) {
  *   The form state array.
  */
 function _iconomist_add_icon(array $form, array &$form_state) {
-  Drupal\Iconomist\Iconomist::addIcon($form, $form_state);
+  Iconomist::addIcon($form, $form_state);
 }
 
 /**
@@ -40,7 +42,7 @@ function _iconomist_add_icon(array $form, array &$form_state) {
  *   The form state array.
  */
 function _iconomist_remove_icon(array $form, array &$form_state) {
-  Drupal\Iconomist\Iconomist::removeIcon($form, $form_state);
+  Iconomist::removeIcon($form, $form_state);
 }
 
 /**
@@ -52,7 +54,7 @@ function _iconomist_remove_icon(array $form, array &$form_state) {
  *   The form state array.
  */
 function _iconomist_ajax_callback(array $form, array $form_state) {
-  Drupal\Iconomist\Iconomist::ajaxCallback($form, $form_state);
+  Iconomist::ajaxCallback($form, $form_state);
 }
 
 /**
@@ -64,7 +66,7 @@ function _iconomist_ajax_callback(array $form, array $form_state) {
  *   The form state array.
  */
 function _iconomist_icons_validate(array $element, array &$form_state) {
-  Drupal\Iconomist\Iconomist::validate($element, $form_state);
+  Iconomist::validate($element, $form_state);
 }
 
 /**
@@ -76,12 +78,12 @@ function _iconomist_icons_validate(array $element, array &$form_state) {
  *   The form state array.
  */
 function _iconomist_settings_submit(array $form, array &$form_state) {
-  Drupal\Iconomist\Iconomist::settingsSubmit($form, $form_state);
+  Iconomist::settingsSubmit($form, $form_state);
 }
 
 /**
  * Implements hook_preprocess_html().
  */
 function iconomist_preprocess_html(&$vars) {
-  Drupal\Iconomist\Iconomist::preprocessHtml($vars);
+  Iconomist::preprocessHtml($vars);
 }

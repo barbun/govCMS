@@ -1,12 +1,13 @@
 <?php
 
+namespace Drupal\Iconomist;
+
 /**
  * @file
  * Iconomist Class.
  *
  * Implements the Iconomist functionality in a way that allows for unit testing.
  */
-namespace Drupal\Iconomist;
 
 // For _system_theme_settings_validate_path, which isn't otherwise defined.
 require_once DRUPAL_ROOT . '/modules/system/system.admin.inc';

@@ -161,7 +161,7 @@ function file_load($fid) {
 /**
  * Mock version of file_save.
  *
- * @param $file
+ * @param \stdClass $file
  *   A file object returned by file_load().
  *
  * @return object
@@ -174,17 +174,17 @@ function file_save(\stdClass $file) {
 /**
  * Mock version of file_usage_delete.
  *
- * @param $file
+ * @param \stdClass $file
  *   A file object.
- * @param $module
+ * @param string $module
  *   The name of the module using the file.
- * @param $type
+ * @param string $type
  *   (optional) The type of the object that contains the referenced file. May
  *   be omitted if all module references to a file are being deleted.
- * @param $id
+ * @param int $id
  *   (optional) The unique, numeric ID of the object containing the referenced
  *   file. May be omitted if all module references to a file are being deleted.
- * @param $count
+ * @param int $count
  *   (optional) The number of references to delete from the object. Defaults to
  *   1. 0 may be specified to delete all references to the file within a
  *   specific object.
@@ -196,11 +196,11 @@ function file_usage_delete(\stdClass $file, $module, $type = NULL, $id = NULL, $
 /**
  * Create a file URL from a URI.
  *
- * @param $uri
+ * @param string $uri
  *   The URI to a file for which we need an external URL, or the path to a
  *   shipped file.
  *
- * @return
+ * @return string
  *   A string containing a URL that may be used to access the file.
  *   If the provided string already contains a preceding 'http', 'https', or
  *   '/', nothing is done and the same string is returned. If a stream wrapper
@@ -474,7 +474,8 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       'triggering_element' => 'bar',
     );
 
-    $expected = array_merge($form_state, array(
+    $expected = array_merge($form_state,
+      array(
         'storage' => array(
           'iconomist_num_icons' => 0,
         ),
