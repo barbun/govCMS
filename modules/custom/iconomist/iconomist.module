@@ -54,7 +54,7 @@ function _iconomist_remove_icon(array $form, array &$form_state) {
  *   The form state array.
  */
 function _iconomist_ajax_callback(array $form, array $form_state) {
-  Iconomist::ajaxCallback($form, $form_state);
+  return Iconomist::ajaxCallback($form, $form_state);
 }
 
 /**
