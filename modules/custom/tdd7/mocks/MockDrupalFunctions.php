@@ -15,6 +15,7 @@ namespace tdd7\testframework\mocks {
     private static $theme_settings = array();
     private static $htmlHeadLinks = array();
     private static $managedFiles = array();
+    private static $fileUsageDeleted = array();
 
     /**
      * Mock version of variable_set()
@@ -206,6 +207,58 @@ namespace tdd7\testframework\mocks {
      */
     public static function file_save(\stdClass $file) {
       self::$managedFiles[$file->fid] = $file;
+    }
+
+    /**
+     * Mock version of file_usage_delete()
+     * Original documentation: https://api.drupal.org/api/drupal/includes%21file.inc/function/file_usage_delete/7.x
+     *
+     * @param $file
+     *   A file object.
+     * @param $module
+     *   The name of the module using the file.
+     * @param $type
+     *   (optional) The type of the object that contains the referenced file. May
+     *   be omitted if all module references to a file are being deleted.
+     * @param $id
+     *   (optional) The unique, numeric ID of the object containing the referenced
+     *   file. May be omitted if all module references to a file are being deleted.
+     * @param $count
+     *   (optional) The number of references to delete from the object. Defaults to
+     *   1. 0 may be specified to delete all references to the file within a
+     *   specific object.
+     */
+    public static function file_usage_delete(\stdClass $file) {
+      self::$fileUsageDeleted[] = $file->fid;
+    }
+
+    /**
+     * Get the list of files that had usage deleted.
+     *
+     * @return array
+     *   List of file IDs for which file_usage_delete was invoked.
+     */
+    public static function fileUsageDeleted() {
+      return self::$fileUsageDeleted;
+    }
+
+    /**
+     * Create a URL for a file.
+     *
+     * @param $uri
+     *   The URI to a file for which we need an external URL, or the path to a
+     *   shipped file.
+     *
+     * @return
+     *   A string containing a URL that may be used to access the file.
+     *   If the provided string already contains a preceding 'http', 'https', or
+     *   '/', nothing is done and the same string is returned. If a stream wrapper
+     *   could not be found to generate an external URL, then FALSE is returned.
+     */
+    public static function file_create_url($uri) {
+      // Just return the original string to make the result nice and
+      // predictable, even if it won't always be correct.
+      return $uri;
     }
 
   }

@@ -159,6 +159,58 @@ function file_load($fid) {
 }
 
 /**
+ * Mock version of file_save.
+ *
+ * @param $file
+ *   A file object returned by file_load().
+ *
+ * @return object
+ *   The file object matching the ID or FALSE.
+ */
+function file_save(\stdClass $file) {
+  return MockDrupalFunctions::file_save($file);
+}
+
+/**
+ * Mock version of file_usage_delete.
+ *
+ * @param $file
+ *   A file object.
+ * @param $module
+ *   The name of the module using the file.
+ * @param $type
+ *   (optional) The type of the object that contains the referenced file. May
+ *   be omitted if all module references to a file are being deleted.
+ * @param $id
+ *   (optional) The unique, numeric ID of the object containing the referenced
+ *   file. May be omitted if all module references to a file are being deleted.
+ * @param $count
+ *   (optional) The number of references to delete from the object. Defaults to
+ *   1. 0 may be specified to delete all references to the file within a
+ *   specific object.
+ */
+function file_usage_delete(\stdClass $file, $module, $type = NULL, $id = NULL, $count = 1) {
+  return MockDrupalFunctions::file_usage_delete($file, $module, $type, $id, $count);
+}
+
+/**
+ * Create a file URL from a URI.
+ *
+ * @param $uri
+ *   The URI to a file for which we need an external URL, or the path to a
+ *   shipped file.
+ *
+ * @return
+ *   A string containing a URL that may be used to access the file.
+ *   If the provided string already contains a preceding 'http', 'https', or
+ *   '/', nothing is done and the same string is returned. If a stream wrapper
+ *   could not be found to generate an external URL, then FALSE is returned.
+ */
+function file_create_url($uri) {
+  return MockDrupalFunctions::file_create_url($uri);
+}
+
+/**
  * Mock version of _system_theme_settings_validate_path.
  *
  * @param string $path
@@ -211,6 +263,36 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     'public://iconomist/test2.jpg' => 22,
   );
 
+  static public $savedFiles = array(
+    0 => array(
+      'usage_id' => 2,
+      'path' => 'public://iconomist/test1.jpg',
+      'width' => '',
+      'height' => '',
+      'rel' => 'icon',
+      'fid' => '21',
+      'uri' => '/path/to/test1.jpg',
+    ),
+    1 => array(
+      'usage_id' => 3,
+      'path' => 'public://iconomist/test2.jpg',
+      'width' => '64',
+      'height' => '64',
+      'rel' => 'icon',
+      'fid' => '22',
+      'uri' => '/path/to/test2.jpg',
+    ),
+    2 => array(
+      'usage_id' => 4,
+      'path' => 'public://iconomist/test3.jpg',
+      'width' => '64',
+      'height' => '64',
+      'rel' => 'icon',
+      'fid' => '23',
+      'uri' => '/path/to/test3.jpg',
+    ),
+  );
+
   /**
    * Setup function for tests.
    */
@@ -223,7 +305,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       }
     }
 
-    foreach (self::$settings['foo']['iconomist_icons'] as $file) {
+    foreach (self::$savedFiles as $file) {
       MockDrupalFunctions::file_save((object) $file);
     }
 
@@ -392,11 +474,11 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
       'triggering_element' => 'bar',
     );
 
-    $expected = $form_state;
-    $expected += array(
-      'storage' => array(
-        'iconomist_num_icons' => 0,
-      ),
+    $expected = array_merge($form_state, array(
+        'storage' => array(
+          'iconomist_num_icons' => 0,
+        ),
+      )
     );
 
     Iconomist::themeSettingsAlter($form, $form_state);
@@ -1067,7 +1149,46 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function submitRemovesFileUsageForFilesNoLongerInUse() {
-    $this->assertEquals(TRUE, FALSE);
+    $form = array();
+    $form_state = array(
+      'build_info' => array(
+        'args' => array(
+          '0' => 'foo',
+        ),
+      ),
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(
+            'path' => 'public://iconomist/test1.jpg',
+            'fid' => 21,
+            'usage_id' => 2,
+          ),
+        ),
+      ),
+      'storage' => array(
+        'iconomist_num_icons' => 1,
+        'iconomist_icons' => array(
+          0 => array(
+            'path' => 'public://iconomist/test1.jpg',
+            'usage_id' => 2,
+          ),
+          1 => array(
+            'path' => 'public://iconomist/test2.jpg',
+            'usage_id' => 3,
+          ),
+        ),
+      ),
+    );
+
+    Iconomist::settingsSubmit($form, $form_state);
+
+    $deleted = MockDrupalFunctions::fileUsageDeleted();
+    $expected = array('22');
+
+    $this->assertEquals($expected, $deleted);
   }
 
   /**
@@ -1076,25 +1197,106 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    * @test
    */
   public function submitPersistsFileUsageForFilesNewlyInUse() {
-    $this->assertEquals(TRUE, FALSE);
+    $form = array();
+    $form_state = array(
+      'build_info' => array(
+        'args' => array(
+          '0' => 'foo',
+        ),
+      ),
+      'triggering_element' => array(
+        '#limit_validation_errors' => FALSE,
+      ),
+      'values' => array(
+        'iconomist_icons' => array(
+          0 => array(
+            'path' => 'public://iconomist/test1.jpg',
+            'fid' => 21,
+            'usage_id' => 2,
+          ),
+          1 => array(
+            'path' => 'public://iconomist/test2.jpg',
+            'fid' => 22,
+            'usage_id' => 3,
+          ),
+          2 => array(
+            'path' => 'public://iconomist/test3.jpg',
+            'fid' => 23,
+            'usage_id' => NULL,
+          ),
+        ),
+      ),
+      'storage' => array(
+        'iconomist_num_icons' => 1,
+        'iconomist_icons' => array(
+          0 => array(
+            'path' => 'public://iconomist/test1.jpg',
+            'usage_id' => 2,
+          ),
+          1 => array(
+            'path' => 'public://iconomist/test2.jpg',
+            'usage_id' => 3,
+          ),
+        ),
+      ),
+    );
+
+    Iconomist::settingsSubmit($form, $form_state);
+
+    $deleted = MockDrupalFunctions::fileUsageDeleted();
+    $expected = array('22');
+
+    $this->assertEquals($expected, $deleted);
   }
 
   /**
-   * Preprocess_html adds all chosen icons to the html head.
+   * Preprocess_html does nothing if toggle is off.
    *
    * @test
    */
-  public function preprocessHmlAddsChosenIconsToHtmlHead() {
-    $this->assertEquals(TRUE, FALSE);
+  public function preprocessHtmlDoesNothingIfToggleOff() {
+    $vars = array();
+    MockDrupalFunctions::theme_set_setting('iconomist_toggle', FALSE);
+    $icons = self::$settings['foo']['iconomist_icons'];
+    MockDrupalFunctions::theme_set_setting('iconomist_icons', $icons);
+
+    Iconomist::preprocessHtml($vars);
+
+    $links = MockDrupalFunctions::get_html_head_links();
+    $this->assertEmpty($links);
   }
 
   /**
-   * Preprocess_html applies all applicable attributes of the chosen icons.
+   * Preprocess_html adds all chosen icons to the html head with attributes.
    *
    * @test
    */
-  public function preprocessHtmlAppliesAllApplicableAttributesToChosenIcons() {
-    $this->assertEquals(TRUE, FALSE);
+  public function preprocessHmlAddsIconsToHtmlHeadWithAttributes() {
+    $vars = array();
+    MockDrupalFunctions::theme_set_setting('iconomist_toggle', TRUE);
+
+    $icons = self::$settings['foo']['iconomist_icons'];
+    MockDrupalFunctions::theme_set_setting('iconomist_icons', $icons);
+
+    Iconomist::preprocessHtml($vars);
+
+    $links = MockDrupalFunctions::get_html_head_links();
+    $expected = array(
+      'head' => array(
+        0 => array(
+          'rel' => 'icon',
+          'href' => 'public://iconomist/test1.jpg',
+          'type' => 'image/jpeg',
+        ),
+        1 => array(
+          'rel' => 'icon',
+          'href' => 'public://iconomist/test2.jpg',
+          'type' => 'image/jpeg',
+          'sizes' => '64x64',
+        ),
+      ),
+    );
+    $this->assertEquals($expected, $links);
   }
 
 }
