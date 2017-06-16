@@ -386,7 +386,7 @@ class Iconomist {
   public static function preprocessHtml(&$vars) {
     $toggle = theme_get_setting('iconomist_toggle');
     $icons = theme_get_setting('iconomist_icons') ?: array();
-    if ($toggle || empty($icons)) {
+    if (!$toggle || empty($icons)) {
       // Do nothing if iconomist is toggled off or no icons.
       return;
     }
