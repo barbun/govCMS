@@ -204,6 +204,24 @@ JS;
   }
 
   /**
+   * @When I select the radio button :label with the partial id :id
+   */
+  public function assertSelectRadioByPartialId($label, $id = '') {
+    $element = $this->getSession()->getPage();
+    $content = $element->getContent();
+    $radiobutton = $id ? $element->findById($id) : $element->find('named_partial', array('radio', $this->getSession()->getSelectorsHandler()->xpathLiteral($label)));
+    if ($radiobutton === NULL) {
+      throw new \Exception(sprintf('The radio button with "%s" was not found on the page %s', $id ? $id : $label, $this->getSession()->getCurrentUrl()));
+    }
+    $value = $radiobutton->getAttribute('value');
+    $labelonpage = $radiobutton->getParent()->getText();
+    if ($label != $labelonpage) {
+      throw new \Exception(sprintf("Button with id '%s' has label '%s' instead of '%s' on the page %s", $id, $labelonpage, $label, $this->getSession()->getCurrentUrl()));
+    }
+    $radiobutton->selectOption($value, FALSE);
+  }
+
+  /**
    * Fills in WYSIWYG editor with specified id.
    *
    * @Given /^(?:|I )fill in "(?P<text>[^"]*)" in WYSIWYG editor "(?P<iframe>[^"]*)"$/
