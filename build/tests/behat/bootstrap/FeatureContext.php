@@ -7,6 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
+use Behat\Mink\Element\Element;
 
 /**
  * Defines application features from the specific context.
@@ -33,46 +34,98 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Creates and authenticates a user with the given role via Drush.
+   * Clean the password state tables for a specific user.
    *
-   * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role that doesn't force password change$/
+   * Remove any password history, expiration of flag forcing a password change
+   * when they next log in.
+   *
+   * @param int $uid
+   *   The user's uid.
+   */
+  private function cleanPasswordState($uid) {
+    $tables = array(
+      'password_policy_force_change',
+      'password_policy_expiration',
+      'password_policy_history',
+    );
+
+    foreach ($tables as $table) {
+      db_delete($table)
+        ->condition('uid', $uid)
+        ->execute();
+    }
+  }
+
+  /**
+   * Retrieve a table row(s) containing specified element id|name|label|value.
+   *
+   * @param \Behat\Mink\Element\Element $element
+   *   The page object to search within.
+   * @param string $rowElement
+   *   The text to search for to identify the table row(s).
+   *
+   * @return \Behat\Mink\Element\NodeElement
+   *   The table rows, if found.
+   *
+   * @throws \Exception
+   *   When no such match is found.
+   */
+  public function getTableRowWithElement(Element $element, $rowElement) {
+    $rows = $element->findAll('css', sprintf('table tr:contains("%s")', $rowElement));
+    if (empty($rows)) {
+      throw new \Exception(sprintf('No rows containing the element with id|name|label|value "%s" found on the page %s', $rowElement, $this->getSession()->getCurrentUrl()));
+    }
+
+    return $rows;
+  }
+
+  /**
+   * Creates and authenticates a user with the given role.
+   *
+   * @Given /^I am logged in as a user (?:|named "(?P<username>[^"]*)" )with the "(?P<role>[^"]*)" role that doesn't force password change$/
    */
   public function assertAuthenticatedByRole($username, $role) {
-    // Create user.
-    $user = (object) array(
-      'name' => $username,
-      'pass' => $this->getRandom()->name(16),
-      'role' => $role,
-      'roles' => array($role),
-    );
-    $user->mail = "{$user->name}@example.com";
-    $this->userCreate($user);
+    // Check if a user with this role is already logged in.
+    if (!$this->loggedInWithRole($role)) {
+      // Create user (and project)
+      $user = (object) array(
+        'name' => !empty($username) ? $username : $this->getRandom()->name(8),
+        'pass' => $this->getRandom()->name(16),
+        'role' => $role,
+      );
+      $user->mail = "{$user->name}@example.com";
 
-    // Find the user.
-    $account = user_load_by_name($user->name);
+      $this->userCreate($user);
 
-    // Remove the "Force password change on next login" record.
-    db_delete('password_policy_force_change')
-      ->condition('uid', $account->uid)
-      ->execute();
-    db_delete('password_policy_expiration')
-      ->condition('uid', $account->uid)
-      ->execute();
+      $roles = explode(',', $role);
+      $roles = array_map('trim', $roles);
+      foreach ($roles as $role) {
+        if (!in_array(strtolower($role), array('authenticated', 'authenticated user'))) {
+          // Only add roles other than 'authenticated user'.
+          $this->getDriver()->userAddRole($user, $role);
+        }
+      }
+      // Find the user.
+      $account = user_load_by_name($user->name);
+      // Remove the "Force password change on next login" record.
+      $this->cleanPasswordState($account->uid);
 
-    // Login.
-    $this->login();
+      // Login.
+      $this->login();
+    }
   }
 
   /**
    * Creates and authenticates a user with the given permission.
    *
-   * @Given /^I am logged in as a user (?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
+   * @Given /^I am logged in as a user (?:|named )(?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
+   * @Given /^I am logged in as a user with the password "(?P<password>[^"]*)" and the "(?P<permissions>[^"]*)" permission$/
    */
-  public function assertAuthenticatedWithPermission($username, $permissions) {
+  public function assertAuthenticatedWithPermission($permissions, $username = '', $password = '') {
     // Create user.
     $user = (object) array(
       'name' => !empty($username) ? $username : $this->getRandom()->name(8),
-      'pass' => $this->getRandom()->name(16),
+      'pass' => !empty($password) ? $password : $this->getRandom()->name(16),
     );
     $user->mail = "{$user->name}@example.com";
     $this->userCreate($user);
@@ -85,14 +138,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
 
     // Find the user.
     $account = user_load_by_name($user->name);
-
     // Remove the "Force password change on next login" record.
-    db_delete('password_policy_force_change')
-      ->condition('uid', $account->uid)
-      ->execute();
-    db_delete('password_policy_expiration')
-      ->condition('uid', $account->uid)
-      ->execute();
+    $this->cleanPasswordState($account->uid);
 
     // Login.
     $this->login();
@@ -123,6 +170,23 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       $user->mail = "{$user->name}@example.com";
       // Create a new user.
       $this->userCreate($user);
+    }
+  }
+
+  /**
+   * Ensure that a user account is deleted.
+   *
+   * @When /^a user named "(?P<username>[^"]*)" is deleted$/
+   */
+  public function assertAccountDeleted($username) {
+    // Find the user.
+    $user = user_load_by_name($username);
+    // If such user exists then delete it.
+    if (!empty($user)) {
+      $this->getDriver()->userDelete($user);
+    }
+    else {
+      throw new \Exception('No such user');
     }
   }
 
@@ -175,6 +239,64 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     }
     if ($select->getValue() != $arg2) {
       throw new \Exception(sprintf("Select list with id '%s' was found but not set to value '%s'.", $arg1, $arg2));
+    }
+  }
+
+  /**
+   * Checks that a checkbox in a row containing specific text is ticked.
+   *
+   * Lets you provide a piece of text to use in locating a table row and another
+   * piece of text to find a checkbox within that row, then test whether the
+   * checkbox is ticked. The use of text avoids reliance on a table having
+   * particular content order and makes the test much more readable:
+   *
+   * "And the checkbox named "enabled" in table row with text "Australian
+   * Government ISM Policy (Strong)" should be checked".
+   *
+   * @param string $rowMatch
+   *   The text to match in searching for a table row.
+   * @param string $textMatch
+   *   The pattern to use in searching for the checkbox (eg. enabled)
+   *
+   * @Then the checkbox named :rowMatch in table row with text :textMatch should be checked
+   */
+  public function theCheckboxNamedInTableRowWithTextShouldBeChecked($rowMatch, $textMatch) {
+    // Find the table rows containing $rowMatch.
+    $rows = $this->getTableRowWithElement($this->getSession()->getPage(), $textMatch);
+    // Loop through all found rows and try to find our element.
+    foreach ($rows as $row) {
+      $checkbox = $row->find('css', sprintf('[id*="%s"]', $rowMatch));
+      if (empty($checkbox)) {
+        throw new \Exception(sprintf('No checkbox named "%s" found in the table row with text "%s"', $rowMatch, $textMatch, $this->getSession()->getCurrentUrl()));
+      }
+      if (!$checkbox->isChecked()) {
+        throw new \Exception(sprintf("Checkbox with id '%s' in a row containing '%s' was found but was not checked.", $textMatch, $rowMatch));
+      }
+    }
+  }
+
+  /**
+   * Checks that a checkbox in a row containing some text is NOT ticked.
+   *
+   * @param string $rowMatch
+   *   The text to match in searching for a table row.
+   * @param string $textMatch
+   *   The pattern to use in searching for the checkbox (eg. enabled)
+   *
+   * @Then the checkbox named :rowMatch in table row with text :textMatch should not be checked
+   */
+  public function theCheckboxNamedInTableRowWithTextShouldBeNotChecked($rowMatch, $textMatch) {
+    // Find the table rows containing $rowMatch.
+    $rows = $this->getTableRowWithElement($this->getSession()->getPage(), $textMatch);
+    // Loop through all found rows and try to find our element.
+    foreach ($rows as $row) {
+      $checkbox = $row->find('css', sprintf('[id*="%s"]', $rowMatch));
+      if (empty($checkbox)) {
+        throw new \Exception(sprintf('No checkbox named "%s" found in the table row with text "%s"', $rowMatch, $textMatch, $this->getSession()->getCurrentUrl()));
+      }
+      if ($checkbox->isChecked()) {
+        throw new \Exception(sprintf("Checkbox with id '%s' in a row containing '%s' was found but was checked.", $textMatch, $rowMatch));
+      }
     }
   }
 
@@ -280,11 +402,122 @@ JS;
   }
 
   /**
+   * Converts a role name to an rid if required.
+   *
+   * @param mixed $rid
+   *   The role ID or name.
+   *
+   * @return int
+   *   The role ID
+   */
+  private function roleToRid($rid) {
+    if (is_numeric($rid)) {
+      return $rid;
+    }
+
+    return array_search($rid, user_roles());
+  }
+
+  /**
+   * Asserts that a role has a set of permissions.
+   *
+   * @param string $rid
+   *   The role ID.
+   * @param \Behat\Gherkin\Node\PyStringNode $permissions
+   *   The permissions to check for.
+   *
+   * @Then the :role role should have permissions:
+   * @Then the :role role should have permission to:
+   */
+  public function assertPermissions($rid, PyStringNode $permissions) {
+    $rid = self::roleToRid($rid);
+    foreach ($permissions->getStrings() as $permission) {
+      $this->assertPermission($rid, trim($permission), TRUE);
+    }
+  }
+
+  /**
+   * Asserts that a role does NOT have a set of permissions.
+   *
+   * @param string $rid
+   *   The role ID.
+   * @param \Behat\Gherkin\Node\PyStringNode $permissions
+   *   The permissions to check for.
+   *
+   * @Then the :role role should not have permissions:
+   * @Then the :role role should not have permission to:
+   */
+  public function assertNoPermissions($rid, PyStringNode $permissions) {
+    $rid = self::roleToRid($rid);
+    foreach ($permissions->getStrings() as $permission) {
+      $this->assertNoPermission($rid, trim($permission), TRUE);
+    }
+  }
+
+  /**
+   * Asserts that a role has a specific permission.
+   *
+   * @param string $rid
+   *   The role ID.
+   * @param string $permission
+   *   The permission to check for.
+   * @param bool $assertPath
+   *   Whether we should check the path.
+   *
+   * @Given the :role role has the :permission permission
+   * @Given the :role role has permission to :permission
+   *
+   * @Then the :role role should have the :permission permission
+   * @Then the :role role should have permission to :permission
+   */
+  public function assertPermission($rid, $permission, $assertPath = TRUE) {
+    $rid = self::roleToRid($rid);
+    if ($assertPath) {
+      $mink = new Drupal\DrupalExtension\Context\MinkContext();
+      $mink->setMink($this->getMink());
+      $mink->assertAtPath('/admin/people/permissions/' . $rid);
+    }
+    $this->assertSession()->checkboxChecked($rid . '[' . $permission . ']');
+  }
+
+  /**
+   * Asserts that a role does not have a specific permission.
+   *
+   * @param string $rid
+   *   The role ID.
+   * @param string $permission
+   *   The permission to check for.
+   * @param bool $assertPath
+   *   Whether we should check the path.
+   *
+   * @Given the :role role does not have the :permission permission
+   * @Given the :role role does not have permission to :permission
+   *
+   * @Then the :role role should not have the :permission permission
+   * @Then the :role role should not have permission to :permission
+   */
+  public function assertNoPermission($rid, $permission, $assertPath = TRUE) {
+    $rid = self::roleToRid($rid);
+    if ($assertPath) {
+      $mink = new Drupal\DrupalExtension\Context\MinkContext();
+      $mink->setMink($this->getMink());
+      $mink->assertAtPath('/admin/people/permissions/' . $rid);
+    }
+    $field = $rid . '[' . $permission . ']';
+    try {
+      $this->assertSession()->fieldNotExists($field);
+    }
+    catch (Exception $e) {
+      $this->assertSession()->checkboxNotChecked($field);
+    }
+  }
+
+  /**
    * Actions to take after a step has run.
    *
    * @AfterStep
    */
-  public function takeScreenShotAfterFailedStep(afterStepScope $scope) {
+  public function takeScreenShotAfterFailedStep(AfterStepScope $scope) {
     if (99 === $scope->getTestResult()->getResultCode()) {
       $driver = $this->getSession()->getDriver();
       if (!($driver instanceof Selenium2Driver)) {
@@ -315,6 +548,89 @@ JS;
     }
     else {
       throw new \InvalidArgumentException(sprintf('No such username %s', $username));
+    }
+  }
+
+  /**
+   * Takes a screenshot for debugging purposes.
+   *
+   * @param string $filename
+   *   The name of the screenshot file.
+   *
+   * @When I take a screenshot named :filename
+   */
+  public function takeScreenshot($filename) {
+    $screenshot = $this->getSession()->getDriver()->getScreenshot();
+    // If this file is in tests/features/bootstrap, the screenshot be in tests.
+    file_put_contents(__DIR__ . '../../' . $filename . '.png', $screenshot);
+  }
+
+  /**
+   * Find an element in the table rows containing given element.
+   *
+   * @Then I should see (the text ):findElement in a table row containing (the text ):rowElement
+   */
+  public function assertTextInTableRowWithElement($findText, $rowElement) {
+    $rows = $this->getTableRowWithElement($this->getSession()->getPage(), $rowElement);
+    // Loop through all found rows and try to find our element.
+    foreach ($rows as $row) {
+      if (strpos($row->getText(), $findText) !== FALSE) {
+        return TRUE;
+      }
+    }
+    throw new \Exception(sprintf('Failed to find a row with the element "%s" that also contains "%s" on the page %s', $rowElement, $findText, $this->getSession()->getCurrentUrl()));
+  }
+
+  /**
+   * Switch browser focus to an iFrame.
+   *
+   * @param string $name
+   *   An iframe name (null for switching back).
+   *
+   * @Given /^(?:|I )switch to an iframe "([^"]*)"$/
+   * @Then /^(?:|I )switch back from an iframe$/
+   */
+  public function iSwitchToAnIframe($name = NULL) {
+    $this->getSession()->switchToIFrame($name);
+  }
+
+  /**
+   * Get a list of UIDs.
+   *
+   * @return array
+   *   An array of numeric UIDs of users created by steps during a scenario.
+   */
+  public function getUsers() {
+    $uids = array();
+    foreach ($this->users as $user) {
+      $uids[] = $user->uid;
+    }
+
+    return $uids;
+  }
+
+  /**
+   * Clean up bean entities that were created during the tests.
+   *
+   * @AfterScenario @beans
+   */
+  public function cleanUpBeans() {
+    // Get UIDs of users created during this scenario.
+    $uids = $this->getUsers();
+    if (!empty($uids)) {
+      // Select all beans created by the scenario users.
+      $query = new EntityFieldQuery();
+      $result = $query->entityCondition('entity_type', 'bean')
+        ->propertyCondition('uid', $uids, 'IN')
+        ->execute();
+      // Loop through all beans that were found and delete them.
+      if (isset($result['bean'])) {
+        $bids = array_keys($result['bean']);
+        foreach ($bids as $bid) {
+          $bean = bean_load($bid);
+          bean_delete($bean);
+        }
+      }
     }
   }
 

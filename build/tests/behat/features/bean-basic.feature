@@ -2,7 +2,7 @@ Feature: Basic bean
 
   Ensure that basic bean type is available and displayed correctly
 
-  @api @javascript @drupal
+  @api @javascript @drupal @beans
   Scenario: Create, view and edit a basic bean
     Given I am logged in as a user with the "create any basic_content bean,view bean page" permission and don't need a password change
     When I go to "/block/add/basic-content"
