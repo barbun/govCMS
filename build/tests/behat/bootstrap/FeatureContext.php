@@ -109,7 +109,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Creates and authenticates a user with optional name and given role(s).
+   * Creates and authenticates a user with a specific name and given role(s).
    *
    * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role$/
    */
@@ -118,7 +118,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     if (!$this->loggedInWithRole($role)) {
       // Create user (and project)
       $user = (object) array(
-        'name' => !empty($username) ? $username : $this->getRandom()->name(8),
+        'name' => $username,
         'pass' => $this->getRandom()->name(16),
         'role' => $role,
       );
