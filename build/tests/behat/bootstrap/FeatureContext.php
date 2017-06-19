@@ -327,20 +327,34 @@ JS;
 
   /**
    * @When I select the radio button :label with the id containing :id
+   * @When I select the radio button with the id containing :id
    */
-  public function assertSelectRadioByPartialId($label, $id = '') {
-    $element = $this->getSession()->getPage();
-    $content = $element->getContent();
-    $radiobutton = $id ? $element->findById($id) : $element->find('named_partial', array('radio', $this->getSession()->getSelectorsHandler()->xpathLiteral($label)));
-    if ($radiobutton === NULL) {
-      throw new \Exception(sprintf('The radio button with "%s" was not found on the page %s', $id ? $id : $label, $this->getSession()->getCurrentUrl()));
+  public function assertSelectRadioByPartialId($label = '', $id) {
+
+    // Locate radio buttons on the page, matching the label if provided.
+    $page = $this->getSession()->getPage();
+    $radiobuttons = $page->findAll('named_partial', array('radio', $label));
+
+    if (!$radiobuttons) {
+      throw new \Exception(sprintf('The radio button with "%s" was not found on the page %s', $id, $this->getSession()->getCurrentUrl()));
     }
-    $value = $radiobutton->getAttribute('value');
-    $labelonpage = $radiobutton->getParent()->getText();
-    if ($label != $labelonpage) {
-      throw new \Exception(sprintf("Button with id '%s' has label '%s' instead of '%s' on the page %s", $id, $labelonpage, $label, $this->getSession()->getCurrentUrl()));
+
+    // Check the ids of the buttons until we find the first match.
+    foreach($radiobuttons as $radiobutton) {
+
+      $buttonId = $radiobutton->getAttribute('id');
+      if (strpos($buttonId, $id) === FALSE) {
+        continue;
+      }
+
+      $value = $radiobutton->getAttribute('value');
+      $radiobutton->selectOption($value, FALSE);
+      return;
     }
-    $radiobutton->selectOption($value, FALSE);
+
+    // No match? It's a fail.
+    throw new \Exception(sprintf('The radio button with id "%s" and label "%s" was not found on the page %s',
+      $id, $label, $this->getSession()->getCurrentUrl()));
   }
 
   /**
