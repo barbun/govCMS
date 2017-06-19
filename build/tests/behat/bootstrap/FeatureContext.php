@@ -326,7 +326,7 @@ JS;
   }
 
   /**
-   * @When I select the radio button :label with the partial id :id
+   * @When I select the radio button :label with the id containing :id
    */
   public function assertSelectRadioByPartialId($label, $id = '') {
     $element = $this->getSession()->getPage();
