@@ -8,7 +8,7 @@ Feature:Meta tags
 
   @api @javascript
   Scenario: Meta-tags are auto set
-    Given I am logged in as a user named "peter" with the "Content editor" role that doesn't force password change
+    Given I am logged in as a user named "peter" with the "Content editor" role
     When I go to "/node/add/page"
     Then I should see "Create Standard page"
     And I enter "test" for "Title"
@@ -26,7 +26,7 @@ Feature:Meta tags
 
   @api @javascript
   Scenario: Meta-tags can be edited
-    Given I am logged in as a user named "paul" with the "Content editor" role that doesn't force password change
+    Given I am logged in as a user named "paul" with the "Content editor" role
     When I go to "/node/add/page"
     Then I should see "Create Standard page"
     And I enter "test" for "Title"
@@ -44,9 +44,9 @@ Feature:Meta tags
     And the response should contain "<title>Fox in socks</title>"
     And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: govCMS core successfully applies default meta-tags configuration.
-    Given I am logged in as a user with the "administer meta tags" permission and don't need a password change
+    Given I am logged in as a user with the "administer meta tags" permission
     When I go to "/admin/config/search/metatags/config/global"
     Then the "edit-metatags-und-dctermscreator-item-value" field should contain "[site:name]"
     And the "edit-metatags-und-dctermsdate-item-value" field should contain "[current-date:custom:Y-m-d\TH:iP]"
@@ -59,9 +59,9 @@ Feature:Meta tags
     When I go to "/admin/config/search/metatags/config/node"
     Then the "edit-metatags-und-dctermslanguage-item-value" field should contain "en"
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: Meta-tags are modified when the site name and/or slogan change
-    Given I am logged in as a user with the "administer meta tags,administer site configuration" permission and don't need a password change
+    Given I am logged in as a user with the "administer meta tags,administer site configuration" permissions
     When I go to "/admin/config/system/site-information"
     And I fill in "My Sitename" for "Site name"
     And I fill in "Everything is Awesome!!!" for "Slogan"

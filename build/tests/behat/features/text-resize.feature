@@ -4,7 +4,7 @@ Feature: Text resize
   I can see 3 default links for text resize options available
   And clicking on them alters the default styles for fonts
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: Text resize links are present on a page
     Given I am an anonymous user
     When I go to homepage
