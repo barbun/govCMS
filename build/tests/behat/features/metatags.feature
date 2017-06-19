@@ -61,7 +61,11 @@ Feature:Meta tags
 
   @api @javascript
   Scenario: Meta-tags are modified when the site name and/or slogan change
-    Given I am logged in as a user with the "administer meta tags,administer site configuration" permissions
+    Given I am logged in as a user with the following permissions:
+      """
+      administer meta tags
+      administer site configuration
+      """
     When I go to "/admin/config/system/site-information"
     And I fill in "My Sitename" for "Site name"
     And I fill in "Everything is Awesome!!!" for "Slogan"

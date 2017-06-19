@@ -171,6 +171,44 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Creates and authenticates a user with the given set of permissions.
+   *
+   * @param \Behat\Gherkin\Node\PyStringNode $permissions
+   *   The permissions to check for.
+   * @param string $username
+   *   The user name (a random one is chosen if not supplied).
+   * @param string $password
+   *   The initial password (a random one is chosen if not supplied).
+   *
+   * @Given /^I am logged in as a user (?:|named )(?:|"(?P<username>[^"]*)" )(?:|with the password "(?P<password>[^"]*)" )with the following permissions:$/
+   */
+  public function assertAuthenticatedWithPermissionsList(PyStringNode $permissions, $username = '', $password = '') {
+    // Create user.
+    $user = (object) array(
+      'name' => !empty($username) ? $username : $this->getRandom()->name(8),
+      'pass' => !empty($password) ? $password : $this->getRandom()->name(16),
+    );
+    $user->mail = "{$user->name}@example.com";
+    $this->userCreate($user);
+
+    // Create and assign a temporary role with given permissions.
+    // The table parsing might have left whitespace around the text => trim.
+    $perms_array = array();
+    foreach ($permissions->getStrings() as $permission) {
+      array_push($perms_array, trim($permission));
+    }
+    $rid = $this->getDriver()->roleCreate($perms_array);
+    $this->getDriver()->userAddRole($user, $rid);
+    $this->roles[] = $rid;
+
+    // Find the user.
+    $account = user_load_by_name($user->name);
+
+    // Login.
+    $this->login();
+  }
+
+  /**
    * Log out a user.
    *
    * @Then /^I logout$/
