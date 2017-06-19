@@ -4,6 +4,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Definition\Call\Given;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Drupal\DrupalExtension\Context\MinkContext;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
@@ -326,21 +327,23 @@ JS;
   }
 
   /**
+   * Select a radio button using an optional label and an id.
+   *
    * @When I select the radio button :label with the id containing :id
    * @When I select the radio button with the id containing :id
    */
-  public function assertSelectRadioByPartialId($label = '', $id) {
+  public function assertSelectRadioByPartialId($id, $label = '') {
 
     // Locate radio buttons on the page, matching the label if provided.
     $page = $this->getSession()->getPage();
-    $radiobuttons = $page->findAll('named_partial', array('radio', $label));
+    $radiobuttons = $page->findAll('named', array('radio', $label));
 
     if (!$radiobuttons) {
       throw new \Exception(sprintf('The radio button with "%s" was not found on the page %s', $id, $this->getSession()->getCurrentUrl()));
     }
 
     // Check the ids of the buttons until we find the first match.
-    foreach($radiobuttons as $radiobutton) {
+    foreach ($radiobuttons as $radiobutton) {
 
       $buttonId = $radiobutton->getAttribute('id');
       if (strpos($buttonId, $id) === FALSE) {
@@ -487,7 +490,7 @@ JS;
   public function assertPermission($rid, $permission, $assertPath = TRUE) {
     $rid = self::roleToRid($rid);
     if ($assertPath) {
-      $mink = new Drupal\DrupalExtension\Context\MinkContext();
+      $mink = new MinkContext();
       $mink->setMink($this->getMink());
       $mink->assertAtPath('/admin/people/permissions/' . $rid);
     }
@@ -513,7 +516,7 @@ JS;
   public function assertNoPermission($rid, $permission, $assertPath = TRUE) {
     $rid = self::roleToRid($rid);
     if ($assertPath) {
-      $mink = new Drupal\DrupalExtension\Context\MinkContext();
+      $mink = new MinkContext();
       $mink->setMink($this->getMink());
       $mink->assertAtPath('/admin/people/permissions/' . $rid);
     }
