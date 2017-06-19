@@ -6,7 +6,7 @@ Feature: Breadcrumbs
 
   @api @javascript
   Scenario: Breadcrumbs are set for news items
-    Given I am logged in as a user named "peta" with the "Content editor" role that doesn't force password change
+    Given I am logged in as a user named "peta" with the "Content editor" role
     When I go to "/node/add/news-article"
     Then I should see "Create News Article"
     And I enter "test" for "Title"

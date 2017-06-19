@@ -8,11 +8,19 @@ use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
 use Behat\Mink\Element\Element;
+use Drupal\DrupalExtension\Hook\Scope\EntityScope;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext {
+
+  /**
+   * Keep track of all users that are created so they can easily be removed.
+   *
+   * @var array
+   */
+  protected $userBeans = array();
 
   /**
    * Initializes context.
@@ -27,31 +35,52 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Set default browser window size to maximum.
    *
-   * @BeforeScenario @drupal
+   * @BeforeScenario
    */
   public function maximizeWindow() {
+    $driver = $this->getSession()->getDriver();
+    if (!($driver instanceof Selenium2Driver)) {
+      return;
+    }
     $this->getSession()->getDriver()->maximizeWindow();
   }
 
   /**
-   * Clean the password state tables for a specific user.
+   * Log the user IDs of the users that create beans.
+   *
+   * Collect user IDs later to be used for cleaning up the test beans.
+   *
+   * @afterUserCreate
+   */
+  public function logBeanUsers(EntityScope $scope) {
+    // Retrieve the user.
+    $user = $scope->getEntity();
+    if (isset($user->uid)) {
+      $this->userBeans[$user->uid] = $user->uid;
+    };
+  }
+
+  /**
+   * Clean the password state tables for a test user to bypass password policy.
    *
    * Remove any password history, expiration of flag forcing a password change
    * when they next log in.
    *
-   * @param int $uid
-   *   The user's uid.
+   * @afterUserCreate
    */
-  private function cleanPasswordState($uid) {
-    $tables = array(
-      'password_policy_force_change',
-      'password_policy_expiration',
-      'password_policy_history',
-    );
-
-    foreach ($tables as $table) {
-      db_delete($table)
-        ->condition('uid', $uid)
+  public function cleanUserPasswordState(EntityScope $scope) {
+    // Retrieve the user.
+    $user = $scope->getEntity();
+    if (isset($user->uid)) {
+      // Remove the records from password policy module tables.
+      db_delete('password_policy_force_change')
+        ->condition('uid', $user->uid)
+        ->execute();
+      db_delete('password_policy_expiration')
+        ->condition('uid', $user->uid)
+        ->execute();
+      db_delete('password_policy_history')
+        ->condition('uid', $user->uid)
         ->execute();
     }
   }
@@ -80,9 +109,9 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Creates and authenticates a user with the given role.
+   * Creates and authenticates a user with optional name and given role(s).
    *
-   * @Given /^I am logged in as a user (?:|named "(?P<username>[^"]*)" )with the "(?P<role>[^"]*)" role that doesn't force password change$/
+   * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role$/
    */
   public function assertAuthenticatedByRole($username, $role) {
     // Check if a user with this role is already logged in.
@@ -105,10 +134,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
           $this->getDriver()->userAddRole($user, $role);
         }
       }
-      // Find the user.
-      $account = user_load_by_name($user->name);
-      // Remove the "Force password change on next login" record.
-      $this->cleanPasswordState($account->uid);
 
       // Login.
       $this->login();
@@ -116,12 +141,17 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Creates and authenticates a user with the given permission.
+   * Creates and authenticates a user with the given permission(s).
    *
-   * @Given /^I am logged in as a user (?:|named )(?:|"(?P<username>[^"]*)" )with the "(?P<permissions>[^"]*)" permission and don't need a password change$/
-   * @Given /^I am logged in as a user with the password "(?P<password>[^"]*)" and the "(?P<permissions>[^"]*)" permission$/
+   * @param string $username
+   *   Optional parameter for user name to be used for login.
+   * @param string $password
+   *   Optional parameter for user password to be used for login.
+   *
+   * @Given /^I am logged in as a user (?:|named )"(?P<username>[^"]*)" with the "(?P<permissions>[^"]*)" permission(?:|s)$/
+   * @Given /^I am logged in as a user with the password "(?P<password>[^"]*)" and the "(?P<permissions>[^"]*)" permission(?:|s)$/
    */
-  public function assertAuthenticatedWithPermission($permissions, $username = '', $password = '') {
+  public function assertAuthenticatedWithPermissions($permissions, $username = '', $password = '') {
     // Create user.
     $user = (object) array(
       'name' => !empty($username) ? $username : $this->getRandom()->name(8),
@@ -135,11 +165,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $rid = $this->getDriver()->roleCreate($permissions);
     $this->getDriver()->userAddRole($user, $rid);
     $this->roles[] = $rid;
-
-    // Find the user.
-    $account = user_load_by_name($user->name);
-    // Remove the "Force password change on next login" record.
-    $this->cleanPasswordState($account->uid);
 
     // Login.
     $this->login();
@@ -165,11 +190,19 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
         'name' => $username,
         'pass' => $this->getRandom()->name(16),
         'role' => $role,
-        'roles' => array($role),
       );
       $user->mail = "{$user->name}@example.com";
       // Create a new user.
       $this->userCreate($user);
+
+      $roles = explode(',', $role);
+      $roles = array_map('trim', $roles);
+      foreach ($roles as $role) {
+        if (!in_array(strtolower($role), array('authenticated', 'authenticated user'))) {
+          // Only add roles other than 'authenticated user'.
+          $this->getDriver()->userAddRole($user, $role);
+        }
+      }
     }
   }
 
@@ -506,7 +539,7 @@ JS;
         return;
       }
       $this->getSession()->resizeWindow(1440, 900, 'current');
-      file_put_contents('./screenshot-fail.png', $this->getSession()->getDriver()->getScreenshot());
+      file_put_contents(__DIR__ . '../../screenshot-fail.png', $this->getSession()->getDriver()->getScreenshot());
     }
   }
 
@@ -577,33 +610,17 @@ JS;
   }
 
   /**
-   * Get a list of UIDs.
-   *
-   * @return array
-   *   An array of numeric UIDs of users created by steps during a scenario.
-   */
-  public function getUsers() {
-    $uids = array();
-    foreach ($this->users as $user) {
-      $uids[] = $user->uid;
-    }
-
-    return $uids;
-  }
-
-  /**
    * Clean up bean entities that were created during the tests.
    *
    * @AfterScenario @beans
    */
   public function cleanUpBeans() {
     // Get UIDs of users created during this scenario.
-    $uids = $this->getUsers();
-    if (!empty($uids)) {
+    if (!empty($this->userBeans)) {
       // Select all beans created by the scenario users.
       $query = new EntityFieldQuery();
       $result = $query->entityCondition('entity_type', 'bean')
-        ->propertyCondition('uid', $uids, 'IN')
+        ->propertyCondition('uid', $this->userBeans, 'IN')
         ->execute();
       // Loop through all beans that were found and delete them.
       if (isset($result['bean'])) {
@@ -614,6 +631,8 @@ JS;
         }
       }
     }
+    // Reset the list.
+    $this->userBeans = array();
   }
 
 }

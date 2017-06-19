@@ -1,37 +1,5 @@
 default:
   autoload:
-    '': %paths.base%/bootstrap
-  suites:
-    default:
-      contexts:
-        - Drupal\DrupalExtension\Context\DrupalContext
-        - Drupal\DrupalExtension\Context\MinkContext
-        - Drupal\DrupalExtension\Context\MessageContext
-        - Drupal\DrupalExtension\Context\DrushContext
-        - FeatureContext
-      paths:
-        features: %paths.base%/features
-      filters:
-        tags: "~@drupal"
-  extensions:
-    Behat\MinkExtension:
-      goutte: ~
-      selenium2:
-        wd_host: "http://localhost:4444/wd/hub"
-      javascript_session: selenium2
-      files_path: %paths.base%/files
-    Drupal\DrupalExtension:
-      blackbox: ~
-      drupal:
-        drupal_root: ../../docroot
-      drush:
-        root: ../../docroot
-      region_map:
-        sidebar_second: 'section.region-sidebar-second'
-
-# Separate profile for testing using the Drupal API driver.
-drupal:
-  autoload:
       '': %paths.base%/bootstrap
   suites:
     default:
@@ -41,10 +9,10 @@ drupal:
         - Drupal\DrupalExtension\Context\MessageContext
         - Drupal\DrupalExtension\Context\DrushContext
         - FeatureContext
-      filters:
-        tags: "@drupal"
       paths:
         features: %paths.base%/features
+      filters:
+       tags: "~@drush"
   extensions:
       Behat\MinkExtension:
         goutte: ~
@@ -63,6 +31,40 @@ drupal:
           success_message_selector: '.messages.status'
           message_selector: '.messages'
           error_message_selector: '.messages.error'
+        region_map:
+          sidebar_second: 'section.region-sidebar-second'
+
+# Separate profile for testing using the Drush driver.
+drush:
+  autoload:
+    '': %paths.base%/bootstrap
+  suites:
+    default:
+      contexts:
+        - Drupal\DrupalExtension\Context\DrupalContext
+        - Drupal\DrupalExtension\Context\MinkContext
+        - Drupal\DrupalExtension\Context\MessageContext
+        - Drupal\DrupalExtension\Context\DrushContext
+        - FeatureContext
+      paths:
+        features: %paths.base%/features
+      filters:
+        tags: "@drush"
+  extensions:
+    Behat\MinkExtension:
+      goutte: ~
+      selenium2:
+        wd_host: "http://localhost:4444/wd/hub"
+      javascript_session: selenium2
+      files_path: %paths.base%/files
+    Drupal\DrupalExtension:
+      blackbox: ~
+      drupal:
+        drupal_root: ../../docroot
+      drush:
+        root: ../../docroot
+      region_map:
+        sidebar_second: 'section.region-sidebar-second'
 
 imports:
   - behat.govcms.yml

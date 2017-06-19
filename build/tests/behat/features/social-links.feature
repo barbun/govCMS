@@ -4,9 +4,9 @@ Feature: Social Media Links
   I want to have a configurable block provided
   So that minimal configuration for social media links is required out of the box
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: The social media links block should be available OOTB
-    Given I am logged in as a user with the "administer blocks" permission and don't need a password change
+    Given I am logged in as a user with the "administer blocks" permission
     When I go to "/admin/structure/block/manage/govcms_social_links/services/configure"
     Then the "edit-regions-govcms-barton" select list should be set to "sidebar_second"
     And I fill in the following:

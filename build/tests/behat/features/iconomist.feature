@@ -2,9 +2,9 @@ Feature: Iconomist
 
   So users can easily identify the site, as the administrator, I want to have iconomist support.
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: Check that iconomist options exist on the theme settings page.
-    Given I am logged in as a user with the "administer theme settings" permission and don't need a password change
+    Given I am logged in as a user with the "administer theme settings" permission
     When I go to "/admin/appearance/settings/"
     Then I should see "Iconomist settings"
     And I press "Add icon"
@@ -28,7 +28,7 @@ Feature: Iconomist
     Then the response should contain "acquia.ico\" type=\"image/vnd.microsoft.icon\" sizes=\"100x200\""
     And the response should contain "<link rel=\"apple-touch-icon\""
     And the response should contain "/themes/stark/logo.png\" type=\"image/png\" sizes=\"30x40\">"
-    And I am logged in as a user with the "administer theme settings" permission and don't need a password change
+    And I am logged in as a user with the "administer theme settings" permission
     When I go to "/admin/appearance/settings/"
     And I press "Remove icon"
     And I wait for AJAX to finish
