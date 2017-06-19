@@ -2,9 +2,9 @@ Feature: Password Policy
 
   In order to have a secure website the password policy should be configured securely.
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: Check that the policies are available, enabled and properly configured.
-    Given I am logged in as a user with the "administer password policies" permission and don't need a password change
+    Given I am logged in as a user with the "administer password policies" permission
     When I go to "/admin/config/people/password_policy/list"
     Then I should see "Australian Government ISM Policy (Strong)"
     And I should see "Australian Government ISM Policy (Weak)"
@@ -43,19 +43,19 @@ Feature: Password Policy
     And the "constraint_history" field should contain "8"
     And the "constraint_alphanumeric" field should contain "1"
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: Check that the ASD password warning is hidden.
-    Given I am logged in as a user with the "administer password policies" permission and don't need a password change
+    Given I am logged in as a user with the "administer password policies" permission
     When I go to "admin/config/people/password_policy/govcms"
     Then the "edit-govcms-password-policy-ready" select list should be set to "1"
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: Check that password changes are forced for first-time logins and not forced for any of the roles.
-    Given I am logged in as a user with the "force password change" permission and don't need a password change
+    Given I am logged in as a user with the "force password change" permission
     When I go to "admin/config/people/password_policy/password_change"
     Then the "edit-password-policy-new-login-change" checkbox should be checked
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: Check the password policies are actually applied
     Given I am logged in as a user with the password "abc123^*" and the "change own password" permission
     When I go to "/user"

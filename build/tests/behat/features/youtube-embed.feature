@@ -4,7 +4,7 @@ Feature: Embed YouTube videos in content
 
   @api @javascript
   Scenario: Embed YouTube video
-    Given I am logged in as a user named "sam" with the "Content editor" role that doesn't force password change
+    Given I am logged in as a user named "sam" with the "Content editor" role
     And I go to "node/add/page"
     And I enter "Test" for "Title"
     Given the iframe in element "cke_edit-body-und-0-value" has id "body-wysiwyg"

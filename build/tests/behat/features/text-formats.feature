@@ -6,7 +6,7 @@ Feature: Text formats
 
   @api @javascript
   Scenario: Users can access plain text
-    Given I am logged in as a user named "richard" with the "Content editor" role that doesn't force password change
+    Given I am logged in as a user named "richard" with the "Content editor" role
     And I go to "node/add/page"
     Then I should see "Plain Text"
     And I should not see "Filtered html"
@@ -21,7 +21,7 @@ Feature: Text formats
 
   @api @javascript
   Scenario: Users can access Rich text
-    Given I am logged in as a user named "sally" with the "Content editor" role that doesn't force password change
+    Given I am logged in as a user named "sally" with the "Content editor" role
     And I go to "node/add/page"
     Then I should see "Rich text"
     And I enter "Test node" for "Title"

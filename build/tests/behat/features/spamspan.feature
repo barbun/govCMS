@@ -4,7 +4,7 @@ Feature: Spamspan is operational.
 
   @api
   Scenario: Users without javascript enabled should not see mailto: links.
-    Given I am logged in as a user named "sarah" with the "Content editor" role that doesn't force password change
+    Given I am logged in as a user named "sarah" with the "Content editor" role
     And I go to "node/add/page"
     And I enter "Spamspan" for "Title"
     And I enter "<a href='mailto:example@test.com'>Email link.</a>" for "Body"
@@ -14,7 +14,7 @@ Feature: Spamspan is operational.
 
   @api @javascript
   Scenario: Legitimate users with javascript enabled should see mailto: links.
-    Given I am logged in as a user named "russ" with the "Content editor" role that doesn't force password change
+    Given I am logged in as a user named "russ" with the "Content editor" role
     And I go to "node/add/page"
     And I enter "Spamspan" for "Title"
     Given the iframe in element "cke_edit-body-und-0-value" has id "body-wysiwyg"
