@@ -388,7 +388,7 @@ class Iconomist {
     $toggle = theme_get_setting('toggle_iconomist');
     $icons = theme_get_setting('iconomist_icons') ?: array();
     // If $toggle hasn't been set, it will be NULL. Treat as ticked in that case.
-    if (!$toggle === FALSE || empty($icons)) {
+    if ($toggle === FALSE || empty($icons)) {
       // Do nothing if iconomist is toggled off or no icons.
       return;
     }
