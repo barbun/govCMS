@@ -56,7 +56,7 @@ class Iconomist {
     $form['theme_settings']['toggle_iconomist'] = array(
       '#type' => 'checkbox',
       '#title' => t('Iconomist Icons'),
-      '#default_value' => theme_get_setting('toggle_iconomist', $theme),
+      '#default_value' => theme_get_setting('toggle_iconomist', $theme) ? theme_get_setting('toggle_iconomist', $theme) : TRUE,
     );
 
     // Iconomist fieldset.
@@ -385,9 +385,10 @@ class Iconomist {
    * Implements hook_preprocess_html().
    */
   public static function preprocessHtml(&$vars) {
-    $toggle = theme_get_setting('iconomist_toggle');
+    $toggle = theme_get_setting('toggle_iconomist');
     $icons = theme_get_setting('iconomist_icons') ?: array();
-    if (!$toggle || empty($icons)) {
+    // If $toggle hasn't been set, it will be NULL. Treat as ticked in that case.
+    if (!$toggle === FALSE || empty($icons)) {
       // Do nothing if iconomist is toggled off or no icons.
       return;
     }

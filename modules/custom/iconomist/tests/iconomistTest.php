@@ -7,7 +7,6 @@
 
 namespace Drupal\Iconomist;
 
-require_once __DIR__ . '/../iconomist.class.php';
 require_once DRUPAL_ROOT . '/../modules/custom/tdd7/mocks/MockDrupalFunctions.php';
 
 use tdd7\testframework\mocks\MockDrupalFunctions as MockDrupalFunctions;
@@ -338,7 +337,6 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($expected, $form_state);
 
     // ... and in the form's render array.
-    // @TODO Move this below where we test the elements are set.
     $toggle = $form['theme_settings']['toggle_iconomist'];
     $this->assertEquals(FALSE, $toggle['#default_value']);
   }
@@ -1257,7 +1255,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    */
   public function preprocessHtmlDoesNothingIfToggleOff() {
     $vars = array();
-    MockDrupalFunctions::theme_set_setting('iconomist_toggle', FALSE);
+    MockDrupalFunctions::theme_set_setting('toggle_iconomist', FALSE);
     $icons = self::$settings['foo']['iconomist_icons'];
     MockDrupalFunctions::theme_set_setting('iconomist_icons', $icons);
 
@@ -1274,7 +1272,7 @@ class IconomistPHPUnitTests extends \PHPUnit_Framework_TestCase {
    */
   public function preprocessHmlAddsIconsToHtmlHeadWithAttributes() {
     $vars = array();
-    MockDrupalFunctions::theme_set_setting('iconomist_toggle', TRUE);
+    MockDrupalFunctions::theme_set_setting('toggle_iconomist', TRUE);
 
     $icons = self::$settings['foo']['iconomist_icons'];
     MockDrupalFunctions::theme_set_setting('iconomist_icons', $icons);
