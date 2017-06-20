@@ -55,7 +55,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   public function logBeanUsers(EntityScope $scope) {
     // Retrieve the user.
     $user = $scope->getEntity();
-    if (isset($user->uid)) {
+    if (!empty($user->uid)) {
       $this->userBeans[$user->uid] = $user->uid;
     };
   }
@@ -71,7 +71,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   public function cleanUserPasswordState(EntityScope $scope) {
     // Retrieve the user.
     $user = $scope->getEntity();
-    if (isset($user->uid)) {
+    if (!empty($user->uid)) {
       // Remove the records from password policy module tables.
       db_delete('password_policy_force_change')
         ->condition('uid', $user->uid)
@@ -135,7 +135,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Creates and authenticates a user with optional name and given role(s).
+   * Creates and authenticates a user with a specific name and given role(s).
    *
    * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role$/
    */
