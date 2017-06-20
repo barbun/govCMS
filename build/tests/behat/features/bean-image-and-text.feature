@@ -4,7 +4,14 @@ Feature: Image and Text bean
 
   @api @javascript @beans
   Scenario: Create, view and edit a new Image and Text bean
-    Given I am logged in as a user with the "create any image_and_text bean,view bean page,access media browser,create files,bypass file access" permissions
+    Given I am logged in as a user with the following permissions:
+      """
+      create any image_and_text bean
+      view bean page
+      access media browser
+      create files
+      bypass file access
+      """
     When I go to "/block/add/image-and-text"
     Then I should see "Create Image and Text block"
     And I fill in the following:
@@ -25,7 +32,13 @@ Feature: Image and Text bean
     And I fill in "govCMS is the best!" in WYSIWYG editor "bean-text-wysiwyg"
     And I press "Save"
     Then I should see the success message containing "Image and Text Beans are good for you has been created."
-    Given I am logged in as a user with the "edit any image_and_text bean,view bean page,administer blocks,edit bean view mode" permissions
+    Given I am logged in as a user with the following permissions:
+      """
+      edit any image_and_text bean
+      view bean page
+      administer blocks
+      edit bean view mode
+      """
     When I go to "/admin/structure/block/manage/bean/cool-beans/configure"
     And I select "Second sidebar" from "govCMS (Barton) (default theme)"
     And I press "Save block"
