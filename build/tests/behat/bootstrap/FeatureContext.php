@@ -262,6 +262,40 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Set the last logged in time for a user.
+   *
+   * @When /^the last login time for "(?P<username>[^"]*)" is "(?P<lastlogin>[^"]*)"$/
+   */
+  public function setLastLogin($username, $lastlogin) {
+    // Find the user.
+    $user = user_load_by_name($username);
+    // If such user exists then delete it.
+    if (!empty($user)) {
+      try {
+        $user->access = strtotime($lastlogin);
+      }
+      catch (\Exception $e) {
+        throw new \Exception("Failed to convert {$lastlogin} to a timestamp.");
+      }
+      user_save($user);
+
+      // Override the rules scheduled review time.
+      // By default the scheduler will 60 days from now.
+      $component = 'rules_suspend_account';
+      $task_identifier = "Suspend Account {$user->uid}";
+      rules_action('schedule', array('component' => $component))->executeByArgs(array(
+        'date' => 'now',
+        'identifier' => $task_identifier,
+        // Add component parameters, prefixed with 'param_'
+        'param_suspend_account_user' => $user,
+      ));
+    }
+    else {
+      throw new \Exception("No such user {$username}");
+    }
+  }
+
+  /**
    * Access the user edit page.
    *
    * @Given /^I visit the user edit page for "(?P<username>[^"]*)"$/
