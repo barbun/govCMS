@@ -4,6 +4,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Definition\Call\Given;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Drupal\DrupalExtension\Context\MinkContext;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
@@ -88,8 +89,14 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Helper for creating users.
    *
+   * @param string $name
+   *   The name to use - random value created if blank.
+   * @param string $pass
+   *   The password to use - random value created if blank.
+   * @param mixed $role
+   *   The roles to provide to the user (may be a single string) or an array).
    */
-  public function _create_user($name = '', $pass = '', $role = array()) {
+  private function createUser($name = '', $pass = '', $role = array()) {
     if (!$name) {
       $name = $this->getRandom()->name(8);
     }
@@ -111,6 +118,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
 
     return $this->userCreate($user);
   }
+
   /**
    * Retrieve a table row(s) containing specified element id|name|label|value.
    *
@@ -143,7 +151,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     // Check if a user with this role is already logged in.
     if (!$this->loggedInWithRole($role)) {
       // Create user (and project)
-      $user = $this->_create_user($username, '', $role);
+      $user = $this->createUser($username, '', $role);
 
       $roles = explode(',', $role);
       $roles = array_map('trim', $roles);
@@ -162,6 +170,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Creates and authenticates a user with the given permission(s).
    *
+   * @param string $permissions
+   *   The comma separated list of permissions to provide to the user.
    * @param string $username
    *   Optional parameter for user name to be used for login.
    * @param string $password
@@ -172,7 +182,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedWithPermissions($permissions, $username = '', $password = '') {
     // Create user.
-    $user = $this->_create_user($username, $password, '');
+    $user = $this->createUser($username, $password, '');
 
     // Create and assign a temporary role with given permissions.
     $permissions = explode(',', $permissions);
@@ -198,7 +208,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedWithPermissionsList(PyStringNode $permissions, $username = '', $password = '') {
     // Create user.
-    $user = $this->_create_user($username, $password, '');
+    $user = $this->createUser($username, $password, '');
 
     // Create and assign a temporary role with given permissions.
     // The table parsing might have left whitespace around the text => trim.
@@ -233,7 +243,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAccountCreated($username, $role) {
     if (!user_load_by_name($username)) {
-      $user = $this->_create_user($username, '', $role);
+      $user = $this->createUser($username, '', $role);
 
       $roles = explode(',', $role);
       $roles = array_map('trim', $roles);
@@ -528,7 +538,7 @@ JS;
   public function assertPermission($rid, $permission, $assertPath = TRUE) {
     $rid = self::roleToRid($rid);
     if ($assertPath) {
-      $mink = new Drupal\DrupalExtension\Context\MinkContext();
+      $mink = new MinkContext();
       $mink->setMink($this->getMink());
       $mink->assertAtPath('/admin/people/permissions/' . $rid);
     }
@@ -554,7 +564,7 @@ JS;
   public function assertNoPermission($rid, $permission, $assertPath = TRUE) {
     $rid = self::roleToRid($rid);
     if ($assertPath) {
-      $mink = new Drupal\DrupalExtension\Context\MinkContext();
+      $mink = new MinkContext();
       $mink->setMink($this->getMink());
       $mink->assertAtPath('/admin/people/permissions/' . $rid);
     }
