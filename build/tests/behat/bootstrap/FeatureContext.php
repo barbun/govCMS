@@ -86,6 +86,32 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Helper for creating users.
+   *
+   */
+  public function _create_user($name = '', $pass = '', $role = array()) {
+    if (!$name) {
+      $name = $this->getRandom()->name(8);
+    }
+
+    if (!$pass) {
+      $pass = $this->getRandom()->name(16);
+    }
+
+    if (!is_array($role)) {
+      $role = array($role);
+    }
+
+    $user = (object) array(
+      'name' => $name,
+      'pass' => $pass,
+      'role' => $role,
+      'mail' => "{$name}@example.com",
+    );
+
+    return $this->userCreate($user);
+  }
+  /**
    * Retrieve a table row(s) containing specified element id|name|label|value.
    *
    * @param \Behat\Mink\Element\Element $element
@@ -117,14 +143,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     // Check if a user with this role is already logged in.
     if (!$this->loggedInWithRole($role)) {
       // Create user (and project)
-      $user = (object) array(
-        'name' => !empty($username) ? $username : $this->getRandom()->name(8),
-        'pass' => $this->getRandom()->name(16),
-        'role' => $role,
-      );
-      $user->mail = "{$user->name}@example.com";
-
-      $this->userCreate($user);
+      $user = $this->_create_user($username, '', $role);
 
       $roles = explode(',', $role);
       $roles = array_map('trim', $roles);
@@ -153,12 +172,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedWithPermissions($permissions, $username = '', $password = '') {
     // Create user.
-    $user = (object) array(
-      'name' => !empty($username) ? $username : $this->getRandom()->name(8),
-      'pass' => !empty($password) ? $password : $this->getRandom()->name(16),
-    );
-    $user->mail = "{$user->name}@example.com";
-    $this->userCreate($user);
+    $user = $this->_create_user($username, $password, '');
 
     // Create and assign a temporary role with given permissions.
     $permissions = explode(',', $permissions);
@@ -184,12 +198,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedWithPermissionsList(PyStringNode $permissions, $username = '', $password = '') {
     // Create user.
-    $user = (object) array(
-      'name' => !empty($username) ? $username : $this->getRandom()->name(8),
-      'pass' => !empty($password) ? $password : $this->getRandom()->name(16),
-    );
-    $user->mail = "{$user->name}@example.com";
-    $this->userCreate($user);
+    $user = $this->_create_user($username, $password, '');
 
     // Create and assign a temporary role with given permissions.
     // The table parsing might have left whitespace around the text => trim.
@@ -224,14 +233,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAccountCreated($username, $role) {
     if (!user_load_by_name($username)) {
-      $user = (object) array(
-        'name' => $username,
-        'pass' => $this->getRandom()->name(16),
-        'role' => $role,
-      );
-      $user->mail = "{$user->name}@example.com";
-      // Create a new user.
-      $this->userCreate($user);
+      $user = $this->_create_user($username, '', $role);
 
       $roles = explode(',', $role);
       $roles = array_map('trim', $roles);
