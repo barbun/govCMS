@@ -93,10 +93,10 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    *   The name to use - random value created if blank.
    * @param string $pass
    *   The password to use - random value created if blank.
-   * @param string $role
-   *   The role to provide to the user.
+   * @param string $roles
+   *   A comma delimited list of roles to add to the user.
    */
-  private function createUser($name = '', $pass = '', $role = '') {
+  private function createUser($name = '', $pass = '', $roles = '') {
     if (!$name) {
       $name = $this->getRandom()->name(8);
     }
@@ -111,11 +111,24 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       'mail' => "{$name}@example.com",
     );
 
-    if (!empty($role)) {
-      $user->role = $role;
+    $this->userCreate($user);
+
+    if (!empty($roles)) {
+      $roles = explode(',', $roles);
+      $roles = array_map('trim', $roles);
+      foreach ($roles as $role) {
+        if (!in_array(strtolower($role), [
+          'authenticated',
+          'authenticated user',
+        ])
+        ) {
+          // Only add roles other than 'authenticated user'.
+          $this->getDriver()->userAddRole($user, $role);
+        }
+      }
     }
 
-    return $this->userCreate($user);
+    return $user;
   }
 
   /**
@@ -151,15 +164,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     if (!$this->loggedInWithRole($role)) {
       // Create user (and project)
       $user = $this->createUser($username, '', $role);
-
-      $roles = explode(',', $role);
-      $roles = array_map('trim', $roles);
-      foreach ($roles as $role) {
-        if (!in_array(strtolower($role), array('authenticated', 'authenticated user'))) {
-          // Only add roles other than 'authenticated user'.
-          $this->getDriver()->userAddRole($user, $role);
-        }
-      }
 
       // Login.
       $this->login();
@@ -242,16 +246,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAccountCreated($username, $role) {
     if (!user_load_by_name($username)) {
-      $user = $this->createUser($username, '');
-
-      $roles = explode(',', $role);
-      $roles = array_map('trim', $roles);
-      foreach ($roles as $role) {
-        if (!in_array(strtolower($role), array('authenticated', 'authenticated user'))) {
-          // Only add roles other than 'authenticated user'.
-          $this->getDriver()->userAddRole($user, $role);
-        }
-      }
+      $user = $this->createUser($username, '', $role);
     }
   }
 
