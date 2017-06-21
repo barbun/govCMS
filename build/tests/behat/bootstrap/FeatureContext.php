@@ -87,6 +87,39 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Helper for creating users.
+   *
+   * @param string $name
+   *   The name to use - random value created if blank.
+   * @param string $pass
+   *   The password to use - random value created if blank.
+   * @param mixed $role
+   *   The roles to provide to the user (may be a single string) or an array).
+   */
+  private function createUser($name = '', $pass = '', $role = array()) {
+    if (!$name) {
+      $name = $this->getRandom()->name(8);
+    }
+
+    if (!$pass) {
+      $pass = $this->getRandom()->name(16);
+    }
+
+    if (!is_array($role)) {
+      $role = array($role);
+    }
+
+    $user = (object) array(
+      'name' => $name,
+      'pass' => $pass,
+      'role' => $role,
+      'mail' => "{$name}@example.com",
+    );
+
+    return $this->userCreate($user);
+  }
+
+  /**
    * Retrieve a table row(s) containing specified element id|name|label|value.
    *
    * @param \Behat\Mink\Element\Element $element
@@ -118,14 +151,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     // Check if a user with this role is already logged in.
     if (!$this->loggedInWithRole($role)) {
       // Create user (and project)
-      $user = (object) array(
-        'name' => $username,
-        'pass' => $this->getRandom()->name(16),
-        'role' => $role,
-      );
-      $user->mail = "{$user->name}@example.com";
-
-      $this->userCreate($user);
+      $user = $this->createUser($username, '', $role);
 
       $roles = explode(',', $role);
       $roles = array_map('trim', $roles);
@@ -144,6 +170,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Creates and authenticates a user with the given permission(s).
    *
+   * @param string $permissions
+   *   The comma separated list of permissions to provide to the user.
    * @param string $username
    *   Optional parameter for user name to be used for login.
    * @param string $password
@@ -154,18 +182,46 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedWithPermissions($permissions, $username = '', $password = '') {
     // Create user.
-    $user = (object) array(
-      'name' => !empty($username) ? $username : $this->getRandom()->name(8),
-      'pass' => !empty($password) ? $password : $this->getRandom()->name(16),
-    );
-    $user->mail = "{$user->name}@example.com";
-    $this->userCreate($user);
+    $user = $this->createUser($username, $password, '');
 
     // Create and assign a temporary role with given permissions.
     $permissions = explode(',', $permissions);
     $rid = $this->getDriver()->roleCreate($permissions);
     $this->getDriver()->userAddRole($user, $rid);
     $this->roles[] = $rid;
+
+    // Login.
+    $this->login();
+  }
+
+  /**
+   * Creates and authenticates a user with the given set of permissions.
+   *
+   * @param \Behat\Gherkin\Node\PyStringNode $permissions
+   *   The permissions to check for.
+   * @param string $username
+   *   The user name (a random one is chosen if not supplied).
+   * @param string $password
+   *   The initial password (a random one is chosen if not supplied).
+   *
+   * @Given /^I am logged in as a user (?:|named )(?:|"(?P<username>[^"]*)" )(?:|with the password "(?P<password>[^"]*)" )with the following permissions:$/
+   */
+  public function assertAuthenticatedWithPermissionsList(PyStringNode $permissions, $username = '', $password = '') {
+    // Create user.
+    $user = $this->createUser($username, $password, '');
+
+    // Create and assign a temporary role with given permissions.
+    // The table parsing might have left whitespace around the text => trim.
+    $perms_array = array();
+    foreach ($permissions->getStrings() as $permission) {
+      array_push($perms_array, trim($permission));
+    }
+    $rid = $this->getDriver()->roleCreate($perms_array);
+    $this->getDriver()->userAddRole($user, $rid);
+    $this->roles[] = $rid;
+
+    // Find the user.
+    $account = user_load_by_name($user->name);
 
     // Login.
     $this->login();
@@ -187,14 +243,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAccountCreated($username, $role) {
     if (!user_load_by_name($username)) {
-      $user = (object) array(
-        'name' => $username,
-        'pass' => $this->getRandom()->name(16),
-        'role' => $role,
-      );
-      $user->mail = "{$user->name}@example.com";
-      // Create a new user.
-      $this->userCreate($user);
+      $user = $this->createUser($username, '', $role);
 
       $roles = explode(',', $role);
       $roles = array_map('trim', $roles);
