@@ -4,6 +4,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Definition\Call\Given;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Drupal\DrupalExtension\Context\MinkContext;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
@@ -86,6 +87,39 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
+   * Helper for creating users.
+   *
+   * @param string $name
+   *   The name to use - random value created if blank.
+   * @param string $pass
+   *   The password to use - random value created if blank.
+   * @param mixed $role
+   *   The roles to provide to the user (may be a single string) or an array).
+   */
+  private function createUser($name = '', $pass = '', $role = array()) {
+    if (!$name) {
+      $name = $this->getRandom()->name(8);
+    }
+
+    if (!$pass) {
+      $pass = $this->getRandom()->name(16);
+    }
+
+    if (!is_array($role)) {
+      $role = array($role);
+    }
+
+    $user = (object) array(
+      'name' => $name,
+      'pass' => $pass,
+      'role' => $role,
+      'mail' => "{$name}@example.com",
+    );
+
+    return $this->userCreate($user);
+  }
+
+  /**
    * Retrieve a table row(s) containing specified element id|name|label|value.
    *
    * @param \Behat\Mink\Element\Element $element
@@ -117,14 +151,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     // Check if a user with this role is already logged in.
     if (!$this->loggedInWithRole($role)) {
       // Create user (and project)
-      $user = (object) array(
-        'name' => $username,
-        'pass' => $this->getRandom()->name(16),
-        'role' => $role,
-      );
-      $user->mail = "{$user->name}@example.com";
-
-      $this->userCreate($user);
+      $user = $this->createUser($username, '', $role);
 
       $roles = explode(',', $role);
       $roles = array_map('trim', $roles);
@@ -143,6 +170,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Creates and authenticates a user with the given permission(s).
    *
+   * @param string $permissions
+   *   The comma separated list of permissions to provide to the user.
    * @param string $username
    *   Optional parameter for user name to be used for login.
    * @param string $password
@@ -153,12 +182,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedWithPermissions($permissions, $username = '', $password = '') {
     // Create user.
-    $user = (object) array(
-      'name' => !empty($username) ? $username : $this->getRandom()->name(8),
-      'pass' => !empty($password) ? $password : $this->getRandom()->name(16),
-    );
-    $user->mail = "{$user->name}@example.com";
-    $this->userCreate($user);
+    $user = $this->createUser($username, $password, '');
 
     // Create and assign a temporary role with given permissions.
     $permissions = explode(',', $permissions);
@@ -184,12 +208,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedWithPermissionsList(PyStringNode $permissions, $username = '', $password = '') {
     // Create user.
-    $user = (object) array(
-      'name' => !empty($username) ? $username : $this->getRandom()->name(8),
-      'pass' => !empty($password) ? $password : $this->getRandom()->name(16),
-    );
-    $user->mail = "{$user->name}@example.com";
-    $this->userCreate($user);
+    $user = $this->createUser($username, $password, '');
 
     // Create and assign a temporary role with given permissions.
     // The table parsing might have left whitespace around the text => trim.
@@ -224,14 +243,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAccountCreated($username, $role) {
     if (!user_load_by_name($username)) {
-      $user = (object) array(
-        'name' => $username,
-        'pass' => $this->getRandom()->name(16),
-        'role' => $role,
-      );
-      $user->mail = "{$user->name}@example.com";
-      // Create a new user.
-      $this->userCreate($user);
+      $user = $this->createUser($username, '', $role);
 
       $roles = explode(',', $role);
       $roles = array_map('trim', $roles);
@@ -431,6 +443,40 @@ JS;
   }
 
   /**
+   * Select a radio button using an optional label and an id.
+   *
+   * @When I select the radio button :label with the id containing :id
+   * @When I select the radio button with the id containing :id
+   */
+  public function assertSelectRadioByPartialId($id, $label = '') {
+
+    // Locate radio buttons on the page, matching the label if provided.
+    $page = $this->getSession()->getPage();
+    $radiobuttons = $page->findAll('named', array('radio', $label));
+
+    if (!$radiobuttons) {
+      throw new \Exception(sprintf('The radio button with "%s" was not found on the page %s', $id, $this->getSession()->getCurrentUrl()));
+    }
+
+    // Check the ids of the buttons until we find the first match.
+    foreach ($radiobuttons as $radiobutton) {
+
+      $buttonId = $radiobutton->getAttribute('id');
+      if (strpos($buttonId, $id) === FALSE) {
+        continue;
+      }
+
+      $value = $radiobutton->getAttribute('value');
+      $radiobutton->selectOption($value, FALSE);
+      return;
+    }
+
+    // No match? It's a fail.
+    throw new \Exception(sprintf('The radio button with id "%s" and label "%s" was not found on the page %s',
+      $id, $label, $this->getSession()->getCurrentUrl()));
+  }
+
+  /**
    * Fills in WYSIWYG editor with specified id.
    *
    * @Given /^(?:|I )fill in "(?P<text>[^"]*)" in WYSIWYG editor "(?P<iframe>[^"]*)"$/
@@ -560,7 +606,7 @@ JS;
   public function assertPermission($rid, $permission, $assertPath = TRUE) {
     $rid = self::roleToRid($rid);
     if ($assertPath) {
-      $mink = new Drupal\DrupalExtension\Context\MinkContext();
+      $mink = new MinkContext();
       $mink->setMink($this->getMink());
       $mink->assertAtPath('/admin/people/permissions/' . $rid);
     }
@@ -586,7 +632,7 @@ JS;
   public function assertNoPermission($rid, $permission, $assertPath = TRUE) {
     $rid = self::roleToRid($rid);
     if ($assertPath) {
-      $mink = new Drupal\DrupalExtension\Context\MinkContext();
+      $mink = new MinkContext();
       $mink->setMink($this->getMink());
       $mink->assertAtPath('/admin/people/permissions/' . $rid);
     }
