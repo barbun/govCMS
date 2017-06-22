@@ -53,10 +53,11 @@ class Iconomist {
     $form_state['storage']['iconomist_num_icons'] = max($form_state['storage']['iconomist_num_icons'], 0);
 
     // Display toggles.
+    $default_value = theme_get_setting('toggle_iconomist', $theme);
     $form['theme_settings']['toggle_iconomist'] = array(
       '#type' => 'checkbox',
       '#title' => t('Iconomist Icons'),
-      '#default_value' => theme_get_setting('toggle_iconomist', $theme) ? theme_get_setting('toggle_iconomist', $theme) : TRUE,
+      '#default_value' =>  is_null($default_value) ? TRUE : $default_value,
     );
 
     // Iconomist fieldset.
