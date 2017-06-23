@@ -83,20 +83,15 @@
               value="${composer.bin}/phantomjs"/>
     <property name="phantomjs.webdriver" value="4444"/>
 
+    <!-- PHPunit -->
+    <property name="phpunit.config" value="../tests/phpunit/phpunit.conf" />
+
     <!-- We override this so Drupal install works -->
     <property name="drush.cmd" value="${drush.bin} -r ${docroot}"
               override="true"/>
 
     <!-- Set git properties -->
     <property name="git.branch.default" value="7.x-2.x"/>
-
-    <!-- Conditional properties -->
-    <!-- Check for a travis branch variable -->
-    <exec command="echo $TRAVIS_BRANCH"
-          outputProperty="git.branch.current"
-          dir="${repo.root}"
-          logoutput="true"
-          checkreturn="true"/>
 
     <!-- The following allows local overrides. -->
     <property file="${project.basedir}/build.properties" override="true"/>
@@ -109,7 +104,6 @@
         <include name="profiles/govcms/modules/features/**"/>
         <include name="sites/all/modules/**"/>
     </fileset>
-
 
     <!--               -->
     <!-- Targets       -->
@@ -376,4 +370,10 @@
                returnProperty="behatPass"/>
     </target>
 
+    <target name="test:phpunit" description="PHPunit tests for govCMS">
+      <exec command="${composer.bin}/phpunit -c ${phpunit.config}"
+        checkreturn="true"
+        logoutput="true"
+        passthru="true" />
+    </target>
 </project>

@@ -93,10 +93,10 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    *   The name to use - random value created if blank.
    * @param string $pass
    *   The password to use - random value created if blank.
-   * @param mixed $role
-   *   The roles to provide to the user (may be a single string) or an array).
+   * @param string $roles
+   *   A comma delimited list of roles to add to the user.
    */
-  private function createUser($name = '', $pass = '', $role = array()) {
+  private function createUser($name = '', $pass = '', $roles = '') {
     if (!$name) {
       $name = $this->getRandom()->name(8);
     }
@@ -105,18 +105,30 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       $pass = $this->getRandom()->name(16);
     }
 
-    if (!is_array($role)) {
-      $role = array($role);
-    }
-
     $user = (object) array(
       'name' => $name,
       'pass' => $pass,
-      'role' => $role,
       'mail' => "{$name}@example.com",
     );
 
-    return $this->userCreate($user);
+    $this->userCreate($user);
+
+    if (!empty($roles)) {
+      $roles = explode(',', $roles);
+      $roles = array_map('trim', $roles);
+      foreach ($roles as $role) {
+        if (!in_array(strtolower($role), [
+          'authenticated',
+          'authenticated user',
+        ])
+        ) {
+          // Only add roles other than 'authenticated user'.
+          $this->getDriver()->userAddRole($user, $role);
+        }
+      }
+    }
+
+    return $user;
   }
 
   /**
@@ -147,20 +159,11 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    *
    * @Given /^I am logged in as a user named "(?P<username>[^"]*)" with the "(?P<role>[^"]*)" role$/
    */
-  public function assertAuthenticatedByRole($username, $role) {
+  public function assertAuthenticatedByRole($username, $role = '') {
     // Check if a user with this role is already logged in.
     if (!$this->loggedInWithRole($role)) {
       // Create user (and project)
       $user = $this->createUser($username, '', $role);
-
-      $roles = explode(',', $role);
-      $roles = array_map('trim', $roles);
-      foreach ($roles as $role) {
-        if (!in_array(strtolower($role), array('authenticated', 'authenticated user'))) {
-          // Only add roles other than 'authenticated user'.
-          $this->getDriver()->userAddRole($user, $role);
-        }
-      }
 
       // Login.
       $this->login();
@@ -182,7 +185,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedWithPermissions($permissions, $username = '', $password = '') {
     // Create user.
-    $user = $this->createUser($username, $password, '');
+    $user = $this->createUser($username, $password);
 
     // Create and assign a temporary role with given permissions.
     $permissions = explode(',', $permissions);
@@ -208,7 +211,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAuthenticatedWithPermissionsList(PyStringNode $permissions, $username = '', $password = '') {
     // Create user.
-    $user = $this->createUser($username, $password, '');
+    $user = $this->createUser($username, $password);
 
     // Create and assign a temporary role with given permissions.
     // The table parsing might have left whitespace around the text => trim.
@@ -244,15 +247,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   public function assertAccountCreated($username, $role) {
     if (!user_load_by_name($username)) {
       $user = $this->createUser($username, '', $role);
-
-      $roles = explode(',', $role);
-      $roles = array_map('trim', $roles);
-      foreach ($roles as $role) {
-        if (!in_array(strtolower($role), array('authenticated', 'authenticated user'))) {
-          // Only add roles other than 'authenticated user'.
-          $this->getDriver()->userAddRole($user, $role);
-        }
-      }
     }
   }
 
