@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\govCMSExtension\Context;
+namespace Acquia\govCMSExtension\CkEditorContext;
 
 use Behat\Mink\Exception\ExpectationException;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;
