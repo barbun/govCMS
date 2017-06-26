@@ -50,8 +50,6 @@ drush:
         - Drupal\DrupalExtension\Context\MessageContext
         - Drupal\DrupalExtension\Context\DrushContext
         - FeatureContext
-      paths:
-        features: %paths.base%/features
       filters:
         tags: "@drush"
   extensions:
