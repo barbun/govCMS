@@ -2,7 +2,7 @@ Feature: Image and Text bean
 
   Ensure that Image and Text bean type is available and displayed as expected
 
-  @api @javascript @beans @bam
+  @api @javascript @beans
   Scenario: Create, view and edit a new Image and Text bean
     Given I am logged in as a user with the following permissions:
       """
