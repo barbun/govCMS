@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\govCMSExtension\MediaBrowserContext;
+namespace Acquia\govCMSExtension\Context;
 
 use Behat\Mink\Exception\ElementNotFoundException;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;

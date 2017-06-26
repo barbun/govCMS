@@ -1,6 +1,6 @@
 <?php
 
-namespace Acquia\govCMSExtension\UtilityContext;
+namespace Acquia\govCMSExtension\Context;
 
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Element\ElementInterface;
