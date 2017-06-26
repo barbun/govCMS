@@ -11,7 +11,6 @@ Feature: Role delegation
     And I should be able to block the user
     When I visit the user edit page for "joe"
     Then I should not be able to change the "administrator" role
-    And I take a screenshot named "hello"
     And I should not be able to block the user
     #Given I visit "/admin/people"
     #Then I visit the user cancel page for "joe"

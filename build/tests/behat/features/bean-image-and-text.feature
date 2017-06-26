@@ -2,7 +2,7 @@ Feature: Image and Text bean
 
   Ensure that Image and Text bean type is available and displayed as expected
 
-  @api @javascript @beans
+  @api @javascript @beans @bam
   Scenario: Create, view and edit a new Image and Text bean
     Given I am logged in as a user with the following permissions:
       """
@@ -17,16 +17,13 @@ Feature: Image and Text bean
     And I fill in the following:
       | Label | Cool beans             |
       | Title | Beans are good for you |
-    Given I click "Browse"
-    Then I switch to an iframe "mediaBrowser"
+    When I open the "edit-field-bean-image" media browser
     And I attach the file "autotest.jpg" to "files[upload]"
     And I press "Next"
     Then I select the radio button "Public local files served by the webserver."
     And I press "Next"
     And I enter "Behold, a generic logo" for "Name"
-    And I press "Save"
-    Given I switch back from an iframe
-    And I wait for AJAX to finish
+    And I submit the media browser
     Then I should see a "[name=field_bean_image_und_0_remove_button]" element
     And I put "govCMS is the best!" into WYSIWYG "edit-field-bean-text-und-0-value"
     And I press "Save"

@@ -659,19 +659,6 @@ JS;
   }
 
   /**
-   * Switch browser focus to an iFrame.
-   *
-   * @param string $name
-   *   An iframe name (null for switching back).
-   *
-   * @Given /^(?:|I )switch to an iframe "([^"]*)"$/
-   * @Then /^(?:|I )switch back from an iframe$/
-   */
-  public function iSwitchToAnIframe($name = NULL) {
-    $this->getSession()->switchToIFrame($name);
-  }
-
-  /**
    * Clean up bean entities that were created during the tests.
    *
    * @AfterScenario @beans
