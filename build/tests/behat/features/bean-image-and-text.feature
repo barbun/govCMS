@@ -28,8 +28,7 @@ Feature: Image and Text bean
     Given I switch back from an iframe
     And I wait for AJAX to finish
     Then I should see a "[name=field_bean_image_und_0_remove_button]" element
-    Given the iframe in element "cke_edit-field-bean-text-und-0-value" has id "bean-text-wysiwyg"
-    And I fill in "govCMS is the best!" in WYSIWYG editor "bean-text-wysiwyg"
+    And I put "govCMS is the best!" into WYSIWYG "edit-field-bean-text-und-0-value"
     And I press "Save"
     Then I should see the success message containing "Image and Text Beans are good for you has been created."
     Given I am logged in as a user with the following permissions:

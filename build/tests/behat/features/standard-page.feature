@@ -8,8 +8,7 @@ Feature: Standard Page
     When I go to "/node/add/page"
     Then I should see "Create Standard page"
     And I enter "About Us" for "Title"
-    Given the iframe in element "cke_edit-body-und-0-value" has id "body-wysiwyg"
-    And I fill in "govCMS is the best!" in WYSIWYG editor "body-wysiwyg"
+    And I put "govCMS is the best!" into WYSIWYG "edit-body-und-0-value"
     And press "Save"
     Then I should see "Standard Page About Us has been created"
     Then I logout
