@@ -371,9 +371,9 @@
     </target>
 
     <target name="test:phpunit" description="PHPunit tests for govCMS">
-        <exec command="${composer.bin}/phpunit -c ${phpunit.config}"
-              checkreturn="true"
-              logoutput="true"
-              passthru="true" />
+      <exec command="${composer.bin}/phpunit -c ${phpunit.config}"
+        checkreturn="true"
+        logoutput="true"
+        passthru="true" />
     </target>
 </project>
