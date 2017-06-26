@@ -409,7 +409,6 @@ JS;
    * @When I select the radio button with the id containing :id
    */
   public function assertSelectRadioByPartialId($id, $label = '') {
-
     // Locate radio buttons on the page, matching the label if provided.
     $page = $this->getSession()->getPage();
     $radiobuttons = $page->findAll('named', array('radio', $label));
