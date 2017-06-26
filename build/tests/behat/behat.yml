@@ -22,6 +22,7 @@ default:
         subcontexts:
           paths:
             - %paths.base%/bootstrap
+          autoload: 0
         blackbox: ~
         api_driver: "drupal"
         drupal:

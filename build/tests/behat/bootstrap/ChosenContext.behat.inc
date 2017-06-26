@@ -5,6 +5,8 @@
  * Behat drupalextension test context for Chosen module.
  */
 
+namespace  Acquia\govCMSExtension\Context;
+
 use Drupal\DrupalExtension\Context\DrupalSubContextInterface;
 use Drupal\DrupalDriverManager;
 use Behat\Mink\Exception\ExpectationException;
