@@ -22,4 +22,3 @@ Feature: Spamspan is operational.
     Then I should not see "example@test.com"
     And I should see "Email link."
     And the response should contain "mailto:example@test.com"
-

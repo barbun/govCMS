@@ -20,5 +20,3 @@ Feature: Reset Password
     And I press "E-mail new password"
     Then I should see "Further instructions have been sent to your e-mail address."
     And I should not see "Notice: Undefined index"
-
-

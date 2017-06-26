@@ -81,5 +81,3 @@ Feature: Media Release
     When I am on homepage
     And the cache has been cleared
     Then I should see the link "Agency update" in the "navigation" region
-    And I click "ba" in the "wo" row
-
