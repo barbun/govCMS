@@ -358,17 +358,22 @@
                config="${behat.config}"
                verbose="true"
                strict="true"
-               tags="bam"
                haltonerror="true"
                returnProperty="behatPass"/>
         <!-- Run additional tests with another profile that uses Drush driver -->
-
+        <behat executable="${composer.bin}/behat"
+               config="${behat.config}"
+               verbose="true"
+               strict="true"
+               profile="drush"
+               haltonerror="true"
+               returnProperty="behatPass"/>
     </target>
 
     <target name="test:phpunit" description="PHPunit tests for govCMS">
-      <exec command="${composer.bin}/phpunit -c ${phpunit.config}"
-        checkreturn="true"
-        logoutput="true"
-        passthru="true" />
+        <exec command="${composer.bin}/phpunit -c ${phpunit.config}"
+              checkreturn="true"
+              logoutput="true"
+              passthru="true" />
     </target>
 </project>
