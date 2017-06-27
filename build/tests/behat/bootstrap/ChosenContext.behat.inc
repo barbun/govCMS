@@ -1,11 +1,6 @@
 <?php
 
-/**
- * @file
- * Behat drupalextension test context for Chosen module.
- */
-
-namespace  Acquia\govCMSExtension\Context;
+namespace Acquia\govCMSExtension\Context;
 
 use Drupal\DrupalExtension\Context\DrupalSubContextInterface;
 use Drupal\DrupalDriverManager;
@@ -13,32 +8,51 @@ use Behat\Mink\Exception\ExpectationException;
 use Drupal\DrupalExtension\Context\MinkContext;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 
+/**
+ * Contains step definitions for working with Chosen JS library.
+ */
 class ChosenContext implements DrupalSubContextInterface {
 
   private $drupal;
-  protected $last_id;
+  protected $lastId;
 
-  /** @var MinkContext */
+  /**
+   * Store Mink context.
+   *
+   * @var MinkContext
+   */
   private $minkContext;
 
+  /**
+   * Initializes context.
+   */
   public function __construct(DrupalDriverManager $drupal) {
     $this->drupal = $drupal;
   }
 
-  /** @BeforeScenario */
+  /**
+   * Include Mink context.
+   *
+   * @BeforeScenario
+   */
   public function gatherContexts(BeforeScenarioScope $scope) {
     $environment = $scope->getEnvironment();
     $this->minkContext = $environment->getContext('Drupal\DrupalExtension\Context\MinkContext');
   }
 
   /**
+   * Helper function to retrieve Mink context.
+   *
    * @return MinkContext
+   *   Mink class.
    */
   public function getMinkContext() {
     return $this->minkContext;
   }
 
   /**
+   * Sets the specified Chosen element to a certain value.
+   *
    * @When /^I set the chosen element "([^"]*)" to "([^"]*)"$/
    */
   public function iSetChosenElement($locator, $value) {
@@ -46,7 +60,7 @@ class ChosenContext implements DrupalSubContextInterface {
     $el = $session->getPage()->findField($locator);
 
     if (empty($el)) {
-      throw new ExpectationException(t('No such select element @locator ', array(
+      throw new ExpectationException(t('No such select element @locator', array(
         '@value' => $value,
         '@locator' => $locator,
       )), $session);
@@ -54,7 +68,7 @@ class ChosenContext implements DrupalSubContextInterface {
 
     $element_id = str_replace('-', '_', $el->getAttribute('id')) . '_chosen';
 
-    $el =$session->getPage()->find('xpath', "//div[@id='{$element_id}']");
+    $el = $session->getPage()->find('xpath', "//div[@id='{$element_id}']");
 
     if ($el->hasClass('chosen-container-single')) {
       // This is a single select element.
@@ -71,7 +85,7 @@ class ChosenContext implements DrupalSubContextInterface {
     $el = $session->getPage()->find('xpath', $selector);
 
     if (empty($el)) {
-      throw new ExpectationException(t('No such option @value in @locator ', array(
+      throw new ExpectationException(t('No such option @value in @locator', array(
         '@value' => $value,
         '@locator' => $locator,
       )), $session);

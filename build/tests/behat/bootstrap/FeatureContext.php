@@ -600,7 +600,7 @@ JS;
         return;
       }
       $this->getSession()->resizeWindow(1440, 900, 'current');
-      file_put_contents(__DIR__ . '../../../screenshot-fail.png', $this->getSession()->getDriver()->getScreenshot());
+      file_put_contents(__DIR__ . '../../screenshot-fail.png', $this->getSession()->getDriver()->getScreenshot());
     }
   }
 

@@ -1,11 +1,10 @@
 <?php
 
-namespace  Acquia\govCMSExtension\Context;
+namespace Acquia\govCMSExtension\Context;
 
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Element\ElementInterface;
 use Behat\Mink\Exception\ExpectationException;
-use Drupal\Component\Utility\Random;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;
 use WebDriver\Exception\NoAlertOpenError;
 
