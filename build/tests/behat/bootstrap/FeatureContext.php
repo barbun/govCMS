@@ -1,6 +1,5 @@
 <?php
 
-use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Definition\Call\Given;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
@@ -10,6 +9,7 @@ use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Behat\Hook\Scope\AfterStepScope;
 use Behat\Mink\Element\Element;
 use Drupal\DrupalExtension\Hook\Scope\EntityScope;
+use Behat\Behat\Context\SnippetAcceptingContext;
 
 /**
  * Defines application features from the specific context.
@@ -443,7 +443,6 @@ JS;
    * @When I select the radio button with the id containing :id
    */
   public function assertSelectRadioByPartialId($id, $label = '') {
-
     // Locate radio buttons on the page, matching the label if provided.
     $page = $this->getSession()->getPage();
     $radiobuttons = $page->findAll('named', array('radio', $label));
@@ -468,22 +467,6 @@ JS;
     // No match? It's a fail.
     throw new \Exception(sprintf('The radio button with id "%s" and label "%s" was not found on the page %s',
       $id, $label, $this->getSession()->getCurrentUrl()));
-  }
-
-  /**
-   * Fills in WYSIWYG editor with specified id.
-   *
-   * @Given /^(?:|I )fill in "(?P<text>[^"]*)" in WYSIWYG editor "(?P<iframe>[^"]*)"$/
-   */
-  public function iFillInInWYSIWYGEditor($text, $iframe) {
-    try {
-      $this->getSession()->switchToIFrame($iframe);
-    }
-    catch (Exception $e) {
-      throw new \Exception(sprintf("No iframe with id '%s' found on the page '%s'.", $iframe, $this->getSession()->getCurrentUrl()));
-    }
-    $this->getSession()->executeScript("document.body.innerHTML = '<p>" . $text . "</p>'");
-    $this->getSession()->switchToIFrame();
   }
 
   /**
@@ -706,19 +689,6 @@ JS;
       }
     }
     throw new \Exception(sprintf('Failed to find a row with the element "%s" that also contains "%s" on the page %s', $rowElement, $findText, $this->getSession()->getCurrentUrl()));
-  }
-
-  /**
-   * Switch browser focus to an iFrame.
-   *
-   * @param string $name
-   *   An iframe name (null for switching back).
-   *
-   * @Given /^(?:|I )switch to an iframe "([^"]*)"$/
-   * @Then /^(?:|I )switch back from an iframe$/
-   */
-  public function iSwitchToAnIframe($name = NULL) {
-    $this->getSession()->switchToIFrame($name);
   }
 
   /**

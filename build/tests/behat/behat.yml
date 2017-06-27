@@ -21,6 +21,10 @@ default:
         javascript_session: selenium2
         files_path: %paths.base%/files
       Drupal\DrupalExtension:
+        subcontexts:
+          paths:
+            - %paths.base%/bootstrap
+          autoload: 0
         blackbox: ~
         api_driver: "drupal"
         drupal:
@@ -33,11 +37,12 @@ default:
           error_message_selector: '.messages.error'
         region_map:
           sidebar_second: 'section.region-sidebar-second'
+          navigation: '.region.region-navigation'
 
 # Separate profile for testing using the Drush driver.
 drush:
   autoload:
-    '': %paths.base%/bootstrap
+      '': %paths.base%/bootstrap
   suites:
     default:
       contexts:
@@ -46,8 +51,6 @@ drush:
         - Drupal\DrupalExtension\Context\MessageContext
         - Drupal\DrupalExtension\Context\DrushContext
         - FeatureContext
-      paths:
-        features: %paths.base%/features
       filters:
         tags: "@drush"
   extensions:
