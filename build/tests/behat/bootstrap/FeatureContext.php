@@ -97,30 +97,23 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    *   A comma delimited list of roles to add to the user.
    */
   private function createUser($name = '', $pass = '', $roles = '') {
-    if (!$name) {
-      $name = $this->getRandom()->name(8);
-    }
-
-    if (!$pass) {
-      $pass = $this->getRandom()->name(16);
-    }
-
+    // Basic user data.
     $user = (object) array(
-      'name' => $name,
-      'pass' => $pass,
+      'name' => empty($name) ? $this->getRandom()->name(8) : $name,
+      'pass' => empty($pass) ? $this->getRandom()->name(16) : $pass,
       'mail' => "{$name}@example.com",
     );
 
     $this->userCreate($user);
-
+    // Assign roles to user.
     if (!empty($roles)) {
       $roles = explode(',', $roles);
       $roles = array_map('trim', $roles);
       foreach ($roles as $role) {
-        if (!in_array(strtolower($role), [
+        if (!in_array(strtolower($role), array(
           'authenticated',
           'authenticated user',
-        ])
+        ))
         ) {
           // Only add roles other than 'authenticated user'.
           $this->getDriver()->userAddRole($user, $role);
@@ -162,8 +155,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   public function assertAuthenticatedByRole($username, $role = '') {
     // Check if a user with this role is already logged in.
     if (!$this->loggedInWithRole($role)) {
-      // Create user (and project)
-      $user = $this->createUser($username, '', $role);
+      // Create user.
+      $this->createUser($username, '', $role);
 
       // Login.
       $this->login();
@@ -223,9 +216,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $this->getDriver()->userAddRole($user, $rid);
     $this->roles[] = $rid;
 
-    // Find the user.
-    $account = user_load_by_name($user->name);
-
     // Login.
     $this->login();
   }
@@ -246,7 +236,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public function assertAccountCreated($username, $role) {
     if (!user_load_by_name($username)) {
-      $user = $this->createUser($username, '', $role);
+      $this->createUser($username, '', $role);
     }
   }
 
@@ -292,7 +282,7 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
       rules_action('schedule', array('component' => $component))->executeByArgs(array(
         'date' => 'now',
         'identifier' => $task_identifier,
-        // Add component parameters, prefixed with 'param_'
+        // Add component parameters, prefixed with 'param_'.
         'param_suspend_account_user' => $user,
       ));
     }
