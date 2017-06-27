@@ -42,7 +42,7 @@ default:
 # Separate profile for testing using the Drush driver.
 drush:
   autoload:
-        '': %paths.base%/bootstrap
+      '': %paths.base%/bootstrap
   suites:
     default:
       contexts:
