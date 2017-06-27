@@ -37,8 +37,7 @@ Feature: User Actions
     When I go to "/node/add/news-article"
     Then I should see "Create News Article"
     And I enter "govCMS News" for "Title"
-    Given the iframe in element "cke_edit-body-und-0-value" has id "body-wysiwyg"
-    And I fill in "govCMS is the best!" in WYSIWYG editor "body-wysiwyg"
+    And I put "govCMS is the best!" into WYSIWYG "edit-body-und-0-value"
     And press "Save"
     Then I should see "News Article govCMS News has been created"
     Then I logout

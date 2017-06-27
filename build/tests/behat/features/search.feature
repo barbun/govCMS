@@ -15,8 +15,7 @@ Feature: Search
     When I go to "/node/add/news-article"
     Then I should see "Create News Article"
     And I enter "govCMS is the best" for "Title"
-    Given the iframe in element "cke_edit-body-und-0-value" has id "body-wysiwyg"
-    And I fill in "the whole of government content management and website hosting service for Australian Government agencies" in WYSIWYG editor "body-wysiwyg"
+    And I put "the whole of government content management and website hosting service for Australian Government agencies" into WYSIWYG "edit-body-und-0-value"
     When I press "Save"
     Then I should see "News Article govCMS is the best has been created"
     Then I logout
@@ -45,8 +44,7 @@ Feature: Search
     When I go to "/node/add/news-article"
     Then I should see "Create News Article"
     Then I enter "govCMS is the best" for "Title"
-    Given the iframe in element "cke_edit-body-und-0-value" has id "body-wysiwyg"
-    Then I fill in "the whole of government content management and website hosting service for Australian Government agencies" in WYSIWYG editor "body-wysiwyg"
+    And I put "the whole of government content management and website hosting service for Australian Government agencies" into WYSIWYG "edit-body-und-0-value"
     When I press "Save"
     Then I should see "News Article govCMS is the best has been created"
     Then I logout
