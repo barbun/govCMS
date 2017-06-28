@@ -25,7 +25,7 @@ Feature: Password Policy
     And the "constraint_letter" field should contain "1"
     And the "constraint_history" field should contain "8"
     And the "constraint_alphanumeric" field should contain "1"
-    And the "constraint_complexity" field should contain "3"
+    And the "constraint_character_types" field should contain "3"
     When I go to "/admin/config/people/password_policy/list"
     And I click "edit" in the "Australian Government ISM Policy (Weak)" row
     Then the "authenticated user" checkbox should not be checked

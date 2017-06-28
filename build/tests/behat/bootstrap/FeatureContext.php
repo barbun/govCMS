@@ -97,30 +97,23 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    *   A comma delimited list of roles to add to the user.
    */
   private function createUser($name = '', $pass = '', $roles = '') {
-    if (!$name) {
-      $name = $this->getRandom()->name(8);
-    }
-
-    if (!$pass) {
-      $pass = $this->getRandom()->name(16);
-    }
-
+    // Basic user data.
     $user = (object) array(
-      'name' => $name,
-      'pass' => $pass,
-      'mail' => "{$name}@example.com",
+      'name' => empty($name) ? $this->getRandom()->name(8) : $name,
+      'pass' => empty($pass) ? $this->getRandom()->name(16) : $pass,
     );
+    $user->mail = "{$user->name}@example.com";
 
     $this->userCreate($user);
-
+    // Assign roles to user.
     if (!empty($roles)) {
       $roles = explode(',', $roles);
       $roles = array_map('trim', $roles);
       foreach ($roles as $role) {
-        if (!in_array(strtolower($role), [
+        if (!in_array(strtolower($role), array(
           'authenticated',
           'authenticated user',
-        ])
+        ))
         ) {
           // Only add roles other than 'authenticated user'.
           $this->getDriver()->userAddRole($user, $role);
@@ -162,8 +155,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   public function assertAuthenticatedByRole($username, $role = '') {
     // Check if a user with this role is already logged in.
     if (!$this->loggedInWithRole($role)) {
-      // Create user (and project)
-      $user = $this->createUser($username, '', $role);
+      // Create user.
+      $this->createUser($username, '', $role);
 
       // Login.
       $this->login();
@@ -223,9 +216,6 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $this->getDriver()->userAddRole($user, $rid);
     $this->roles[] = $rid;
 
-    // Find the user.
-    $account = user_load_by_name($user->name);
-
     // Login.
     $this->login();
   }
@@ -245,8 +235,10 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @Given /^a user named "(?P<username>[^"]*)" with role "(?P<role>[^"]*)" exists$/
    */
   public function assertAccountCreated($username, $role) {
-    if (!user_load_by_name($username)) {
-      $user = $this->createUser($username, '', $role);
+    // Create the user.
+    $user = $this->createUser($username, '', $role);
+    if (empty($user)) {
+      throw new \Exception('Failed to create the user with the name "%s"', $username);
     }
   }
 
@@ -264,6 +256,43 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     }
     else {
       throw new \Exception('No such user');
+    }
+  }
+
+  /**
+   * Set the last logged in time for a user.
+   *
+   * @When /^the user named "(?P<username>[^"]*)" has not logged in for "(?P<lastlogin>[^"]*)" days$/
+   */
+  public function setUserSuspension($username, $lastlogin) {
+    // Find the user.
+    $user = user_load_by_name($username);
+    // If such user exists then delete it.
+    if (!empty($user)) {
+      // Load current settings for suspension rules.
+      $rule = rules_config_load('rules_suspend_account_after_inactivity');
+      foreach ($rule->actions() as $action) {
+        if ($action->settings['identifier'] = 'Suspend Account [account:uid]') {
+          $settings = $action->settings;
+        }
+      }
+      if (!empty($settings)) {
+        // Override the rules scheduled review time.
+        // By default the scheduler will 60 days from now, but we need to
+        // dynamically offset that by the number of inactivity days.
+        $component = 'rules_suspend_account';
+        $task_identifier = "Suspend Account {$user->uid}";
+        $timestamp = strtotime(sprintf('-%s days', $lastlogin), strtotime($settings['date']));
+
+        rules_action('schedule', ['component' => $component])->executeByArgs([
+          'date' => is_numeric($timestamp) ? $timestamp : strtotime('now'),
+          'identifier' => $task_identifier,
+          'param_suspend_account_user' => $user,
+        ]);
+      }
+    }
+    else {
+      throw new \Exception("No such user {$username}");
     }
   }
 
