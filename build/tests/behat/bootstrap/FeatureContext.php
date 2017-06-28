@@ -101,8 +101,8 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $user = (object) array(
       'name' => empty($name) ? $this->getRandom()->name(8) : $name,
       'pass' => empty($pass) ? $this->getRandom()->name(16) : $pass,
-      'mail' => "{$name}@example.com",
     );
+    $user->mail = "{$user->name}@example.com";
 
     $this->userCreate($user);
     // Assign roles to user.
