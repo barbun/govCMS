@@ -235,8 +235,10 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    * @Given /^a user named "(?P<username>[^"]*)" with role "(?P<role>[^"]*)" exists$/
    */
   public function assertAccountCreated($username, $role) {
-    if (!user_load_by_name($username)) {
-      $this->createUser($username, '', $role);
+    // Create the user.
+    $user = $this->createUser($username, '', $role);
+    if (empty($user)) {
+      throw new \Exception('Failed to create the user with the name "%s"', $username);
     }
   }
 
@@ -260,31 +262,34 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   /**
    * Set the last logged in time for a user.
    *
-   * @When /^the last login time for "(?P<username>[^"]*)" is "(?P<lastlogin>[^"]*)"$/
+   * @When /^the user named "(?P<username>[^"]*)" has not logged in for "(?P<lastlogin>[^"]*)" days$/
    */
-  public function setLastLogin($username, $lastlogin) {
+  public function setUserSuspension($username, $lastlogin) {
     // Find the user.
     $user = user_load_by_name($username);
     // If such user exists then delete it.
     if (!empty($user)) {
-      try {
-        $user->access = strtotime($lastlogin);
+      // Load current settings for suspension rules.
+      $rule = rules_config_load('rules_suspend_account_after_inactivity');
+      foreach ($rule->actions() as $action) {
+        if ($action->settings['identifier'] = 'Suspend Account [account:uid]') {
+          $settings = $action->settings;
+        }
       }
-      catch (\Exception $e) {
-        throw new \Exception("Failed to convert {$lastlogin} to a timestamp.");
-      }
-      user_save($user);
+      if (!empty($settings)) {
+        // Override the rules scheduled review time.
+        // By default the scheduler will 60 days from now, but we need to
+        // dynamically offset that by the number of inactivity days.
+        $component = 'rules_suspend_account';
+        $task_identifier = "Suspend Account {$user->uid}";
+        $timestamp = strtotime(sprintf('-%s days', $lastlogin), strtotime($settings['date']));
 
-      // Override the rules scheduled review time.
-      // By default the scheduler will 60 days from now.
-      $component = 'rules_suspend_account';
-      $task_identifier = "Suspend Account {$user->uid}";
-      rules_action('schedule', array('component' => $component))->executeByArgs(array(
-        'date' => 'now',
-        'identifier' => $task_identifier,
-        // Add component parameters, prefixed with 'param_'.
-        'param_suspend_account_user' => $user,
-      ));
+        rules_action('schedule', ['component' => $component])->executeByArgs([
+          'date' => is_numeric($timestamp) ? $timestamp : strtotime('now'),
+          'identifier' => $task_identifier,
+          'param_suspend_account_user' => $user,
+        ]);
+      }
     }
     else {
       throw new \Exception("No such user {$username}");
