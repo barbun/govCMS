@@ -65,7 +65,7 @@ Feature: Media Release
     When I visit "/news-media/media-releases/agency-update"
     Then I should see the heading "Agency update"
 
-  @api
+  @api @javascript
   Scenario: Check that custom menu link can be created.
     Given "media_release" content:
       | title         | author     | status | state         |
