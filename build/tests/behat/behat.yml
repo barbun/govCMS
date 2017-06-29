@@ -8,6 +8,7 @@ default:
         - Drupal\DrupalExtension\Context\MinkContext
         - Drupal\DrupalExtension\Context\MessageContext
         - Drupal\DrupalExtension\Context\DrushContext
+        - Drupal\DrupalExtension\Context\MarkupContext
         - FeatureContext
       paths:
         features: %paths.base%/features
@@ -38,6 +39,7 @@ default:
         region_map:
           sidebar_second: 'section.region-sidebar-second'
           navigation: '.region.region-navigation'
+          content: '#content'
 
 # Separate profile for testing using the Drush driver.
 drush:
@@ -50,6 +52,7 @@ drush:
         - Drupal\DrupalExtension\Context\MinkContext
         - Drupal\DrupalExtension\Context\MessageContext
         - Drupal\DrupalExtension\Context\DrushContext
+        - Drupal\DrupalExtension\Context\MarkupContext
         - FeatureContext
       filters:
         tags: "@drush"
@@ -68,6 +71,8 @@ drush:
         root: ../../docroot
       region_map:
         sidebar_second: 'section.region-sidebar-second'
+        navigation: '.region.region-navigation'
+        content: '#content'
 
 imports:
   - behat.govcms.yml
