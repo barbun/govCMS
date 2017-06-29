@@ -17,7 +17,7 @@ Feature: Image and Text bean
     And I fill in the following:
       | Label | Cool beans             |
       | Title | Beans are good for you |
-    When I open the "edit-field-bean-image" media browser
+    When I open the "Image" media browser
     And I attach the file "autotest.jpg" to "files[upload]"
     And I press "Next"
     Then I select the radio button "Public local files served by the webserver."

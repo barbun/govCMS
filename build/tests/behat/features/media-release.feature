@@ -20,13 +20,13 @@ Feature: Media Release
       | Title   | New release            |
       | Date    | 13/05/2017             |
       | Summary | We migrated to govCMS! |
-    Then I set the chosen element "edit-field-tags-und" to "acquia"
+    Then I set the chosen element "Tags" to "acquia"
     And I put "Digital transformation is real. GovCMS is the best!" into WYSIWYG "edit-body-und-0-value"
 #    Given I attach the file "autotest.pdf" to "files[field_file_und_0]"
 #    And I press "Upload"
 #    And I wait for AJAX to finish
 #    Then the "#edit-field-file" element should contain "Remove"
-    When I open the "edit-field-image" media browser
+    When I open the "Attach media" media browser
     Then I attach the file "autotest.jpg" to "files[upload]"
     And I press "Next"
     Then I fill in "Auto Test" for "Name"

@@ -52,14 +52,13 @@ class MediaBrowserContext extends DrupalSubContextBase {
    */
   public function openMediaBrowser($field) {
     $session = $this->getSession();
-
-    $element = $session->getPage()->findById($field);
+    $element = $session->getPage()->findField($field);
     if (empty($element)) {
-      throw new \Exception(sprintf('Failed to find the element with id "%s"', $field));
+      throw new \Exception(sprintf('Failed to find the field element "%s" on the page %s', $field, $session->getCurrentUrl()));
     }
-    $link = $element->findLink('Browse');
+    $link = $element->getParent()->findLink('Browse');
     if (empty($link)) {
-      throw new \Exception(sprintf('Failed to find the media browser for the field with id "%s"', $field));
+      throw new \Exception(sprintf('Failed to find Media Browser for the field "%s" on the page %s', $field, $session->getCurrentUrl()));
     }
     $link->click();
     $this->minkContext->iWaitForAjaxToFinish();
