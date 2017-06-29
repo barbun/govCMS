@@ -8,7 +8,7 @@ Feature: Media Release
     When I visit "/node/add/media-release"
     Then CKEditor "edit-body-und-0-value" should exist
 
-  @api @javascript @bam
+  @api @javascript
   Scenario: Create Media Release content and check how it's displayed.
     Given I am logged in as a user with the "administrator" role
     Given "tags" terms:
