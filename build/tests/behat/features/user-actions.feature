@@ -31,7 +31,7 @@ Feature: User Actions
     And I should see "insert" in a table row containing the text "User: MyUser"
     And I should see "update" in a table row containing the text "User: MyUser"
 
-  @api @javascript @drupal
+  @api @javascript
   Scenario: Perform typical node actions and verify that they are logged.
     Given I am logged in as a user named "danielle" with the "Content editor" role
     When I go to "/node/add/news-article"

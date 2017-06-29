@@ -2,7 +2,7 @@ Feature: Chosen library applies to tags
 
   Users can use chosen to select tags
 
-  @api @javascript
+  @api
   Scenario: Chosen library is installed correctly
     Given I am logged in as a user named "stuart" with the "administrator" role
     And I go to "admin/reports/status"

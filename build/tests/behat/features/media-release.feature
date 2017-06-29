@@ -46,7 +46,7 @@ Feature: Media Release
     And the ".field-name-field-tags" element should contain "<a href=\"/tags/acquia\""
     And I should see the link "acquia"
 
-  @api @javascript
+  @api
   Scenario: Check that moderation works.
     Given "media_release" content:
       | title         | author     | status | state |
@@ -65,7 +65,7 @@ Feature: Media Release
     When I visit "/news-media/media-releases/agency-update"
     Then I should see the heading "Agency update"
 
-  @api @javascript
+  @api
   Scenario: Check that custom menu link can be created.
     Given "media_release" content:
       | title         | author     | status | state         |
