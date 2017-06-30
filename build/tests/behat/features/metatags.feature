@@ -8,7 +8,7 @@ Feature:Meta tags
 
   @api @javascript
   Scenario: Meta-tags are auto set
-    Given I am logged in as a user named "peter" with the "Content editor" role
+    Given I am logged in as a user with the "Content editor" role
     When I go to "/node/add/page"
     Then I should see "Create Standard page"
     And I enter "test" for "Title"
@@ -25,7 +25,7 @@ Feature:Meta tags
 
   @api @javascript
   Scenario: Meta-tags can be edited
-    Given I am logged in as a user named "paul" with the "Content editor" role
+    Given I am logged in as a user with the "Content editor" role
     When I go to "/node/add/page"
     Then I should see "Create Standard page"
     And I enter "test" for "Title"
@@ -42,7 +42,7 @@ Feature:Meta tags
     And the response should contain "<title>Fox in socks</title>"
     And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
 
-  @api @javascript
+  @api
   Scenario: govCMS core successfully applies default meta-tags configuration.
     Given I am logged in as a user with the "administer meta tags" permission
     When I go to "/admin/config/search/metatags/config/global"
