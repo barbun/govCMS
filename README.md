@@ -135,3 +135,4 @@ To submit a patch, the govCMS project should be forked and changes applied to a 
 All contributions to govCMS are welcome. Issues and pull requests may be submitted against the govCMS project on github where they will be addressed by the govCMS team.
 
 More information may be found in CONTRIBUTING.md.
+
