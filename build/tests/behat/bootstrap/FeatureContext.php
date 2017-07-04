@@ -17,11 +17,11 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext {
 
   /**
-   * Keep track of all users that are created so they can easily be removed.
+   * Keep track of all users that are created.
    *
    * @var array
    */
-  protected $userBeans = array();
+  protected $userLog = array();
 
   /**
    * Initializes context.
@@ -47,17 +47,17 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
   }
 
   /**
-   * Log the user IDs of the users that create beans.
+   * Log the user IDs created during the tests.
    *
-   * Collect user IDs later to be used for cleaning up the test beans.
+   * Collect user IDs later to be used for cleaning up processes.
    *
    * @afterUserCreate
    */
-  public function logBeanUsers(EntityScope $scope) {
+  public function logUsers(EntityScope $scope) {
     // Retrieve the user.
     $user = $scope->getEntity();
     if (!empty($user->uid)) {
-      $this->userBeans[$user->uid] = $user->uid;
+      $this->userLog[$user->uid] = $user->uid;
     };
   }
 
@@ -693,11 +693,11 @@ JS;
    */
   public function cleanUpBeans() {
     // Get UIDs of users created during this scenario.
-    if (!empty($this->userBeans)) {
+    if (!empty($this->userLog)) {
       // Select all beans created by the scenario users.
       $query = new EntityFieldQuery();
       $result = $query->entityCondition('entity_type', 'bean')
-        ->propertyCondition('uid', $this->userBeans, 'IN')
+        ->propertyCondition('uid', $this->userLog, 'IN')
         ->execute();
       // Loop through all beans that were found and delete them.
       if (isset($result['bean'])) {
@@ -708,8 +708,40 @@ JS;
         }
       }
     }
-    // Reset the list.
-    $this->userBeans = array();
+  }
+
+  /**
+   * Clean up files that were created during the tests.
+   *
+   * @AfterScenario @api
+   */
+  public function cleanUpFiles() {
+    // Get UIDs of users created during this scenario.
+    if (!empty($this->userLog)) {
+      // Select all beans created by the scenario users.
+      $file_ids = db_select('file_managed', 'f')
+        ->fields('f', array('fid'))
+        ->condition('uid', $this->userLog, 'IN')
+        ->execute()
+        ->fetchAll();
+
+      // Loop through all files that were found and delete them.
+      if (!empty($file_ids)) {
+        foreach ($file_ids as $fid) {
+          $file = file_load($fid->fid);
+          file_delete($file);
+        }
+      }
+    }
+  }
+
+  /**
+   * Clean up all the test users that were logged during the scenario.
+   *
+   * @AfterScenario @api
+   */
+  public function cleanUpUsers() {
+    $this->userLog = array();
   }
 
 }
