@@ -3,7 +3,7 @@ Feature: Account suspension
   To maintain the security of the website, when a user hasn't logged in for 60 days, then their account should be
   suspended.
 
-  @api @javascript
+  @ap
   Scenario: Check that a user account is blocked after 60 days but may be manually unblocked.
     Given users:
       | name | pass        | mail             | roles          |

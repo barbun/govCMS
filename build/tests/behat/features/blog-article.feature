@@ -1,6 +1,6 @@
 Feature: Blog Article
 
-  Ensure the Media Release content type was created during installation.
+  Ensure the Blog content type was created during installation.
 
   @api @javascript
   Scenario: Check that the Body WYSIWYG editor is available.
@@ -54,7 +54,7 @@ Feature: Blog Article
     And I should see the link "acquia"
 
 
-  @api
+  @api @javascript
   Scenario: Check that moderation works.
     Given "blog_article" content:
       | title       | author     | status | state |
@@ -73,7 +73,7 @@ Feature: Blog Article
     When I visit "/news-media/blog/agency-blog"
     Then I should see the heading "Agency blog"
 
-  @api
+  @api @javascript
   Scenario: Check that custom menu links are disabled by default.
     Given "blog_article" content:
       | title       | author     | status | state         |

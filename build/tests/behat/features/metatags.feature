@@ -42,7 +42,7 @@ Feature:Meta tags
     And the response should contain "<title>Fox in socks</title>"
     And the response should contain "<meta name=\"dcterms.title\" content=\"Fox in socks\">"
 
-  @api
+  @api @javascript
   Scenario: govCMS core successfully applies default meta-tags configuration.
     Given I am logged in as a user with the "administer meta tags" permission
     When I go to "/admin/config/search/metatags/config/global"

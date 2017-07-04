@@ -86,7 +86,7 @@ Feature: Events
     And the ".field-name-field-tags" element should contain "<a href=\"/tags/acquia\""
     And I should see the link "acquia"
 
-  @api
+  @api @javascript
   Scenario: Check that Events moderation works.
     Given "event" content:
       | title        | author     | status | state |
@@ -105,7 +105,7 @@ Feature: Events
     When I visit "/news-media/events/agency-event"
     Then I should see the heading "Agency event"
 
-  @api
+  @api @javascript
   Scenario: Check that custom menu links are disabled by default.
     Given "event" content:
       | title        | author     | status | state         |
