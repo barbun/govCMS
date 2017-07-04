@@ -4,7 +4,7 @@ Feature: Menu blocks
   When I navigate to the list of the blocks
   Then I can see 3 default menu blocks available
 
-  @api
+  @api @javascript
   Scenario: 3 default govCMS menu blocks appear in the list of blocks and are configured as expected.
     Given I am logged in as a user with the "administer blocks" permission
     When I go to "/admin/structure/block"

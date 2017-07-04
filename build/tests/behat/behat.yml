@@ -65,6 +65,7 @@ drush:
       files_path: %paths.base%/files
     Drupal\DrupalExtension:
       blackbox: ~
+      api_driver: "drush"
       drupal:
         drupal_root: ../../docroot
       drush:
