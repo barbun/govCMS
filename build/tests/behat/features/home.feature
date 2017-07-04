@@ -15,7 +15,6 @@ Feature: Home Page
     And I should see the heading "Twitter Feed" in the "sidebar_second" region
     And I should see the heading "Quick Links" in the "sidebar_second" region
     And I should see the heading "Connect with us" in the "sidebar_second" region
-    And I should see the link "About Us" in the "footer" region
     And I should see the link "Publications" in the "footer" region
     And I should see the link "News & Media" in the "footer" region
     And I should see the link "Contact" in the "footer" region
