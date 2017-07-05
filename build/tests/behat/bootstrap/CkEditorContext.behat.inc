@@ -5,7 +5,6 @@ namespace Acquia\govCMSExtension\Context;
 use Behat\Mink\Exception\ExpectationException;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;
 use Drupal\DrupalExtension\Context\MinkContext;
-use Behat\MinkExtension\Context\RawMinkContext;
 
 /**
  * Contains step definitions for working with CKEditor instances.
@@ -18,7 +17,6 @@ class CkEditorContext extends DrupalSubContextBase {
    * @var MinkContext
    */
   protected $minkContext;
-  protected $rawMinkContext;
 
   /**
    * Gathers required contexts.
@@ -27,7 +25,6 @@ class CkEditorContext extends DrupalSubContextBase {
    */
   public function gatherContexts() {
     $this->minkContext = $this->getContext(MinkContext::class);
-    $this->rawMinkContext = $this->getContext(RawMinkContext::class);
   }
 
   /**
