@@ -10,7 +10,6 @@ Feature: Share Links
     And the "Append the following text to your URL" field should be empty
     And the "Choose a style" select field should be set to "Only Image"
     And the "Blog Article" checkbox should not be checked
-    And the "Consultation" checkbox should not be checked
     And the "Event" checkbox should be checked
     And the "Media Release" checkbox should be checked
     And the "News Article" checkbox should be checked
