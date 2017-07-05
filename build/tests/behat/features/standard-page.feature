@@ -8,7 +8,7 @@ Feature: Standard Page
     When I go to "/node/add/page"
     Then I should see "Create Standard page"
     And I enter "About Us" for "Title"
-    And I put "govCMS is the best!" into WYSIWYG "edit-body-und-0-value"
+    And I put "govCMS is the best!" into WYSIWYG of "Body" field
     And press "Save"
     Then I should see "Standard Page About Us has been created"
     Then I logout

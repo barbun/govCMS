@@ -6,7 +6,7 @@ Feature: Events
   Scenario: Check that the Body WYSIWYG editor is available.
     Given I am logged in as a user with the "Content editor" role
     When I visit "/node/add/event"
-    Then CKEditor "edit-body-und-0-value" should exist
+    Then CKEditor for the "Body" field exists
 
   @api @javascript
   Scenario: Create past Event content and verify it's not getting listed.
@@ -48,7 +48,7 @@ Feature: Events
     And I select "16" from "Hour"
     And I select "45" from "Minute"
     Then I set the chosen element "Tags" to "acquia"
-    And I put "Digital transformation is real. GovCMS is the best!" into WYSIWYG "edit-body-und-0-value"
+    And I put "Digital transformation is real. GovCMS is the best!" into WYSIWYG of "Body" field
     When I open the "Feature Image" media browser
     Then I attach the file "autotest.jpg" to "files[upload]"
     And I press "Next"

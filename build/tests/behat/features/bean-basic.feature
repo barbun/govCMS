@@ -15,7 +15,7 @@ Feature: Basic bean
     Then I should see "Create Basic content block"
     And I enter "New bean" for "Label"
     And I enter "Beans are good for you" for "Title"
-    And I put "govCMS is the best!" into WYSIWYG "edit-field-bean-body-und-0-value"
+    And I put "govCMS is the best!" into WYSIWYG of "Body" field
     And press "Save"
     And I go to "/block/new-bean"
     Then I should see the heading "Beans are good for you"

@@ -12,7 +12,7 @@ Feature: Text formats
     And I should not see "Filtered html"
     And I should not see "Full HTML"
     And I enter "Test node" for "Title"
-    And I put "<p><h2>Testing</h2><p>" into WYSIWYG "edit-body-und-0-value"
+    And I put "<p><h2>Testing</h2><p>" into WYSIWYG of "Body" field
     And I select "Plain text" from "Text format"
     And I press "Save"
     Then I should see "Testing"
@@ -24,7 +24,7 @@ Feature: Text formats
     And I go to "node/add/page"
     Then I should see "Rich text"
     And I enter "Test node" for "Title"
-    And I put "<p><h2>Testing</h2><p>" into WYSIWYG "edit-body-und-0-value"
+    And I put "<p><h2>Testing</h2><p>" into WYSIWYG of "Body" field
     And I select "Rich text" from "Text format"
     And I press "Save"
     Then I should see the heading "Testing"

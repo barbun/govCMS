@@ -4,6 +4,7 @@ namespace Acquia\govCMSExtension\Context;
 
 use Behat\Mink\Exception\ExpectationException;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;
+use Drupal\DrupalExtension\Context\MinkContext;
 
 /**
  * Contains step definitions for working with CKEditor instances.
@@ -11,21 +12,47 @@ use Drupal\DrupalExtension\Context\DrupalSubContextBase;
 class CkEditorContext extends DrupalSubContextBase {
 
   /**
+   * The Mink context.
+   *
+   * @var MinkContext
+   */
+  protected $minkContext;
+
+  /**
+   * Gathers required contexts.
+   *
+   * @BeforeScenario
+   */
+  public function gatherContexts() {
+    $this->minkContext = $this->getContext(MinkContext::class);
+  }
+
+  /**
    * Asserts that a CKEditor instance exists and is fully loaded.
    *
-   * @param string $id
-   *   (optional) The editor instance ID. Defaults to the first available
+   * @param string $field
+   *   (optional) The specific field with the editor enabled.
+   *   If not provided will default to the first available
    *   instance.
    *
    * @return string
    *   A snippet of JavaScript for calling instance methods.
    *
-   * @Given CKEditor :id exists
-   *
-   * @Then CKEditor :id should exist
+   * @Given CKEditor for the :field field exists
+   * @Given WYSIWYG for the :field field exists
+   * @Then CKEditor for the :field field should exist
+   * @Then WYSIWYG for the :field field should exist
    */
-  public function assertEditor($id = NULL) {
-    $js = "CKEDITOR.instances['" . ($id ?: $this->getDefault()) . "']";
+  public function assertEditor($field = NULL) {
+    // If the field was specified.
+    if (!empty($field)) {
+      $node = $this->minkContext->assertSession()->fieldExists($field);
+      $id = $node->getAttribute('id');
+      $js = "CKEDITOR.instances['" . $id . "']";
+    }
+    else {
+      $js = "CKEDITOR.instances['" . $this->getDefault() . "']";
+    }
 
     $this->getSession()->wait(10000, "$js.status === 'ready'");
 
@@ -37,16 +64,16 @@ class CkEditorContext extends DrupalSubContextBase {
    *
    * @param string $text
    *   The text (or HTML) to insert into the editor.
-   * @param string $id
-   *   (optional) The editor instance ID.
+   * @param string $field
+   *   (optional) The field that has WYSIWYG.
    *
    * @When I put :text into CKEditor
-   * @When I put :text into CKEditor :id
-   * @When I put :text into WYSIWYG editor
-   * @When I put :text into WYSIWYG :id
+   * @When I put :text into CKEditor :field (field)
+   * @When I put :text into WYSIWYG
+   * @When I put :text into WYSIWYG of :field (field)
    */
-  public function insert($text, $id = NULL) {
-    $js = $this->assertEditor($id);
+  public function insert($text, $field = NULL) {
+    $js = $this->assertEditor($field);
     $this->getSession()->executeScript("$js.insertHtml('$text');");
   }
 

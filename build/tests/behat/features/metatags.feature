@@ -12,7 +12,7 @@ Feature:Meta tags
     When I go to "/node/add/page"
     Then I should see "Create Standard page"
     And I enter "test" for "Title"
-    And I put "When tweetle beetles fight, its called a tweetle beetle battle." into WYSIWYG "edit-body-und-0-value"
+    And I put "When tweetle beetles fight, its called a tweetle beetle battle." into WYSIWYG of "Body" field
     And I follow "Show Dublin Core Basic Tags"
     And I follow "Show Type"
     And I enter "Text" for "edit-metatags-und-dctermstype-item-value"
@@ -29,7 +29,7 @@ Feature:Meta tags
     When I go to "/node/add/page"
     Then I should see "Create Standard page"
     And I enter "test" for "Title"
-    And I put "When tweetle beetles fight, its called a tweetle beetle battle." into WYSIWYG "edit-body-und-0-value"
+    And I put "When tweetle beetles fight, its called a tweetle beetle battle." into WYSIWYG of "Body" field
     And I follow "Show Dublin Core Basic Tags"
     And I follow "Show Description"
     And I enter "And when they battle in a puddle, its a tweetle beetle puddle battle" for "edit-metatags-und-description-value"
