@@ -114,6 +114,28 @@ class UtilityContext extends DrupalSubContextBase {
   }
 
   /**
+   * Asserts that a field is empty.
+   *
+   * @param string $field
+   *   The field to check.
+   *
+   * @throws ExpectationException
+   *   If the field is not empty.
+   *
+   * @Then the :field field should be empty
+   */
+  public function assertFieldIsEmpty($field, ElementInterface $container = NULL) {
+    $value = $this->assertSession()->fieldExists($field, $container)->getValue();
+
+    if (!empty($value)) {
+      throw new ExpectationException(
+        'Expected ' . $field . ' field to be empty but it is not.',
+        $this->getSession()->getDriver()
+      );
+    }
+  }
+
+  /**
    * Clears a field.
    *
    * @param string $field
@@ -123,8 +145,58 @@ class UtilityContext extends DrupalSubContextBase {
    *
    * @When I clear :field
    */
-  public function clearField($field, ElementInterface $container = NULL) {
-    $this->assertSession()->fieldExists($field, $container)->setValue(FALSE);
+  public function clearField($field) {
+    $this->assertSession()->fieldExists($field)->setValue(FALSE);
+  }
+
+  /**
+   * Check that a particular option from a select field is selected.
+   *
+   * @Then the :field select field should be set to :option
+   */
+  public function theFieldSelectListShouldBeSetTo($field, $option) {
+    $selectField = $this->assertSession()->fieldExists($field);
+    $optionField = $selectField->find('named', array(
+      'option',
+      $option,
+    ));
+
+    if (!$optionField->isSelected()) {
+      throw new \Exception(sprintf("The select field '%s' is not set to '%s'.", $field, $option));
+    }
+  }
+
+  /**
+   * Check that a particular option from a select field not selected.
+   *
+   * @Then the :field select field should not be set to :option
+   */
+  public function theFieldSelectListShouldNotBeSetTo($field, $option) {
+    $selectField = $this->assertSession()->fieldExists($field);
+    $optionField = $selectField->find('named', array(
+      'option',
+      $option,
+    ));
+
+    if ($optionField->isSelected()) {
+      throw new \Exception(sprintf("The select field '%s' is set to '%s'.", $field, $option));
+    }
+  }
+
+  /**
+   * Check that a particular option from the radio select list is selected.
+   *
+   * @Then the :option radio option should be selected
+   */
+  public function theFieldRadioOptionShouldBeSetTo($option) {
+    $optionField = $this->getSession()->getPage()->find('named', array(
+      'radio',
+      $option,
+    ));
+
+    if (!$optionField->isSelected()) {
+      throw new \Exception(sprintf("The option '%s' is not selected.", $option));
+    }
   }
 
   /**

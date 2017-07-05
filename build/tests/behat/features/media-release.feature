@@ -69,7 +69,7 @@ Feature: Media Release
   Scenario: Check that custom menu link can be created.
     Given "media_release" content:
       | title         | author     | status | state         |
-      | Agency update | Joe Editor | 0      | needs_review     |
+      | Agency update | Joe Editor | 0      | needs_review  |
     And I am logged in as a user with the "administrator" role
     When I am on "/news-media/media-releases/agency-update"
     Then I click "Edit draft"
