@@ -25,7 +25,7 @@ Feature: Image and Text bean
     And I enter "Behold, a generic logo" for "Name"
     And I submit the media browser
     Then I should see a "[name=field_bean_image_und_0_remove_button]" element
-    And I put "govCMS is the best!" into WYSIWYG "edit-field-bean-text-und-0-value"
+    And I put "govCMS is the best!" into WYSIWYG of "Body" field
     And I press "Save"
     Then I should see the success message containing "Image and Text Beans are good for you has been created."
     Given I am logged in as a user with the following permissions:

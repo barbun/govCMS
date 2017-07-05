@@ -6,7 +6,7 @@ Feature: Blog Article
   Scenario: Check that the Body WYSIWYG editor is available.
     Given I am logged in as a user with the "Content editor" role
     When I visit "/node/add/blog-article"
-    Then CKEditor "edit-body-und-0-value" should exist
+    Then CKEditor for the "Body" field should exist
 
   @api @javascript
   Scenario: Create Media Release content and check how it's displayed.
@@ -20,7 +20,7 @@ Feature: Blog Article
       | Title   | New blog               |
       | Summary | How we migrated to govCMS! |
     Then I set the chosen element "Tags" to "acquia"
-    And I put "Digital transformation is real. GovCMS is the best!" into WYSIWYG "edit-body-und-0-value"
+    And I put "Digital transformation is real. GovCMS is the best!" into WYSIWYG of "Body" field
     When I open the "Feature Image" media browser
     Then I attach the file "autotest.jpg" to "files[upload]"
     And I press "Next"

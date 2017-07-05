@@ -15,7 +15,7 @@ Feature: Search
     When I go to "/node/add/news-article"
     Then I should see "Create News Article"
     And I enter "govCMS is the best" for "Title"
-    And I put "the whole of government content management and website hosting service for Australian Government agencies" into WYSIWYG "edit-body-und-0-value"
+    And I put "the whole of government content management and website hosting service for Australian Government agencies" into WYSIWYG of "Body"
     When I press "Save"
     Then I should see "News Article govCMS is the best has been created"
     Then I logout
@@ -44,7 +44,7 @@ Feature: Search
     When I go to "/node/add/news-article"
     Then I should see "Create News Article"
     Then I enter "govCMS is the best" for "Title"
-    And I put "the whole of government content management and website hosting service for Australian Government agencies" into WYSIWYG "edit-body-und-0-value"
+    And I put "the whole of government content management and website hosting service for Australian Government agencies" into WYSIWYG of "Body"
     When I press "Save"
     Then I should see "News Article govCMS is the best has been created"
     Then I logout

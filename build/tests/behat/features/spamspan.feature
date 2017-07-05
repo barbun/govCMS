@@ -17,7 +17,7 @@ Feature: Spamspan is operational.
     Given I am logged in as a user named "russ" with the "Content editor" role
     And I go to "node/add/page"
     And I enter "Spamspan" for "Title"
-    And I put "<a href=\'mailto:example@test.com\'>Email link.</a>" into WYSIWYG "edit-body-und-0-value"
+    And I put "<a href=\'mailto:example@test.com\'>Email link.</a>" into WYSIWYG of "Body"
     And press "Save"
     Then I should not see "example@test.com"
     And I should see "Email link."

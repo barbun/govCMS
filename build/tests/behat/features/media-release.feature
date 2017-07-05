@@ -6,7 +6,7 @@ Feature: Media Release
   Scenario: Check that the WYSIWYG editor is available.
     Given I am logged in as a user with the "Content editor" role
     When I visit "/node/add/media-release"
-    Then CKEditor "edit-body-und-0-value" should exist
+    Then CKEditor for the "Body" field should exist
 
   @api @javascript
   Scenario: Create Media Release content and check how it's displayed.
@@ -21,7 +21,7 @@ Feature: Media Release
       | Date    | 13/05/2017             |
       | Summary | We migrated to govCMS! |
     Then I set the chosen element "Tags" to "acquia"
-    And I put "Digital transformation is real. GovCMS is the best!" into WYSIWYG "edit-body-und-0-value"
+    And I put "Digital transformation is real. GovCMS is the best!" into WYSIWYG of "Body" field
 #    Given I attach the file "autotest.pdf" to "files[field_file_und_0]"
 #    And I press "Upload"
 #    And I wait for AJAX to finish

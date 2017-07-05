@@ -37,7 +37,7 @@ Feature: User Actions
     When I go to "/node/add/news-article"
     Then I should see "Create News Article"
     And I enter "govCMS News" for "Title"
-    And I put "govCMS is the best!" into WYSIWYG "edit-body-und-0-value"
+    And I put "govCMS is the best!" into WYSIWYG of "Body" field
     And press "Save"
     Then I should see "News Article govCMS News has been created"
     Then I logout
