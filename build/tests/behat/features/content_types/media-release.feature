@@ -1,6 +1,7 @@
 Feature: Media Release
 
   Ensure the Media Release content type was created during installation.
+  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
 
   @api @javascript
   Scenario: Check that the WYSIWYG editor is available.
@@ -22,10 +23,6 @@ Feature: Media Release
       | Summary | We migrated to govCMS! |
     Then I set the chosen element "Tags" to "acquia"
     And I put "Digital transformation is real. GovCMS is the best!" into WYSIWYG of "Body" field
-#    Given I attach the file "autotest.pdf" to "files[field_file_und_0]"
-#    And I press "Upload"
-#    And I wait for AJAX to finish
-#    Then the "#edit-field-file" element should contain "Remove"
     When I open the "Attach media" media browser
     Then I attach the file "autotest.jpg" to "files[upload]"
     And I press "Next"

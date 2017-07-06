@@ -4,12 +4,12 @@ default:
   suites:
     default:
       contexts:
-        - FeatureContext
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\MinkContext
         - Drupal\DrupalExtension\Context\MessageContext
         - Drupal\DrupalExtension\Context\DrushContext
         - Drupal\DrupalExtension\Context\MarkupContext
+        - FeatureContext
       paths:
         features: %paths.base%/features
       filters:
@@ -50,12 +50,12 @@ drush:
   suites:
     default:
       contexts:
-        - FeatureContext
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\MinkContext
         - Drupal\DrupalExtension\Context\MessageContext
         - Drupal\DrupalExtension\Context\DrushContext
         - Drupal\DrupalExtension\Context\MarkupContext
+        - FeatureContext
       filters:
         tags: "@drush"
   extensions:

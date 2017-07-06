@@ -4,7 +4,7 @@ Feature: Standard Page
 
   @api @javascript
   Scenario: View the about us page
-    Given I am logged in as a user named "dean" with the "Content editor" role
+    Given I am logged in as a user with the "Content editor" role
     When I go to "/node/add/page"
     Then I should see "Create Standard page"
     And I enter "About Us" for "Title"

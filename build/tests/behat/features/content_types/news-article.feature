@@ -1,6 +1,8 @@
 Feature: News Article
 
   Ensure the News Article content type was created during installation.
+  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
+
 
   @api @javascript
   Scenario: Check that the WYSIWYG editor is available.

@@ -2,7 +2,7 @@ Feature: Share Links
 
   Ensure the configuration for Service Links is as expected.
 
-  @api @javascript @bam
+  @api @javascript
   Scenario: Check that the default configuration is intact.
     Given I am logged in as a user with the "administer site configuration" permission
     When I visit "admin/config/services/service-links"
@@ -43,7 +43,7 @@ Feature: Share Links
     And the checkbox named "edit-service-links-show-linkedin" in table row with text "Show LinkedIn link" should be checked
     And the checkbox named "edit-service-links-show-email" in table row with text "Show email link" should be checked
 
-  @api @javascript @bam
+  @api @javascript
   Scenario: Ensure that the share links appear on the page as expected.
     Given I am logged in as a user with the "administer site configuration" permission
     When I visit "admin/config/services/service-links"

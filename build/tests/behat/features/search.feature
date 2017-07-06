@@ -4,7 +4,7 @@ Feature: Search
   As an anonymous user I can use search
   Exclude Unpublished content from search index
 
-  @drush @api @javascript
+  @api @javascript
   Scenario: Search API block is present
     Given I am on the homepage
     Then I should see an "div#block-search-api-page-default-search" element

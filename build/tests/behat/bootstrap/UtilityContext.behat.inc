@@ -140,8 +140,6 @@ class UtilityContext extends DrupalSubContextBase {
    *
    * @param string $field
    *   The field to clear.
-   * @param ElementInterface $container
-   *   (optional) The containing element.
    *
    * @When I clear :field
    */

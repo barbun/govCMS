@@ -1,6 +1,8 @@
 Feature: Events
 
   Ensure the Event content type was created during installation.
+  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
+
 
   @api @javascript
   Scenario: Check that the Body WYSIWYG editor is available.
@@ -15,6 +17,8 @@ Feature: Events
     Then I should see "Create Event"
     And I fill in "Past event" for "Title"
     And I select "2016" from "Year"
+    Given I click "Publishing options"
+    Then I select "Published" from "Moderation state"
     And I press "Save"
     Then I should see the success message containing "Event Past event has been created."
     And I logout
