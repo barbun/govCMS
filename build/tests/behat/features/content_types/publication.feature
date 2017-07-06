@@ -52,9 +52,9 @@ Feature: Publication
     And I should see "GovCMS Performance report"
     And I should see "Date of Publication: 19 November 2018"
     And I should see "Digital transformation is real. GovCMS is the best!"
+    And the response should contain "/files/autotest.jpg"
     And the ".field-name-field-tags" element should contain "<a href=\"/tags/acquia\""
     And I should see the link "acquia"
-    And the response should contain "/autotest.jpg"
 
   @api @javascript
   Scenario: Check that Publication moderation works.
