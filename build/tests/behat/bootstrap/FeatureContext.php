@@ -710,6 +710,31 @@ JS;
   }
 
   /**
+   * Clean up files that were created during the tests.
+   *
+   * @AfterScenario
+   */
+  public function cleanUpFiles() {
+    // Get UIDs of users created during this scenario.
+    if (!empty($this->userLog)) {
+      // Select all beans created by the scenario users.
+      $file_ids = db_select('file_managed', 'f')
+        ->fields('f', array('fid'))
+        ->condition('uid', $this->userLog, 'IN')
+        ->execute()
+        ->fetchAll();
+
+      // Loop through all files that were found and delete them.
+      if (!empty($file_ids)) {
+        foreach ($file_ids as $fid) {
+          $file = file_load($fid->fid);
+            file_delete($file);
+        }
+      }
+    }
+  }
+
+  /**
    * Clean up bean entities that were created during the tests.
    *
    * @AfterScenario @beans
@@ -728,31 +753,6 @@ JS;
         foreach ($bids as $bid) {
           $bean = bean_load($bid);
           bean_delete($bean);
-        }
-      }
-    }
-  }
-
-  /**
-   * Clean up files that were created during the tests.
-   *
-   * @AfterScenario @api
-   */
-  public function cleanUpFiles() {
-    // Get UIDs of users created during this scenario.
-    if (!empty($this->userLog)) {
-      // Select all beans created by the scenario users.
-      $file_ids = db_select('file_managed', 'f')
-        ->fields('f', array('fid'))
-        ->condition('uid', $this->userLog, 'IN')
-        ->execute()
-        ->fetchAll();
-
-      // Loop through all files that were found and delete them.
-      if (!empty($file_ids)) {
-        foreach ($file_ids as $fid) {
-          $file = file_load($fid->fid);
-          file_delete($file);
         }
       }
     }

@@ -1,6 +1,7 @@
 Feature: Media Release
 
   Ensure the Media Release content type was created during installation.
+  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
 
   @api @javascript
   Scenario: Check that the WYSIWYG editor is available.
@@ -10,7 +11,6 @@ Feature: Media Release
 
   @api @javascript
   Scenario: Create Media Release content and check how it's displayed.
-    # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
     Given I am logged in as a user with the "administrator" role
     Given "tags" terms:
       | name   |

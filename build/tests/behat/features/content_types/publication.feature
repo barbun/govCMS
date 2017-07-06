@@ -1,6 +1,7 @@
 Feature: Publication
 
   Ensure the Publication content type was created as expected during installation.
+  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
 
   @api @javascript
   Scenario: Check that the Body WYSIWYG editor is available.
@@ -9,7 +10,6 @@ Feature: Publication
     Then CKEditor for the "Body" field exists
 
   @api @javascript
-  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
   Scenario: Create Publication content and check how it's displayed.
     Given I am logged in as a user with the "administrator" role
     Given "tags" terms:
