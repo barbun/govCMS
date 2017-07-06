@@ -44,7 +44,7 @@ Feature: Publication
     And I should see the link "New publication"
     And I should see "GovCMS Performance report"
     And I should not see "Our recent and independent performance audit"
-    And the response should contain "/styles/medium/public/autotest.jpg"
+    And the response should contain "/styles/medium/public/images/publication/autotest.jpg"
     And I should see the "img" element with the "width" attribute set to "220" in the "content" region
     And I should see the link "Read more"
     Given I click "New publication"
@@ -52,7 +52,7 @@ Feature: Publication
     And I should see "GovCMS Performance report"
     And I should see "Date of Publication: 19 November 2018"
     And I should see "Digital transformation is real. GovCMS is the best!"
-    And the response should contain "/files/autotest.jpg"
+    And the response should contain "/images/publication/autotest.jpg"
     And the ".field-name-field-tags" element should contain "<a href=\"/tags/acquia\""
     And I should see the link "acquia"
 
