@@ -27,12 +27,12 @@ Feature: Publication
     And I put "Digital transformation is real. GovCMS is the best!" into WYSIWYG of "Body" field
     And I click "Edit summary"
     And I fill in "Our recent and independent performance audit" for "Summary"
-    Then I open the media browser for "Attach media" in "Image" field set
-    And I attach the file "autotest.jpg" to "files[upload]"
-    And I press "Next"
-    Then I fill in "Auto Test" for "Name"
-    And I fill in "govCMS test image" for "Alt Text"
-    And I submit the media browser
+#    Then I open the media browser for "Attach media" in "Image" field set
+#    And I attach the file "autotest.jpg" to "files[upload]"
+#    And I press "Next"
+#    Then I fill in "Auto Test" for "Name"
+#    And I fill in "govCMS test image" for "Alt Text"
+#    And I submit the media browser
     Then I click "Publishing options"
     And I select "Published" from "Moderation state"
     And I press "Save"
@@ -44,15 +44,15 @@ Feature: Publication
     And I should see the link "New publication"
     And I should see "GovCMS Performance report"
     And I should not see "Our recent and independent performance audit"
-    And the response should contain "/styles/medium/public/autotest.jpg"
-    And I should see the "img" element with the "width" attribute set to "220" in the "content" region
+#    And the response should contain "/styles/medium/public/autotest.jpg"
+#    And I should see the "img" element with the "width" attribute set to "220" in the "content" region
     And I should see the link "Read more"
     Given I click "New publication"
     Then the "h1" element should contain "New publication"
     And I should see "GovCMS Performance report"
     And I should see "Date of Publication: 19 November 2018"
     And I should see "Digital transformation is real. GovCMS is the best!"
-    And the response should contain "/files/autotest.jpg"
+#    And the response should contain "/files/autotest.jpg"
     And the ".field-name-field-tags" element should contain "<a href=\"/tags/acquia\""
     And I should see the link "acquia"
 

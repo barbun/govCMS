@@ -712,7 +712,7 @@ JS;
   /**
    * Clean up files that were created during the tests.
    *
-   * @AfterScenario
+   * @AfterScenario @api
    */
   public function cleanUpFiles() {
     // Get UIDs of users created during this scenario.
