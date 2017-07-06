@@ -39,8 +39,6 @@ class MediaBrowserContext extends DrupalSubContextBase {
     // @TODO: Make this smarter, because we can't be sure that Save
     $this->minkContext->pressButton('Save');
     $session->switchToWindow();
-    // This might be vestigial.
-    sleep(10);
     $this->minkContext->iWaitForAjaxToFinish();
   }
 
@@ -67,7 +65,7 @@ class MediaBrowserContext extends DrupalSubContextBase {
     }
     $link->click();
     $this->minkContext->iWaitForAjaxToFinish();
-    $session->getDriver()->switchToIFrame('mediaBrowser');
+    $session->switchToIFrame('mediaBrowser');
     // This might be vestigial.
     sleep(10);
   }
@@ -97,7 +95,7 @@ class MediaBrowserContext extends DrupalSubContextBase {
     }
     $link->click();
     $this->minkContext->iWaitForAjaxToFinish();
-    $session->getDriver()->switchToIFrame('mediaBrowser');
+    $session->switchToIFrame('mediaBrowser');
     // This might be vestigial.
     sleep(10);
   }
