@@ -507,6 +507,29 @@ JS;
   }
 
   /**
+   * Schedules a node for publication.
+   *
+   * @param string $when
+   *   The date and time at which to publish the node, in the format
+   *   YYYY-MM-DD HH:MM:SS.
+   *
+   * @When I schedule the node to be published at :when
+   */
+  public function schedulePublication($when) {
+    $mink = new MinkContext();
+    $mink->setMink($this->getMink());
+    $mink->clickLink('Scheduling options');
+    $mink->iWaitForAjaxToFinish();
+
+    list ($date, $time) = explode(' ', $when, 2);
+    $date_field = $this->getSession()->getPage()->findField("publish_on[date]");
+    $time_field = $this->getSession()->getPage()->findField("publish_on[time]");
+
+    $date_field->setValue($date);
+    $time_field->setValue($time);
+  }
+
+  /**
    * Converts a role name to an rid if required.
    *
    * @param mixed $rid
