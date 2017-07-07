@@ -11,7 +11,11 @@ if (!is_dir($docroot)) {
   exit(1);
 }
 
-$site_dir = $docroot . '/sites/default/';
+$site = 'default';
+if (isset($_SERVER['SITE'])) {
+  $site = $_SERVER['SITE'];
+}
+$site_dir = $docroot . '/sites/' . $site;
 if (!file_exists($site_dir . '/settings.php')) {
   echo "No configured site found. Aborting.\n";
   exit(1);
