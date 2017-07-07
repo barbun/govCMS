@@ -1,7 +1,6 @@
 Feature: Media Release
 
-  Ensure the Media Release content type was created during installation.
-  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
+  Ensure the Media Release content type is available and works as expected.
 
   @api @javascript
   Scenario: Check that the WYSIWYG editor is available.
@@ -11,6 +10,7 @@ Feature: Media Release
 
   @api @javascript
   Scenario: Create Media Release content and check how it's displayed.
+    # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
     Given I am logged in as a user with the "administrator" role
     Given "tags" terms:
       | name   |
@@ -39,6 +39,7 @@ Feature: Media Release
     Given I am an anonymous user
     When I visit "/news-media/media-releases/new-release"
     Then I should see the heading "New release"
+    And I should see an "nav.breadcrumb:contains(New release)" element
     And I should see "Digital transformation is real. GovCMS is the best!"
     And the ".field-name-field-tags" element should contain "<a href=\"/tags/acquia\""
     And I should see the link "acquia"
