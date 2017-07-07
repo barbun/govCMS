@@ -1,8 +1,6 @@
 Feature: News Article
 
-  Ensure the News Article content type was created during installation.
-  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
-
+  Ensure the News Article content type is available and works as expected.
 
   @api @javascript
   Scenario: Check that the WYSIWYG editor is available.
@@ -12,6 +10,7 @@ Feature: News Article
 
   @api @javascript
   Scenario: Create News Article content and check how it's displayed.
+    # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
     Given I am logged in as a user with the "administrator" role
     Given "tags" terms:
       | name   |
@@ -43,6 +42,7 @@ Feature: News Article
     When I click "Good news"
     Then the response should contain "<li><a href=\"/news-media/news\">News</a> › </li>"
     And the "h1" element should contain "Good news"
+    And I should see an "nav.breadcrumb:contains(Good news)" element
     And I should see "19 November 2015"
     And I should see "Digital transformation is real. GovCMS is the best!"
     And the ".field-name-field-tags" element should contain "<a href=\"/tags/acquia\""

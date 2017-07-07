@@ -1,7 +1,6 @@
 Feature: Blog Article
 
-  Ensure the Blog content type was created during installation.
-  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
+  Ensure the Blog content type is available and works as expected.
 
 
   @api @javascript
@@ -12,6 +11,7 @@ Feature: Blog Article
 
   @api @javascript
   Scenario: Create Media Release content and check how it's displayed.
+    # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
     Given I am logged in as a user with the "administrator" role
     Given "tags" terms:
       | name   |
@@ -28,6 +28,7 @@ Feature: Blog Article
     And I press "Next"
     Then I fill in "Auto Test" for "Name"
     And I fill in "govCMS test image" for "Alt Text"
+    And I fill in "govCMS Automated" for "Title Text"
     And I submit the media browser
     Then the "#edit-field-thumbnail" element should contain "Edit"
     And the "#edit-field-thumbnail" element should contain "Remove"
@@ -43,13 +44,18 @@ Feature: Blog Article
     And I should see the text "Submitted by"
     And I should see the "img" element with the "width" attribute set to "220" in the "content" region
     And I should see the "img" element with the "height" attribute set to "220" in the "content" region
+    And I should see the "img" element with the "alt" attribute set to "govCMS test image" in the "content" region
+    And I should see the "img" element with the "title" attribute set to "govCMS Automated" in the "content" region
     And I should see the text "How we migrated to govCMS!"
     And I should see the link "Read more"
     Given I click "New blog"
     Then the "h1" element should contain "New blog"
+    And I should see an "nav.breadcrumb:contains(New blog)" element
     And I should see the text "Submitted by"
     And I should see the "img" element with the "width" attribute set to "620" in the "content" region
     And I should see the "img" element with the "height" attribute set to "349" in the "content" region
+    And I should see the "img" element with the "alt" attribute set to "govCMS test image" in the "content" region
+    And I should see the "img" element with the "title" attribute set to "govCMS Automated" in the "content" region
     And the response should contain "/files/styles/article_page_620x349/public/images/blog/autotest.jpg"
     And I should see "Digital transformation is real. GovCMS is the best!"
     And the ".field-name-field-tags" element should contain "<a href=\"/tags/acquia\""
