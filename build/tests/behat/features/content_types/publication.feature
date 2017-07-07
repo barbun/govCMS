@@ -1,7 +1,6 @@
 Feature: Publication
 
-  Ensure the Publication content type was created as expected during installation.
-  # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
+  Ensure the Publication content type is available and works as expected.
 
   @api @javascript
   Scenario: Check that the Body WYSIWYG editor is available.
@@ -11,6 +10,7 @@ Feature: Publication
 
   @api @javascript
   Scenario: Create Publication content and check how it's displayed.
+    # @TODO change the role to "Content editor" once https://github.com/govCMS/govCMS/pull/483 is merged.
     Given I am logged in as a user with the "administrator" role
     Given "tags" terms:
       | name   |
@@ -32,6 +32,7 @@ Feature: Publication
     And I press "Next"
     Then I fill in "Auto Test" for "Name"
     And I fill in "govCMS test image" for "Alt Text"
+    And I fill in "govCMS Automated" for "Title Text"
     And I submit the media browser
     Then I click "Publishing options"
     And I select "Published" from "Moderation state"
@@ -46,9 +47,12 @@ Feature: Publication
     And I should not see "Our recent and independent performance audit"
     And the response should contain "/styles/medium/public/images/publication/autotest.jpg"
     And I should see the "img" element with the "width" attribute set to "220" in the "content" region
+    And I should see the "img" element with the "alt" attribute set to "govCMS test image" in the "content" region
+    And I should see the "img" element with the "title" attribute set to "govCMS Automated" in the "content" region
     And I should see the link "Read more"
     Given I click "New publication"
     Then the "h1" element should contain "New publication"
+    And I should see an "nav.breadcrumb:contains(New publication)" element
     And I should see "GovCMS Performance report"
     And I should see "Date of Publication: 19 November 2018"
     And I should see "Digital transformation is real. GovCMS is the best!"
