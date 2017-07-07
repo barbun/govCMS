@@ -39,6 +39,7 @@ default:
       region_map:
         sidebar_second: 'section.region-sidebar-second'
         navigation: '.region.region-navigation'
+        highlighted: '.region.region-highlighted'
         content: '#content'
         footer: '.region.region-footer'
         header: '#header'
@@ -75,6 +76,7 @@ drush:
       region_map:
         sidebar_second: 'section.region-sidebar-second'
         navigation: '.region.region-navigation'
+        highlighted: '.region.region-highlighted'
         content: '#content'
         footer: '.region.region-footer'
         header: '#header'
