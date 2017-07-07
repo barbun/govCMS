@@ -84,7 +84,7 @@
     <property name="phantomjs.webdriver" value="4444"/>
 
     <!-- PHPunit -->
-    <property name="phpunit.config" value="../tests/phpunit/phpunit.conf" />
+    <property name="phpunit.config" value="${repo.root}/build/tests/phpunit/phpunit.conf" />
 
     <!-- We override this so Drupal install works -->
     <property name="drush.cmd" value="${drush.bin} -r ${docroot}"

@@ -7,7 +7,7 @@
 
 namespace Drupal\Iconomist;
 
-require_once DRUPAL_ROOT . '/../modules/custom/tdd7/mocks/MockDrupalFunctions.php';
+require_once DRUPAL_ROOT . '/../modules/contrib/tdd7/mocks/MockDrupalFunctions.php';
 
 use tdd7\testframework\mocks\MockDrupalFunctions as MockDrupalFunctions;
 
