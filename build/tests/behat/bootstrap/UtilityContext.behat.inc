@@ -7,6 +7,7 @@ use Behat\Mink\Element\ElementInterface;
 use Behat\Mink\Exception\ExpectationException;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;
 use WebDriver\Exception\NoAlertOpenError;
+use Behat\Mink\Exception\Exception;
 
 /**
  * A context with miscellaneous helpers.
@@ -247,6 +248,64 @@ class UtilityContext extends DrupalSubContextBase {
     if ($then) {
       call_user_func_array($then, $arguments);
     }
+  }
+
+  /**
+   * Sets an id for the first iframe situated in the element specified by id.
+   *
+   * Needed when wanting to fill in WYSIWYG editor situated in an iframe without
+   * identifier.
+   *
+   * @Given /^the iframe in element "(?P<element>[^"]*)" has id "(?P<id>[^"]*)"$/
+   */
+  public function theIframeInElementHasId($element_id, $iframe_id) {
+    $function = <<<JS
+(function(){
+  var elem = document.getElementById("$element_id");
+  var iframes = elem.getElementsByTagName('iframe');
+  var f = iframes[0];
+  f.id = "$iframe_id";
+})()
+JS;
+    try {
+      $this->getSession()->executeScript($function);
+    }
+    catch (Exception $e) {
+      throw new \Exception(sprintf('No iframe found in the element "%s" on the page "%s".', $element_id, $this->getSession()->getCurrentUrl()));
+    }
+  }
+
+  /**
+   * Select a radio button using an optional label and an id.
+   *
+   * @When I select the radio button :label with the id containing :id
+   * @When I select the radio button with the id containing :id
+   */
+  public function assertSelectRadioByPartialId($id, $label = '') {
+    // Locate radio buttons on the page, matching the label if provided.
+    $page = $this->getSession()->getPage();
+    $radiobuttons = $page->findAll('named', array('radio', $label));
+
+    if (!$radiobuttons) {
+      throw new \Exception(sprintf('The radio button with "%s" was not found on the page %s', $id, $this->getSession()->getCurrentUrl()));
+    }
+
+    // Check the ids of the buttons until we find the first match.
+    foreach ($radiobuttons as $radiobutton) {
+
+      $buttonId = $radiobutton->getAttribute('id');
+      if (strpos($buttonId, $id) === FALSE) {
+        continue;
+      }
+
+      $value = $radiobutton->getAttribute('value');
+      $radiobutton->selectOption($value, FALSE);
+      return;
+    }
+
+    // No match? It's a fail.
+    throw new \Exception(sprintf('The radio button with id "%s" and label "%s" was not found on the page %s',
+      $id, $label, $this->getSession()->getCurrentUrl()));
   }
 
 }
