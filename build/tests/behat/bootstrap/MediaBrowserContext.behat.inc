@@ -51,7 +51,7 @@ class MediaBrowserContext extends DrupalSubContextBase {
    * @throws \Exception
    *   If the field element does not exist on the page.
    *
-   * @When I open the :field media browser
+   * @When I open the :field (field )media browser
    */
   public function openMediaBrowser($field) {
     $session = $this->getSession();

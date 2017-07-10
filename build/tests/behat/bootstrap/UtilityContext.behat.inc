@@ -142,7 +142,7 @@ class UtilityContext extends DrupalSubContextBase {
    * @param string $field
    *   The field to clear.
    *
-   * @When I clear :field
+   * @When I clear :field (field)
    */
   public function clearField($field) {
     $this->assertSession()->fieldExists($field)->setValue(FALSE);
