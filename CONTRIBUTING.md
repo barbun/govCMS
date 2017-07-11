@@ -31,14 +31,14 @@ Submitting a pull request:
 - [Fork the govCMS repository on github](https://help.github.com/articles/using-pull-requests/)
   and clone your repository to your development environment;
 - Make your feature addition or bug fix;
-- __Always__ base your changes on the `master` branch on github (all new
+- __Always__ base your changes on the `7.x-2.x` branch on github (all new
   development happens here);
 - Commit your code, but do not add to `CHANGELOG.txt`. This will be done at
   each point release.
 - Add new modules or features to the make file rather than directly to the
   govCMS repository; and
 - __Remember__: when you create [Pull Request](https://help.github.com/articles/using-pull-requests/),
-  always select `master` branch as
+  always select `7.x-2.x` branch as
   target, otherwise it will be closed (this is selected by default).
 - The existing functionality might already be covered by Behat or PHPUnit tests. In case of changing such code with your PR you will also need to include any relevant adjustments to the test cases. (*/build/tests/behat/features*)
 - Any new code should be covered with the tests.
@@ -108,9 +108,9 @@ Feature: Home Page
     And I should see "Home"
 ```
 Scenarios can be tagged with @api @drush @javascript or any other custom tags.
-  - @api should be added when there is any interaction with the database
-  - @javascript should be added when the scenario requires javascript
-  - @drush should be added when the scenario needs to be run using Drush driver.
+  - @api can be added when any interaction with the database is required
+  - @javascript can be added when the scenario requires javascript
+  - @drush can be added when the scenario needs to be run using Drush driver
 
 *Note, scenarios without @javascript would usually be much faster, however they
 won't produce a screenshot on failure.*
@@ -120,7 +120,7 @@ activities on the site so you might also want to scan through the scenarios to
 get a better idea. Additionally, you can have a look inside the
 */build/tests/behat/bootstrap* to find the contexts that define some of the
 custom steps. If you want to perform a custom step then you would need to add
-its' definition to one of the existing contexts (or create a new sub-context).
+its definition to one of the existing contexts (or create a new sub-context).
 
 Adding PHPUnit tests
 --------------------
