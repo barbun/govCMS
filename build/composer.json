@@ -9,6 +9,10 @@
         {
             "name": "James Gollan",
             "email": "james@swamphen.com"
+        },
+        {
+            "name": "Roman Barbun",
+            "email": "romanbarbun@gmail.com"
         }
     ],
     "require-dev": {
@@ -21,14 +25,29 @@
         "phploc/phploc":             "2.0.0",
         "sebastian/phpcpd":          "3.*",
         "drupal/coder":              "7.2.*",
+        "drupal/tdd7":               "7.0.1",
         "phpunit/phpunit":           "^5.7"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "repositories": {
+        "tdd7": {
+            "type": "package",
+            "package": {
+                "name": "drupal/tdd7",
+                "version": "7.0.1",
+                "dist": {
+                    "url": "https://github.com/barbun/tdd7/archive/master.zip",
+                    "type": "zip"
+                }
+            }
+        }
+    },
     "config": {
         "bin-dir": "bin",
         "secure-http": false
     },
+
     "scripts": {
       "post-install-cmd": [
         "PhantomInstaller\\Installer::installPhantomJS"
