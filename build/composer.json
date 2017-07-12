@@ -9,6 +9,10 @@
         {
             "name": "James Gollan",
             "email": "james@swamphen.com"
+        },
+        {
+            "name": "Roman Barbun",
+            "email": "romanbarbun@gmail.com"
         }
     ],
     "require-dev": {
@@ -21,13 +25,38 @@
         "phploc/phploc":             "2.0.0",
         "sebastian/phpcpd":          "3.*",
         "drupal/coder":              "7.2.*",
-        "phpunit/phpunit":           "^5.7"
+        "phpunit/phpunit":           "^5.7",
+        "drupal/tdd7":               "7.0.1"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
         "bin-dir": "bin",
         "secure-http": false
+    },
+    "extra": {
+        "installer-paths": {
+            "../docroot/profiles/govcms/modules/contrib/{$name}": [
+              "type:drupal-module"
+            ]
+        }
+    },
+    "repositories": {
+        "tdd7": {
+            "type": "package",
+            "package": {
+                "name": "drupal/tdd7",
+                "version": "7.0.1",
+                "type": "drupal-module",
+                "dist": {
+                    "url": "https://github.com/barbun/tdd7/archive/master.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        }
     },
     "scripts": {
       "post-install-cmd": [
