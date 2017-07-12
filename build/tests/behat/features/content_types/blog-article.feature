@@ -43,7 +43,6 @@ Feature: Blog Article
     And the response should contain "<a href=\"/news-media/blog/new-blog\">New blog</a>"
     And I should see the text "Submitted by"
     And I should see the "img" element with the "width" attribute set to "220" in the "content" region
-    And I should see the "img" element with the "height" attribute set to "220" in the "content" region
     And I should see the "img" element with the "alt" attribute set to "govCMS test image" in the "content" region
     And I should see the "img" element with the "title" attribute set to "govCMS Automated" in the "content" region
     And I should see the text "How we migrated to govCMS!"
